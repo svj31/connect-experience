@@ -1,0 +1,14 @@
+{
+  "name": "overlap",
+  "private": true,
+  "description": "Overlap: interactive dating for AFFECIO HACKS '26, Problem Statement 06",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix web",
+    "seed": "npm run seed --prefix server",
+    "dev:server": "npm run dev --prefix server",
+    "dev:web": "npm run dev --prefix web",
+    "test": "npm test --prefix server && npm test --prefix web",
+    "test:e2e": "npm run test:e2e --prefix web",
+    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix web"
+  }
+}
