@@ -1,4 +1,4 @@
-# Overlap
+#  Overlap
 
 **Meet over something you both enjoy.** An interactive dating app for AFFECIO HACKS '26, Problem Statement 06
 ("Make Connection an Experience: Interactive Dating").
