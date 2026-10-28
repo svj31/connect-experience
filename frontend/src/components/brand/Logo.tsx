@@ -1,25 +1,37 @@
 import Link from "next/link";
 
 /**
- * The Saath mark: an "S" drawn as one thread in two halves, cream above and saffron below,
- * meeting in the middle: two stories becoming one. On hover the thread redraws itself, top half
- * first and then the saffron half (.sv-logo in globals.css).
+ * The Saath mark: two worlds on crossing orbits, cream and saffron, with a heart where the paths
+ * meet, on the ink tile. On hover the orbits swing round in opposite directions, the heart beats
+ * and the spark twinkles (.sv-logo in globals.css). Drawn in one coordinate space so every part
+ * can turn about the same centre.
  */
 export function LogoMark({ size = 40, className = "", live = false, title = "SaathVerse" }: { size?: number; className?: string; live?: boolean; title?: string }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 64 64"
+      viewBox="30 -6 160 160"
       role={title ? "img" : undefined}
       aria-label={title || undefined}
       aria-hidden={title ? undefined : true}
       className={`sv-logo shrink-0 ${live ? "is-live" : ""} ${className}`}
     >
-      <rect x="0.5" y="0.5" width="63" height="63" rx="17" fill="#161412" stroke="var(--line-strong, #3d3934)" />
-      <path className="thread-a" pathLength={1} d="M40.66 17 A10 10 0 1 0 32 32" fill="none" stroke="#fbf9f6" strokeWidth="4.6" strokeLinecap="round" />
-      <path className="thread-b" pathLength={1} d="M32 32 A10 10 0 1 1 23.34 47" fill="none" stroke="#f2a900" strokeWidth="4.6" strokeLinecap="round" />
-      <circle className="knot" cx="32" cy="32" r="1.6" fill="#161412" />
+      <rect x="31" y="-5" width="158" height="158" rx="42" fill="#161412" stroke="var(--line-strong, #3d3934)" strokeWidth="2" />
+      <g className="orbit-a">
+        <ellipse cx="110" cy="76" rx="66" ry="42" transform="rotate(-32 110 76)" fill="none" stroke="#c4a8f0" strokeWidth="4.5" strokeDasharray="8 7" strokeLinecap="round" />
+        <circle cx="54" cy="55" r="10" fill="#fbf9f6" />
+      </g>
+      <g className="orbit-b">
+        <ellipse cx="110" cy="76" rx="66" ry="42" transform="rotate(32 110 76)" fill="none" stroke="#8d6fd8" strokeWidth="4.5" />
+        <circle cx="166" cy="97" r="10" fill="#f2a900" />
+      </g>
+      <g className="heart">
+        <path d="M110 101 C99 90 76 75 76 59 C76 42 98 38 110 54 C122 38 144 42 144 59 C144 75 121 90 110 101Z" fill="#9b7be3" />
+        <path d="M110 65 C103 57 93 64 100 73 L110 82 L120 73 C127 64 117 57 110 65Z" fill="#fbe9f4" />
+      </g>
+      <path className="spark" d="M110 14 L114 25 L125 29 L114 33 L110 44 L106 33 L95 29 L106 25Z" fill="#f2a900" />
+      <circle className="spark-dot" cx="170" cy="36" r="4.5" fill="#f2a900" />
     </svg>
   );
 }

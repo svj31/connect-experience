@@ -4,7 +4,7 @@
 
 **Principle.** Calm and editorial, like Hinge and Instagram: people's photos are the colour, the interface stays quiet.
 
-**Mark.** An ink tile with an "S" drawn as one thread in two halves: cream above, saffron below, meeting in the middle (two stories becoming one). On hover the thread redraws itself, top half first, in a calm 1.1 s line animation.
+**Mark.** Shared Orbit on the ink tile: two worlds (a cream planet and a saffron planet) on crossing orbits, one dashed lilac and one solid plum, with a plum heart where the paths meet and a saffron spark above. On hover the two orbits swing a full turn in opposite directions, the heart beats and the spark twinkles; on loaders and the 404 page (`live`) the orbits sway gently back and forth. Source idea: the Shared Orbit SVG, recoloured from violet and rose to the site's plum, lilac, cream and saffron so it sits on the ink tile in both themes.
 Files: [logo-mark.svg](logo-mark.svg), [logo-wordmark.svg](logo-wordmark.svg), `frontend/src/app/icon.svg`.
 **Wordmark.** Lowercase serif `saath` + italic plum `verse`.
 
