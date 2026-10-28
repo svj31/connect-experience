@@ -42,7 +42,7 @@ GIT_COMMANDS.md  suggested commits and push commands
 ## Tests
 
 ```bash
-npm test          # backend 111 + frontend 31
+npm test          # backend 114 + frontend 36
 npm run test:e2e  # 27 end to end tests in Chromium
 ```
 

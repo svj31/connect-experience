@@ -65,3 +65,51 @@ card animation, and three Snapchat clones) as a guide to patterns, not code, thi
 - **Tinder and Bumble style landing**: a faint wall of faces behind the hero and a "Real people, one swipe away" photo strip.
 - **40 demo members** (14 core plus 26 crowd, `"crowd": true` in `demo_data/people.json`) with photos and varied activity times. Crowd members can be added to an existing database safely.
 - **Layout audit** (`frontend/tests/layout-audit.mjs`): no sideways scroll, no clipped button text, no controls covering each other, on every page at four widths. Fixed: grid children forcing sideways scroll, button rows that did not wrap, prompt answers clipped in single line inputs.
+
+# Version 5: Hinge and Instagram patterns, calm brand
+
+Research (Hinge, Bumble, Tinder, Instagram, and the reference repos hinge-clone and instagram-clone-app):
+
+| Pattern | Source | In SaathVerse |
+| --- | --- | --- |
+| Start on people after sign in, not a dashboard | All dating apps | Sign in and demo land on `/app/discover`; the dashboard is now "Activity" |
+| Vertical profile, photos and prompts interleaved, like a specific item with a comment | Hinge | `ProfileFeed`: heart on every photo and prompt, comment dialog, optional super like |
+| Standouts and Most Compatible | Hinge | `/app/standouts` and `GET /api/discover/standouts` (top Vibe Match from the ranked pool) |
+| Likes You as a photo grid | Hinge, Bumble | Likes tab opens on "Likes you", two columns on phones, super likes first |
+| Five tab bottom bar, left rail on desktop | Instagram | Discover, Standouts, Likes, Matches, Profile; rail adds Together, Activity, Moments, Settings, Safety |
+| Stories row | Instagram | Matches as rings on Matches and Activity |
+| Quiet palette so photos carry colour; serif editorial type | Hinge | Cream, ink, plum, saffron; Newsreader + Inter (see [brand](brand/README.md)) |
+| Swipe deck as an option | Tinder | "Cards" view in Discover |
+
+Also: new logo, Hinge style landing (serif hero, photo collage with a prompt card), Galaxy view removed, no floating
+buttons over content, layout audit clean at 360 to 1440 px.
+
+# Version 5.1
+- **Six demo personas** on the sign in page (`GET /api/auth/demo` lists them, `POST /api/auth/demo {as, key}` signs in).
+- **Endless Discover**: when the stack is empty, passes are recycled (`recycled: true` in the feed response, with a toast). 55 demo members.
+- **Sidebar** back to the earlier layout (profile header, four big tabs, Matches and Messages panel with photo tiles, shortcuts) in the ink, cream and saffron theme, with a sliding tab indicator, photo zoom and a slow "breathing" dot for new matches.
+- **Logo**: an "S" drawn as one thread in two halves (cream and saffron); on hover it redraws itself with a measured line animation.
+
+# Version 5.2: photo and planet, two sides of one person
+- The planet artwork from `frontend/design_components/Planet Orbit.svg` is now every member's avatar. `frontend/scripts/generate-planets.py` recolours its surface for the 12 avatar colours (gold ring and plum stars kept), crops it and writes `frontend/public/planets/<colour>.svg`.
+- `PhotoPlanet` shows a member's photo and, now and then, their planet: on hover (profiles, Standouts, Likes, Browse, sidebar tiles) after about a second, and on Discover cards when the viewer is idle for a few seconds. The swap is a slow blur and lift (0.8 to 1.1 s), and reduced motion settles instantly. Members without photos simply show their planet.
+- Profile editor: the planet section is now a colour picker with live previews (shape, ring, surface and mood pickers removed).
+- Every core demo member has 3 to 5 photos (portraits plus lifestyle shots chosen from their interests); crowd members have a portrait each.
+
+# Version 5.3: planet options and photo fixes
+- **Why only planets showed:** the backend seeded demo people only into an empty database, so existing databases never got photos. Startup now syncs demo members from `demo_data` every time (history is still added once; `SEED_DEMO=off` skips it).
+- **Planet options** on the new artwork (`frontend/src/components/ui/Planet.tsx`): Shape (Classic, Wide, Tilted, Upright, Little, Giant), Design (Original, Bands, Spots, Swirl, Craters, drifting slowly), Face (Smile, Grin, Wink, Calm, Shy, none, with a calm blink), Ring (Classic, Double, Tilted, Moons that orbit), plus 12 colours. Stored values are the existing avatar fields, so old profiles keep working.
+- **Demo photos:** each core member has one portrait plus three lifestyle photos from their interests (one person per profile; free photo sets do not offer several shots of the same person).
+
+# Version 5.4: photo that turns over, spin styles, chat that fits
+- **Bug:** a stale development stylesheet left the planet layer visible on top of every photo. `PhotoPlanet` now uses inline styles only, so it cannot depend on a stylesheet being fresh.
+- **Card flip:** every photo is a card with the member's planet on the back. It turns over (0.9 s, 3D) after about a second of hover and turns back after a few seconds or as soon as the cursor leaves; when the viewer is idle for 4.5 s, cards turn on their own for a short moment, at slightly different times. Reduced motion swaps without the turn.
+- **Spin styles** (new planet option, stored in the avatar JSON as `spin`): Steady, Wobble, Float, Slow turn, Breathe. SVG animation, layered over the artwork's own rotating surface.
+- **Matches chat** fits the viewport at any size (checked at 360x640 to 1920x1080): only the conversation list and messages scroll; on phones an open conversation takes the whole screen.
+
+# Version 5.5: fit to screen, planets in orbits, light by default
+- **Discover** (Profiles, Cards, Browse) is exactly one screen tall at every size; the profile, the deck and the Browse results scroll inside their own panels.
+- **Matches chat**: slim one line header (name, bond, streak, quick activities), stories row only on phones; the message area is now 274 to 710 px depending on the screen (was much smaller).
+- **Orbits use planets**: Bond orbits (Likes, Matches cards, profiles) show both people's planets travelling the bond ring around a beating heart; Activity "Your universe" shows everyone as planets.
+- **Sidebar match tiles** flip to the planet on hover only.
+- **Light theme by default** for the site and the app (dark and "match my device" remain in Settings).

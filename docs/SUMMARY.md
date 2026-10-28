@@ -14,7 +14,7 @@ actually shared, level by level, with streaks. Profiles open up section by secti
 | Technical (30%) | Realtime server authoritative activities (10), one shared socket with live notifications, roles and moderation, privacy engine, explainable matching, SQLite with in place migrations, atomic swipe to match, ranked and cached Discover feed, 168 automated tests |
 | Innovation (25%) | Bond levels that unlock profile sections, Vibe Match with reasons, personalised games (questions from shared interests), planet avatars instead of photos, 3D constellation, Deep Talk |
 | Impact (20%) | No photo judging, no dead chats, consent based reveal, kindness nudges, opt in report evidence, quick exit, date check-in planner, data export and deletion |
-| UI/UX (15%) | Production dating app design ("Ember" brand): photo first swipe cards with tap through photos, Tinder style web layout with matches and messages sidebar, icon tab bar on phones, cinematic marketing landing with live phone mockup, split screen sign in, full screen match moment, light and dark, AA contrast |
+| UI/UX (15%) | Hinge and Instagram patterns: Discover first after sign in, vertical profiles with a like on every photo and prompt, Standouts, Likes You photo grid, stories row, left rail and five tab bar; calm cream, ink, plum and saffron brand with serif type; light and dark; no overlapping components (automated layout audit) |
 | Demo (10%) | One click member and admin demo accounts with a week of seeded history, walkthrough and script |
 
 ## 2. What was built
@@ -54,7 +54,7 @@ in the UI, no pill buttons, no emoji, no em dashes, no fake numbers (every score
 
 ## 4. How to run and test
 See [SETUP_INSTRUCTIONS](../SETUP_INSTRUCTIONS.md) and [TESTING](TESTING.md).
-Results: backend 111, frontend 31, end to end 27, all passing. Typecheck, lint and build clean.
+Results: backend 114, frontend 34, end to end 27, all passing. Typecheck, lint and build clean.
 
 ## 5. Before launch (not doable from code)
 - Domain, hosting (backend with a persistent disk; frontend on Vercel), and the URLs in env files.
