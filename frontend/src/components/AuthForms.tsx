@@ -9,7 +9,7 @@ import { useSession } from "@/lib/session";
 import type { Me } from "@/lib/types";
 import { validateAdminSignup, validateEmail, validateSignup, type Errors } from "@/lib/validation";
 import { LogoMark } from "./brand/Logo";
-import { DemoButton } from "./landing/DemoButtons";
+import { DemoButton, DemoPicker } from "./landing/DemoButtons";
 import { Button } from "./ui/Button";
 import { Field, FormError, Honeypot } from "./ui/Field";
 import { Icon } from "./ui/Icon";
@@ -54,14 +54,14 @@ const COLLAGE = [
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
     <div className="mx-auto grid w-full max-w-6xl items-stretch gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_460px] lg:py-12">
-      <div className="relative hidden overflow-hidden rounded-[36px] bg-[#09090c] lg:block" aria-hidden="true">
+      <div className="relative hidden overflow-hidden rounded-[36px] bg-[#161412] lg:sticky lg:top-24 lg:block lg:h-[min(720px,calc(100dvh-8rem))] lg:self-start" aria-hidden="true">
         <div className="grid h-full grid-cols-3 gap-2 p-2 opacity-90">
           {COLLAGE.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img key={src} src={src} alt="" className={`h-full min-h-40 w-full rounded-[22px] object-cover ${i % 2 ? "translate-y-8" : ""}`} />
           ))}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090c] via-[#09090c]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#161412] via-[#161412]/50 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-10 text-white">
           <LogoMark size={52} title="" />
           <p className="mt-5 max-w-md font-display text-4xl leading-[1.05] font-extrabold tracking-tight">Someone is about to pick the same answer as you.</p>
@@ -109,7 +109,7 @@ export function LoginForm() {
       }
       setUser(user);
       track("login");
-      router.push(safeNext(params.get("next"), user.role === "admin" ? "/admin" : "/app"));
+      router.push(safeNext(params.get("next"), user.role === "admin" ? "/admin" : "/app/discover"));
     } catch (err) {
       setFormError(errorMessage(err));
       setBusy(false);
@@ -117,7 +117,7 @@ export function LoginForm() {
   }
 
   return (
-    <AuthShell title={role === "admin" ? "Admin sign in" : "Welcome back"} subtitle={role === "admin" ? "Moderation, safety and analytics." : "Your orbit missed you."}>
+    <AuthShell title={role === "admin" ? "Admin sign in" : "Welcome back"} subtitle={role === "admin" ? "Moderation, safety and analytics." : "Good to see you again."}>
       <RoleTabs role={role} base="/login" />
       <form onSubmit={submit} noValidate className="mt-5 space-y-4">
         <FormError message={formError} />
@@ -129,10 +129,11 @@ export function LoginForm() {
       <DemoButton as={role} variant="soft" className="w-full [&>button]:w-full">
         {role === "admin" ? "Use the demo admin account" : "Use the demo member account"}
       </DemoButton>
+      {role !== "admin" && <DemoPicker />}
       <p className="mt-5 text-center text-sm text-muted">
         {role === "admin" ? "Have an invite code? " : "New here? "}
         <Link href={role === "admin" ? "/signup?as=admin" : "/signup"} className="font-semibold text-violet hover:underline">
-          {role === "admin" ? "Create an admin account" : "Create your planet"}
+          {role === "admin" ? "Create an admin account" : "Create an account"}
         </Link>
       </p>
     </AuthShell>
@@ -182,7 +183,7 @@ export function SignupForm() {
   }
 
   return (
-    <AuthShell title={role === "admin" ? "Join the admin team" : "Create your planet"} subtitle={role === "admin" ? "Admin accounts need an invite code from your team." : "It takes a minute. No photo needed."}>
+    <AuthShell title={role === "admin" ? "Join the admin team" : "Create an account"} subtitle={role === "admin" ? "Admin accounts need an invite code from your team." : "It takes a minute. No photo needed."}>
       <RoleTabs role={role} base="/signup" />
       <form onSubmit={submit} noValidate className="relative mt-5 space-y-4">
         <FormError message={formError} />

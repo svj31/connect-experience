@@ -4,7 +4,7 @@
 import { chromium } from "@playwright/test";
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const PUBLIC = ["/", "/login", "/signup", "/safety", "/contact"];
-const APP = ["/app", "/app/discover", "/app/connections", "/app/connections?tab=requests", "/app/together", "/app/chats", "/app/moments", "/app/profile", "/app/settings", "/app/safety", "/app/people/2"];
+const APP = ["/app", "/app/discover", "/app/standouts", "/app/connections", "/app/connections?tab=requests", "/app/together", "/app/chats", "/app/moments", "/app/profile", "/app/settings", "/app/safety", "/app/people/2"];
 const ADMIN = ["/admin", "/admin/reports", "/admin/users"];
 const sizes = [[360, 740], [390, 844], [768, 1024], [1440, 900]];
 const b = await chromium.launch();

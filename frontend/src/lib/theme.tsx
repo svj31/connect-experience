@@ -6,7 +6,8 @@ export type ThemeChoice = "light" | "dark" | "system";
 interface Prefs { theme: ThemeChoice; cursor: boolean; motion: "full" | "reduced" }
 
 const KEY = "sv_prefs";
-const DEFAULTS: Prefs = { theme: "system", cursor: true, motion: "full" };
+// Light by default everywhere; dark and "match my device" are opt in.
+const DEFAULTS: Prefs = { theme: "light", cursor: true, motion: "full" };
 
 export function readPrefs(): Prefs {
   try {
@@ -25,7 +26,7 @@ export function applyPrefs(p: Prefs) {
 }
 
 /** Inline script so the right theme is set before the first paint, with no flash. */
-export const THEME_SCRIPT = `try{var p=JSON.parse(localStorage.getItem("${KEY}")||"{}");var t=p.theme||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";document.documentElement.dataset.motion=p.motion||"full"}catch(e){}`;
+export const THEME_SCRIPT = `try{var p=JSON.parse(localStorage.getItem("${KEY}")||"{}");var t=p.theme||"light";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";document.documentElement.dataset.motion=p.motion||"full"}catch(e){}`;
 
 const Ctx = createContext<{ prefs: Prefs; setPrefs: (p: Partial<Prefs>) => void; dark: boolean } | null>(null);
 

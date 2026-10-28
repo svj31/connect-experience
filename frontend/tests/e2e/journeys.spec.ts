@@ -75,7 +75,7 @@ test.describe("two people meet, connect, chat and play", () => {
     await expect(b.page.getByText("Clear skies after rain")).toBeVisible();
 
     // Bond and Vibe show on the profile.
-    await a.page.goto("/app/connections");
+    await a.page.goto("/app/connections?tab=all");
     await a.page.locator("#main").getByRole("link", { name: "Bilal" }).first().click();
     await expect(a.page.getByRole("region", { name: "Your bond" })).toContainText("Stardust");
     await expect(a.page.getByRole("region", { name: "Vibe Match" })).toContainText("Shared interests");
@@ -113,10 +113,11 @@ test.describe("demo member", () => {
     await dismissCookies(page);
     await page.goto("/login");
     await page.getByRole("button", { name: "Use the demo member account" }).click();
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app\/discover$/);
   });
 
   test("dashboard, views and suggestions", async ({ page }) => {
+    await page.goto("/app");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Ava");
     await expect(page.getByText("Question of the day")).toBeVisible();
     await page.getByRole("radio", { name: "Cards" }).click();
@@ -126,8 +127,17 @@ test.describe("demo member", () => {
     await expect(page.getByRole("table", { name: /Messages and moments/ })).toBeAttached();
   });
 
-  test("Discover swipe deck, undo, and galaxy view", async ({ page }) => {
+  test("Discover profiles, cards deck with undo, and browse", async ({ page }) => {
     await page.goto("/app/discover");
+    // Hinge style profile: like a specific photo, then pass on the next person.
+    const name = (await page.getByRole("button", { name: /^Pass on / }).getAttribute("aria-label"))!.replace("Pass on ", "");
+    await page.getByRole("button", { name: `Like ${name}'s photo 1` }).click();
+    await page.getByLabel("Add a comment").fill("Love this photo");
+    await page.getByRole("button", { name: "Send like" }).click();
+    await expect(page.getByRole("button", { name: /^Pass on / })).not.toHaveAttribute("aria-label", `Pass on ${name}`);
+    const matched = page.getByRole("dialog", { name: "It's a Saath!" });
+    if (await matched.isVisible()) await page.keyboard.press("Escape");
+    await page.getByRole("radio", { name: "Cards" }).click();
     await expect(page.getByText(/likes left today/)).toBeVisible();
     const pass = page.getByRole("button", { name: /^Pass on / });
     const first = await pass.getAttribute("aria-label");
@@ -143,13 +153,13 @@ test.describe("demo member", () => {
     // Ava's top picks include people who already liked her, so this may be a match.
     const party = page.getByRole("dialog", { name: "It's a Saath!" });
     if (await party.isVisible()) await page.keyboard.press("Escape");
-    await page.getByRole("radio", { name: "Galaxy" }).click();
-    await expect(page.locator("a[title*='Vibe']").first()).toBeVisible();
+    await page.getByRole("radio", { name: "Browse" }).click();
     await page.getByRole("button", { name: "Reset filters" }).click();
+    await expect(page.locator("#main article").first()).toBeVisible();
   });
 
   test("connections, requests, moments, settings and safety", async ({ page }) => {
-    await page.goto("/app/connections");
+    await page.goto("/app/connections?tab=all");
     await page.getByRole("radio", { name: "Bond ladder" }).click();
     await expect(page.getByRole("region", { name: "Orbit bonds" })).toContainText("Rohan");
     await page.getByRole("tab", { name: /Likes you/ }).click();
@@ -180,9 +190,9 @@ test.describe("admin", () => {
     await dismissCookies(page);
     await page.goto("/login");
     await page.getByRole("button", { name: "Use the demo member account" }).click();
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app\/discover$/);
     await page.goto("/admin");
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app\/discover$/);
   });
 
   test("admin sign up needs an invite code", async ({ page }) => {
@@ -234,9 +244,9 @@ test.describe("phone", () => {
     await dismissCookies(page);
     await page.goto("/login");
     await page.getByRole("button", { name: "Use the demo member account" }).click();
-    await expect(page).toHaveURL(/\/app$/);
-    await page.locator("nav[aria-label='App']").last().getByRole("link", { name: "Together" }).click();
-    await expect(page).toHaveURL(/\/app\/together/);
+    await expect(page).toHaveURL(/\/app\/discover$/);
+    await page.locator("nav[aria-label='App']").last().getByRole("link", { name: "Matches" }).click();
+    await expect(page).toHaveURL(/\/app\/chats/);
     const code = await page.evaluate(async () => (await (await fetch("/api/connections")).json()).connections[0].roomCode);
     await page.goto(`/app/room/${code}`);
     await page.getByRole("button", { name: /Open chat/ }).click();

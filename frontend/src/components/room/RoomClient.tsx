@@ -208,7 +208,7 @@ export function RoomClient({ code }: { code: string }) {
                                 onClick={() => pick(a.id)}
                                 aria-current={active ? "true" : undefined}
                                 title={suggested ? topIdeas.find((s) => s.id === a.id)?.reason : a.short}
-                                className={`relative flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-transparent bg-brand text-white" : "border-line bg-paper hover:border-violet hover:text-violet"}`}
+                                className={`relative flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-transparent bg-brand" : "border-line bg-paper hover:border-violet hover:text-violet"}`}
                               >
                                 <Icon name={a.id} size={16} /> {a.name}
                                 {suggested && !active && <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-rose" aria-label="Suggested for you two" />}
@@ -256,7 +256,7 @@ export function RoomClient({ code }: { code: string }) {
         }}
         aria-expanded={chatOpen}
         aria-controls="room-chat"
-        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
+        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
       >
         <Icon name={chatOpen ? "close" : "chat"} size={24} label={chatOpen ? "Close chat" : unread ? `Open chat, ${unread} unread` : "Open chat"} />
         {unread > 0 && !chatOpen && <span className="absolute -top-1.5 -right-1.5 flex h-6 min-w-6 animate-pop items-center justify-center rounded-full border-2 border-paper bg-rose px-1 text-xs font-bold text-on-primary">{unread}</span>}

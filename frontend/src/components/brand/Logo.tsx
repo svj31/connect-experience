@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { useId } from "react";
 
 /**
- * The Ember mark: an app icon squircle in the brand gradient holding two hearts that overlap,
- * two people becoming "saath" (together). On hover the hearts lean in and beat (see .sv-logo).
+ * The Saath mark: an "S" drawn as one thread in two halves, cream above and saffron below,
+ * meeting in the middle: two stories becoming one. On hover the thread redraws itself, top half
+ * first and then the saffron half (.sv-logo in globals.css).
  */
 export function LogoMark({ size = 40, className = "", live = false, title = "SaathVerse" }: { size?: number; className?: string; live?: boolean; title?: string }) {
-  const id = useId().replace(/:/g, "");
   return (
     <svg
       width={size}
@@ -17,35 +16,24 @@ export function LogoMark({ size = 40, className = "", live = false, title = "Saa
       aria-hidden={title ? undefined : true}
       className={`sv-logo shrink-0 ${live ? "is-live" : ""} ${className}`}
     >
-      <defs>
-        <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FF2E6A" />
-          <stop offset="0.55" stopColor="#FF5A4E" />
-          <stop offset="1" stopColor="#FF8A3D" />
-        </linearGradient>
-      </defs>
-      <rect width="64" height="64" rx="18" fill={`url(#g${id})`} />
-      <g className="heart-a">
-        <path d="M25 47c-6.5-5-13-10-13-17a7 7 0 0 1 13-3.6A7 7 0 0 1 38 30c0 7-6.5 12-13 17z" fill="#fff" opacity="0.55" />
-      </g>
-      <g className="heart-b">
-        <path d="M39 49c-7-5.4-14-10.8-14-18.4a7.6 7.6 0 0 1 14-3.9 7.6 7.6 0 0 1 14 3.9C53 38.2 46 43.6 39 49z" fill="#fff" />
-      </g>
-      <circle className="spark" cx="50" cy="15" r="3" fill="#fff" />
+      <rect x="0.5" y="0.5" width="63" height="63" rx="17" fill="#161412" stroke="var(--line-strong, #3d3934)" />
+      <path className="thread-a" pathLength={1} d="M40.66 17 A10 10 0 1 0 32 32" fill="none" stroke="#fbf9f6" strokeWidth="4.6" strokeLinecap="round" />
+      <path className="thread-b" pathLength={1} d="M32 32 A10 10 0 1 1 23.34 47" fill="none" stroke="#f2a900" strokeWidth="4.6" strokeLinecap="round" />
+      <circle className="knot" cx="32" cy="32" r="1.6" fill="#161412" />
     </svg>
   );
 }
 
 export function Wordmark({ size = "md", className = "" }: { size?: "sm" | "md" | "lg"; className?: string }) {
-  const text = size === "lg" ? "text-3xl" : size === "sm" ? "text-xl" : "text-2xl";
+  const text = size === "lg" ? "text-4xl" : size === "sm" ? "text-2xl" : "text-[1.7rem]";
   return (
-    <span className={`font-display ${text} font-extrabold tracking-[-0.04em] text-ink ${className}`}>
-      saath<span className="text-brand">verse</span>
+    <span className={`font-display ${text} leading-none text-ink ${className}`}>
+      saath<span className="italic text-violet">verse</span>
     </span>
   );
 }
 
-export function Logo({ href = "/", size = 36, wordmark = "md", className = "" }: { href?: string; size?: number; wordmark?: "sm" | "md" | "lg"; className?: string }) {
+export function Logo({ href = "/", size = 34, wordmark = "md", className = "" }: { href?: string; size?: number; wordmark?: "sm" | "md" | "lg"; className?: string }) {
   return (
     <Link href={href} className={`group flex items-center gap-2 rounded-lg ${className}`} aria-label="SaathVerse home">
       <LogoMark size={size} title="" />

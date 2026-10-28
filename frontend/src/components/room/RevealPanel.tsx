@@ -65,7 +65,7 @@ export function RevealPanel({
                     active ? "border-ink bg-surface" : locked ? "border-line bg-paper text-muted" : "border-line bg-surface hover:border-ink"
                   }`}
                 >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${active ? "bg-brand text-white" : "bg-paper-deep"}`}>
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${active ? "bg-brand" : "bg-paper-deep"}`}>
                     <Icon name={locked ? "lock" : active ? "check" : "unlock"} size={18} />
                   </span>
                   <span className="flex-1">

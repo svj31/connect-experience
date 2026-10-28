@@ -19,7 +19,7 @@ export default function NotFound() {
       <p className="mt-3 text-lg text-muted">This page drifted out of orbit. It may have moved, or the link was mistyped.</p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href="/" className={buttonClass("primary")}>Back to home</Link>
-        <Link href="/app" className={buttonClass("secondary")}>Open the app</Link>
+        <Link href="/app/discover" className={buttonClass("secondary")}>Open the app</Link>
       </div>
     </main>
   );

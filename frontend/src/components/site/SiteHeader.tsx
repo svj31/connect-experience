@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/session";
 import { Logo } from "../brand/Logo";
@@ -28,17 +27,15 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  // Over the dark landing hero the header starts transparent with light text.
-  const overHero = usePathname() === "/" && !scrolled && !open;
-  const home = user ? (user.role === "admin" ? "/admin" : "/app") : null;
+  const home = user ? (user.role === "admin" ? "/admin" : "/app/discover") : null;
 
   return (
-    <header className={`sticky top-0 z-40 transition-all ${overHero ? "dark-hero bg-transparent text-white" : "glass border-b border-line"}`}>
+    <header className={`sticky top-0 z-40 transition-all ${scrolled || open ? "glass border-b border-line" : "border-b border-transparent bg-paper"}`}>
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Logo size={34} className={overHero ? "[&_span.text-ink]:text-white" : ""} />
+        <Logo size={34} />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className={`rounded-full px-3.5 py-2 text-sm font-bold transition-colors ${overHero ? "text-white/75 hover:bg-white/10 hover:text-white" : "text-muted hover:bg-paper-deep hover:text-ink"}`}>
+            <Link key={n.href} href={n.href} className="rounded-full px-3.5 py-2 text-sm font-medium text-ink/75 transition-colors hover:bg-paper-deep hover:text-ink">
               {n.label}
             </Link>
           ))}

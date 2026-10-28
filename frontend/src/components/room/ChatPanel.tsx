@@ -112,7 +112,7 @@ export function ChatPanel({
           const showTime = i === messages.length - 1 || messages[i + 1]?.userId !== m.userId;
           return (
             <li key={m.id} className={`flex animate-rise flex-col ${mine ? "items-end" : "items-start"}`}>
-              <p className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-[0.95rem] leading-snug break-words ${mine ? "rounded-br-md bg-brand text-white" : "rounded-bl-md border border-line bg-paper text-ink"}`}>
+              <p className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-[0.95rem] leading-snug break-words ${mine ? "rounded-br-md bg-brand" : "rounded-bl-md border border-line bg-paper text-ink"}`}>
                 <span className="sr-only">{mine ? "You" : partnerName}: </span>
                 {m.body}
               </p>
@@ -179,7 +179,7 @@ export function ChatPanel({
             placeholder={disabled ? "Chat opens when someone joins" : `Message ${partnerName}`}
             className="h-11 min-w-0 flex-1 rounded-2xl border border-transparent bg-paper-deep px-4 focus:border-violet focus:outline-none disabled:bg-paper"
           />
-          <button type="submit" disabled={disabled || !text.trim()} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white transition-transform hover:scale-105 disabled:opacity-40">
+          <button type="submit" disabled={disabled || !text.trim()} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand transition-transform hover:scale-105 disabled:opacity-40">
             <Icon name="send" size={18} label="Send" />
           </button>
         </div>

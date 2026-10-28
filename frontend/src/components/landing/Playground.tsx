@@ -75,7 +75,7 @@ export function VibeDemo() {
         {INTERESTS.map((i) => {
           const on = mine.includes(i);
           return (
-            <button key={i} aria-pressed={on} onClick={() => setMine((m) => (on ? m.filter((x) => x !== i) : [...m, i]))} className={`rounded-full border px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${on ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
+            <button key={i} aria-pressed={on} onClick={() => setMine((m) => (on ? m.filter((x) => x !== i) : [...m, i]))} className={`rounded-full border px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${on ? "border-transparent bg-brand" : "border-line-strong hover:border-violet"}`}>
               {i}
             </button>
           );
@@ -125,7 +125,7 @@ export function BondExplorer() {
       <div>
         <div role="tablist" aria-label="Bond levels" className="flex flex-wrap gap-2">
           {LEVELS.map((l, i) => (
-            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => setLevel(i)} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-transparent bg-brand text-white" : "border-line-strong bg-surface hover:border-violet"}`}>
+            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => setLevel(i)} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-transparent bg-brand" : "border-line-strong bg-surface hover:border-violet"}`}>
               {i + 1}. {l.name}
             </button>
           ))}

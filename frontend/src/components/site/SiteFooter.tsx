@@ -10,12 +10,12 @@ const COLS = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto bg-[#09090c] text-white">
+    <footer className="mt-auto bg-[#161412] text-[#f4f1ec]">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <div className="flex items-center gap-2">
             <LogoMark size={36} title="" />
-            <Wordmark className="!text-white" />
+            <Wordmark className="!text-[#f4f1ec] [&_span]:!text-[#c4a8f0]" />
           </div>
           <p className="mt-3 max-w-xs text-sm text-white/60">{SITE.tagline} Swipe, match, then meet over a game, a question or a film.</p>
           <p className="mt-4 text-sm text-white/60">18+ only. Built for AFFECIO HACKS 2026.</p>

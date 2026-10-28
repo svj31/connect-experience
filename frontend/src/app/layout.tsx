@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { CookieBanner } from "@/components/CookieBanner";
 import { SessionProvider } from "@/lib/session";
@@ -7,8 +7,8 @@ import { SITE } from "@/lib/site";
 import { THEME_SCRIPT, ThemeProvider } from "@/lib/theme";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], display: "swap" });
-const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" });
+const serif = Newsreader({ variable: "--font-serif", subsets: ["latin"], display: "swap", style: ["normal", "italic"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090c" },
+    { media: "(prefers-color-scheme: light)", color: "#fbf9f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f0e0d" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -31,7 +31,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${serif.variable} ${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>

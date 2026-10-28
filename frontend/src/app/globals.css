@@ -1,77 +1,83 @@
 @import "tailwindcss";
 
 /*
-  SaathVerse 2026 brand: "Ember". One hot brand gradient (rose to ember orange) on clean white or
-  near black, like the dating apps people already trust. Token names are historic: "violet" is the
-  primary (rose) and "rose" is the accent (ember). Text colors meet WCAG AA on their surfaces.
+  SaathVerse brand "Saath": editorial and calm, so people's photos are the colour.
+  Warm cream paper, ink black primary actions (like Hinge and Instagram), one plum accent for
+  links and selected states, and saffron for super likes and Standouts. Token names are historic:
+  "violet" is the plum accent, "rose" is saffron. Every text pair meets WCAG AA.
 */
 :root {
-  --bg: #ffffff;
-  --bg-deep: #f5f5f7;
+  --bg: #fbf9f6;
+  --bg-deep: #f2eee8;
   --surface: #ffffff;
-  --line: #ececf1;
-  --line-strong: #dadae2;
-  --ink: #111116;
-  --muted: #61616d;
-  --violet: #e11d5a;
-  --violet-dark: #be1249;
-  --violet-soft: #ffe9ef;
-  --lilac: #ffb4c8;
-  --rose: #d4461a;
-  --rose-dark: #b33a14;
-  --rose-soft: #fff0e9;
-  --blush: #ffd9e3;
-  --spark: #ff8a5c;
-  --mint: #0f7a57;
-  --mint-soft: #dff5ec;
+  --line: #e9e3da;
+  --line-strong: #d6cec2;
+  --ink: #161412;
+  --muted: #6b645c;
+  --violet: #5b3a8c;
+  --violet-dark: #472b70;
+  --violet-soft: #efe9f7;
+  --lilac: #c9b8e3;
+  --rose: #a66a00;
+  --rose-dark: #855400;
+  --rose-soft: #fbf1dc;
+  --blush: #e9dff5;
+  --spark: #f2a900;
+  --saffron: #f2a900;
+  --mint: #1f7a55;
+  --mint-soft: #e3f3ea;
   --sun: #8a5a00;
-  --sun-soft: #fff3d6;
-  --sky: #1d63c9;
-  --danger: #c42020;
+  --sun-soft: #fbf1dc;
+  --sky: #285fa8;
+  --danger: #b3261e;
   --on-primary: #ffffff;
-  --chart-1: #ff3d6e;
-  --chart-2: #ff7a45;
-  --star: #ffb4c8;
-  --grad: linear-gradient(135deg, #ff2e6a 0%, #ff5a4e 55%, #ff8a3d 100%);
-  --shadow: 0 1px 2px rgb(17 17 22 / 0.05), 0 12px 32px -14px rgb(17 17 22 / 0.22);
-  --shadow-brand: 0 14px 30px -12px rgb(255 46 106 / 0.55);
+  --chart-1: #5b3a8c;
+  --chart-2: #d99a00;
+  --star: #c9b8e3;
+  --btn: #161412;
+  --btn-ink: #ffffff;
+  --shadow: 0 1px 2px rgb(22 20 18 / 0.04), 0 10px 30px -14px rgb(22 20 18 / 0.18);
+  --shadow-brand: 0 8px 20px -10px rgb(22 20 18 / 0.45);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --bg: #09090c;
-  --bg-deep: #111116;
-  --surface: #16161c;
-  --line: #24242c;
-  --line-strong: #363640;
-  --ink: #f6f6f8;
-  --muted: #a3a3b0;
-  --violet: #ff4f80;
-  --violet-dark: #ff7a9e;
-  --violet-soft: #2b0f19;
-  --lilac: #8a2a48;
-  --rose: #ff8a5c;
-  --rose-dark: #ffa27c;
-  --rose-soft: #2b170e;
-  --blush: #3a1422;
-  --spark: #ff8a5c;
-  --mint: #4fd1a1;
-  --mint-soft: #0f2a21;
-  --sun: #f5c451;
-  --sun-soft: #2e2410;
-  --sky: #7fb2ff;
-  --danger: #ff7a7a;
-  --on-primary: #ffffff;
-  --chart-1: #ff4f80;
-  --chart-2: #ff8a5c;
-  --star: #ff4f80;
-  --grad: linear-gradient(135deg, #ff2e6a 0%, #ff5a4e 55%, #ff8a3d 100%);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -16px rgb(0 0 0 / 0.8);
-  --shadow-brand: 0 14px 34px -12px rgb(255 46 106 / 0.6);
+  --bg: #0f0e0d;
+  --bg-deep: #181614;
+  --surface: #1c1a18;
+  --line: #2a2724;
+  --line-strong: #3d3934;
+  --ink: #f4f1ec;
+  --muted: #a9a198;
+  --violet: #c4a8f0;
+  --violet-dark: #d7c2f6;
+  --violet-soft: #2a2236;
+  --lilac: #5e4a85;
+  --rose: #f5c04d;
+  --rose-dark: #f8d27e;
+  --rose-soft: #2e2512;
+  --blush: #2f2640;
+  --spark: #f2a900;
+  --saffron: #f2a900;
+  --mint: #6fd3a6;
+  --mint-soft: #13281f;
+  --sun: #f5c04d;
+  --sun-soft: #2e2512;
+  --sky: #8db8f5;
+  --danger: #ff8a80;
+  --on-primary: #0f0e0d;
+  --chart-1: #c4a8f0;
+  --chart-2: #f2b632;
+  --star: #5e4a85;
+  --btn: #f4f1ec;
+  --btn-ink: #0f0e0d;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 14px 36px -16px rgb(0 0 0 / 0.75);
+  --shadow-brand: 0 8px 22px -10px rgb(0 0 0 / 0.8);
   color-scheme: dark;
 }
 
 @theme {
+  --color-saffron: var(--saffron);
   --color-paper: var(--bg);
   --color-paper-deep: var(--bg-deep);
   --color-surface: var(--surface);
@@ -104,8 +110,8 @@
   --color-teal-soft: var(--rose-soft);
   --color-leaf: var(--mint);
 
-  --font-display: var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
-  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --font-display: var(--font-serif), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
 
   --animate-rise: rise 0.5s ease-out both;
   --animate-pop: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -143,9 +149,12 @@ body {
 ::selection { background: var(--blush); color: var(--ink); }
 
 /* Brand gradient helpers. */
-@utility bg-brand { background-image: var(--grad); color: #fff; }
-@utility text-brand { background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* "brand" is the primary action: ink on light, paper on dark. Accent text is plum. */
+@utility bg-brand { background-color: var(--btn); color: var(--btn-ink); }
+@utility text-brand { color: var(--violet); }
 @utility shadow-brand { box-shadow: var(--shadow-brand); }
+@utility bg-saffron { background-color: var(--saffron); color: #161412; }
+@utility text-saffron { color: var(--saffron); }
 .glass { background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -160,11 +169,12 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
 .reveal.is-visible { opacity: 1; transform: none; }
 
-/* ---------- Logo: on hover the two hearts lean together and beat ---------- */
-.sv-logo .heart-a, .sv-logo .heart-b, .sv-logo .spark { transform-box: fill-box; transform-origin: center; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.sv-logo:hover .heart-a, .sv-logo.is-live .heart-a { transform: translateX(3px) rotate(-6deg); }
-.sv-logo:hover .heart-b, .sv-logo.is-live .heart-b { animation: heartbeat 1.2s ease-in-out infinite; }
-.sv-logo:hover .spark, .sv-logo.is-live .spark { animation: twinkle 0.9s ease-in-out infinite; }
+/* ---------- Logo: the thread redraws itself, top half then the saffron half ---------- */
+.sv-logo .thread-a, .sv-logo .thread-b { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.sv-logo:hover .thread-a, .sv-logo.is-live .thread-a { animation: sv-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.sv-logo:hover .thread-b, .sv-logo.is-live .thread-b { animation: sv-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.35s both; }
+.sv-logo.is-live .thread-a, .sv-logo.is-live .thread-b { animation-iteration-count: infinite; animation-duration: 3.2s; }
+@keyframes sv-draw { 0% { stroke-dashoffset: 1; } 55%, 100% { stroke-dashoffset: 0; } }
 
 /* ---------- Loaders, one per kind of wait ---------- */
 .ld-orbit .w1 { animation: ld-around 1.8s linear infinite; transform-origin: 50px 50px; }
@@ -289,8 +299,15 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 @keyframes mock-like { 0%, 45% { opacity: 0; } 58%, 72% { opacity: 1; } 73%, 100% { opacity: 0; } }
 .mock-swipe { animation: mock-swipe 5s ease-in-out infinite; }
 .mock-like { animation: mock-like 5s ease-in-out infinite; }
-/* Header controls over the dark hero. */
-.dark-hero button:not(.bg-brand) { color: #fff; }
 
 /* Grid and flex children may shrink below their content width, so one long item never pushes the page sideways. */
 .grid > *, main .flex-1 { min-width: 0; }
+
+/* Serif display type: editorial weight and spacing everywhere, whatever weight class a heading uses. */
+.font-display { font-weight: 500 !important; letter-spacing: -0.02em !important; font-optical-sizing: auto; }
+
+/* A slow, quiet pulse for live dots and new matches. */
+@keyframes sv-breathe { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 0%, transparent); transform: scale(1); } 50% { transform: scale(1.18); } }
+.sv-breathe { animation: sv-breathe 2.4s ease-in-out infinite; }
+
+

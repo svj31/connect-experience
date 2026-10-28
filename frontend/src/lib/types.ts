@@ -7,6 +7,7 @@ export const AVATAR_COLORS = ["violet", "lilac", "rose", "plum", "peach", "mint"
 export type AvatarColor = (typeof AVATAR_COLORS)[number];
 export const AVATAR_RINGS = ["none", "single", "double", "tilted"] as const;
 export const AVATAR_PATTERNS = ["plain", "bands", "spots", "swirl", "craters"] as const;
+export const AVATAR_SPINS = ["steady", "wobble", "float", "turn", "breathe"] as const;
 export const AVATAR_FACES = ["smile", "grin", "wink", "calm", "shy", "none"] as const;
 
 export interface AvatarConfig {
@@ -17,6 +18,8 @@ export interface AvatarConfig {
   ring: (typeof AVATAR_RINGS)[number];
   pattern: (typeof AVATAR_PATTERNS)[number];
   face: (typeof AVATAR_FACES)[number];
+  /** How the planet moves as a whole. */
+  spin?: (typeof AVATAR_SPINS)[number];
 }
 
 export const INTERESTS = [

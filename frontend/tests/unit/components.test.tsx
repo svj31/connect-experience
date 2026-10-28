@@ -38,6 +38,8 @@ describe("shared UI", () => {
   it("hides decorative avatars from screen readers", () => {
     const { container } = render(<Avatar name="Ava" decorative />);
     expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    render(<Avatar name="Mira" color="plum" />);
+    expect(screen.getByRole("img", { name: "Mira's planet avatar" }).querySelector("image")).toHaveAttribute("href", "/planets/plum.svg");
   });
 
   it("connects field errors to the input for screen readers", () => {

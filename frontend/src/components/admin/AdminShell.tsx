@@ -37,7 +37,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </div>
         <nav aria-label="Admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-1 lg:flex-col lg:overflow-visible">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined} className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${active(n.href) ? "bg-brand text-white" : "text-muted hover:bg-rose-soft hover:text-rose"}`}>
+            <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined} className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${active(n.href) ? "bg-brand" : "text-muted hover:bg-rose-soft hover:text-rose"}`}>
               <Icon name={n.icon} size={18} /> {n.label}
             </Link>
           ))}

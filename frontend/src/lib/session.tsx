@@ -66,7 +66,7 @@ export function useRequireUser(role: "user" | "admin" = "user"): Session {
   useEffect(() => {
     if (session.loading) return;
     if (!session.user) router.replace(`/login?${role === "admin" ? "as=admin&" : ""}next=${encodeURIComponent(pathname)}`);
-    else if (role === "admin" && session.user.role !== "admin") router.replace("/app");
+    else if (role === "admin" && session.user.role !== "admin") router.replace("/app/discover");
   }, [session.loading, session.user, router, pathname, role]);
   return session;
 }

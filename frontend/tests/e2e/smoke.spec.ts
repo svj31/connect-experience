@@ -95,9 +95,9 @@ test.describe("public pages", () => {
 
   test("the logo animates on hover and the theme toggle switches to dark", async ({ page }) => {
     await page.goto("/");
-    const heart = page.locator("header .sv-logo .heart-b").first();
+    const heart = page.locator("header .sv-logo .thread-a").first();
     await page.locator("header .sv-logo").first().hover();
-    await expect.poll(() => heart.evaluate((el) => getComputedStyle(el).animationName)).toBe("heartbeat");
+    await expect.poll(() => heart.evaluate((el) => getComputedStyle(el).animationName)).toBe("sv-draw");
     await page.getByRole("button", { name: "Switch to dark mode" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.reload();
