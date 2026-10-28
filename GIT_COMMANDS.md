@@ -1,77 +1,71 @@
 # Git commands for this update
 
-Nothing has been committed or pushed. Run these yourself from the repository root.
-The commits are split by area so the history is easy to review. `git add -A` on both the old and new folder
-names lets git record `server/` to `backend/` and `web/` to `frontend/` as renames.
+Nothing has been committed or pushed. Run these yourself from the repository root, on the `version_2` branch.
+The commits are split by area so the history is easy to review.
 
-## 0. Check and branch
+## 0. Check
 ```bash
 git status
-git checkout -b feat/saathverse
+git branch --show-current   # version_2
 ```
 
-## 1. Backend
+## 1. Backend: Together plans
 ```bash
-git add -A server backend ':!backend/test'
-git commit -m "feat(backend): SaathVerse API with profiles, Vibe Match, Bond, connections and admin
+git add backend/src/db.ts backend/src/plans.ts backend/src/repo.ts backend/src/app.ts backend/src/routes/together.ts backend/src/routes/people.ts
+git commit -m "feat(backend): Together plans with accept, decline, cancel and end
 
-- Rename server/ to backend/ and migrate the SQLite schema in place
-- Dating profile, privacy per section and settings; profile export
-- Vibe Match, Bond levels and streaks, personalised suggestions
-- Connections with requests, mutual matches and shared spaces; Discover filters
-- Deep Talk activity, personalised Would You Rather, locked tables
-- Admin role, invite code sign up, moderation actions and audit log
-- One click demo accounts and seeded demo history"
+- plans table: one live invite per connected pair, pending invites lapse after a day
+- GET /api/together/live lists received and sent plans and your open tables
+- Accept, decline and end routes notify the other person with together:update"
 ```
 
-## 2. Backend tests
+## 2. Shared Orbit logo
 ```bash
-git add -A backend/test
-git commit -m "test(backend): cover matching, bond, privacy, connections and admin (98 tests)"
+git add frontend/src/components/brand/Logo.tsx frontend/src/app/icon.svg frontend/src/app/opengraph-image.tsx docs/brand
+git commit -m "feat(brand): Shared Orbit logo on the ink tile with orbit, heartbeat and spark hover"
 ```
 
-## 3. Frontend
+## 3. Discover roll and Together Live now
 ```bash
-git add -A web frontend ':!frontend/tests'
-git commit -m "feat(frontend): SaathVerse redesign with member app and admin console
+git add frontend/src/app/globals.css frontend/src/components/app/ProfileFeed.tsx frontend/src/components/app/Discover.tsx \
+  frontend/src/components/app/LivePlans.tsx frontend/src/components/app/Together.tsx frontend/src/lib/live.tsx
+git commit -m "feat(frontend): Discover roll with drag to like or pass, and Live now in Together
 
-- Rename web/ to frontend/; violet, lilac and rose theme with dark mode
-- Animated Shared Orbit logo, themed cursor, starfield, loaders and celebrations
-- New landing page with interactive demos and member and admin sign in
-- Dashboard, Discover, Connections, Chats, Together, Moments, Profile, Settings, Safety
-- Room with floating chat, grouped activities and personalised ideas
-- Admin overview, reports, members, audit log and profile"
+- Previous profile small on the left with undo, next two on the right
+- Live now: join or decline invites, see answers, cancel or end plans, end tables
+- Live notices when an invite is answered or called off"
 ```
 
-## 4. Frontend tests
+## 4. Tests
 ```bash
-git add -A frontend/tests
-git commit -m "test(frontend): component tests and end to end journeys (31 unit, 27 e2e)"
+git add backend/test frontend/tests
+git commit -m "test: Together plans (API, component, end to end) and Discover drag"
 ```
 
-## 5. Tooling, demo data and instructions
+## 5. Documentation
 ```bash
-git add scripts demo_data instructions package.json .gitignore .env.example
-git commit -m "chore: setup and demo scripts, demo data and walkthroughs"
+git add docs instructions GIT_COMMANDS.md
+git commit -m "docs: logo, Discover roll and Together plans"
 ```
 
-## 6. Documentation
-```bash
-git add -A docs README.md SETUP_INSTRUCTIONS.md GIT_COMMANDS.md
-git commit -m "docs: plan, architecture, testing, summary, brand and setup guide for SaathVerse"
-```
-
-## 7. Check and push
+## 6. Check and push
 ```bash
 git status                 # should be clean
-git log --oneline -8
-git push -u origin feat/saathverse
+git log --oneline -6
+git push origin version_2
 ```
 
-Then open a pull request into `main` on GitHub (or with the CLI: `gh pr create --base main --fill`),
-or merge locally:
+Then open a pull request into `main` (`gh pr create --base main --head version_2 --fill`), or merge locally:
 ```bash
 git checkout main
-git merge --no-ff feat/saathverse
+git merge --no-ff version_2
 git push origin main
 ```
+
+## How to run
+```bash
+npm run setup   # first time: installs and creates backend/.env
+npm run demo    # backend on :4000, frontend on :3000
+```
+Open http://localhost:3000 and use the demo buttons on the sign in page (member `ava@saathverse.test` or admin `admin@saathverse.test`, password `saathverse123`).
+Tests: `npm test` (unit and integration), `npm run test:e2e` (Playwright). Full guide: [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md).

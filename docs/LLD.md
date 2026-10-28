@@ -61,7 +61,32 @@ CREATE TABLE swipes (
 );
 CREATE INDEX swipes_day ON swipes(swiper_id, created_at);
 ALTER TABLE connections ADD COLUMN super INTEGER NOT NULL DEFAULT 0;   -- in place migration
+
+-- Together invites between two connections. One live plan per pair: a new one ends the old one.
+CREATE TABLE plans (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  connection_id INTEGER NOT NULL REFERENCES connections(id) ON DELETE CASCADE,
+  room_code     TEXT NOT NULL,
+  host_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  guest_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  activity      TEXT NOT NULL,
+  status        TEXT NOT NULL DEFAULT 'pending',   -- pending | accepted | declined | ended | cancelled
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  responded_at  TEXT
+);
 ```
+
+### Together plans (`/api/together`)
+
+| Route | Who | Effect |
+| --- | --- | --- |
+| `POST /api/connections/:id/play` | either | Creates a pending plan, ends the pair's previous one, sends `room:invite` with `planId` |
+| `GET /live` | anyone | `received` and `sent` plans from the last day (pending or accepted, plus declines for the host), and your open tables |
+| `POST /:id/accept` | invited person, pending only | `accepted`, room switches to the activity, host gets `together:update` |
+| `POST /:id/decline` | invited person, pending only | `declined`, host gets `together:update` |
+| `POST /:id/end` | either | Host cancelling a pending invite gives `cancelled`, otherwise `ended`; the other person is told |
+
+Pending invites lapse after a day. Tables (public or code) are ended with the existing `POST /api/rooms/:code/leave`.
 
 Settings gain `maxDistanceKm` (0 means anywhere, validated 0 to 5000).
 
@@ -70,6 +95,8 @@ Settings gain `maxDistanceKm` (0 means anywhere, validated 0 to 5000).
 | File | Responsibility |
 | --- | --- |
 | `components/app/SwipeDeck.tsx` | The deck. Loads `/discover/feed`, keeps the top three cards rendered, tops up when three or fewer remain |
+| `components/app/ProfileFeed.tsx` | Profiles view as a roll: previous profile small on the left (undo), next two on the right, current one in the middle. Drag past 120 px right to like, left to pass; LIKE and PASS stamps fade in with distance; vertical drags still scroll |
+| `components/app/LivePlans.tsx` | Live now in Together: received, sent and table lists with join, decline, cancel, end and clear; refreshes on `room:invite` and `together:update` |
 | `components/app/Discover.tsx` | Views: Swipe (default), Browse (filters and grid), Galaxy. Filters only show for Browse and Galaxy |
 | `components/app/Connections.tsx` | "Likes you" tab (was Requests): super likes first with a badge, "Like back" |
 | `components/app/Settings.tsx` | Maximum distance slider |

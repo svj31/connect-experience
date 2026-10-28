@@ -25,11 +25,12 @@ and member and admin sign in (plus demos) in the header and at the end.
 
 **Member app:**
 - *Home*: question of the day, profile completeness, stats, your universe (Orbit, Cards, Timeline), picks for you, try next, weekly chart, activity mix.
-- *Discover*: a swipe deck by default (drag or buttons: pass, like, super like, like with a note on a prompt, undo a pass), ranked by Vibe Match, distance, activity and who already liked you, with daily like limits; Browse (filters for age, intent, gender, city, interests, minimum vibe, online, name) and Galaxy views.
+- *Discover, Profiles view*: a **roll**. The profile you just decided on shrinks to the left (tap it to undo a pass), the next two wait on the right, and the current one sits large in the middle. Drag it right to like or left to pass, or use the buttons and per photo or prompt hearts.
+- *Discover, Cards view*: a swipe deck by default (drag or buttons: pass, like, super like, like with a note on a prompt, undo a pass), ranked by Vibe Match, distance, activity and who already liked you, with daily like limits; Browse (filters for age, intent, gender, city, interests, minimum vibe, online, name) and Galaxy views.
 - *Profile pages*: Vibe breakdown, Bond orbit and points, sections locked with "unlocks at" hints, suggested activities, report or block.
 - *Connections*: connections, Likes you (super likes first, Like back), sent; List, Cards and Bond ladder views; do something menu; remove.
 - *Chats*: conversation list with streaks, live chat, icebreakers from shared interests, activity chips, safety.
-- *Together*: what (Talk, Play, Create, Watch, "for you" badges), who (connection, Quick Match or open table, invite code), locked or free.
+- *Together*: what (Talk, Play, Create, Watch, "for you" badges), who (connection, Quick Match or open table, invite code), locked or free. A **Live now** panel lists invites you received (Join or Not now), invites you sent (waiting, said yes, or can't right now; cancel, end or clear), and tables you opened (open or end). Both people get a live notice when an invite is answered or called off.
 - *Room*: 3D table, grouped activity switcher with suggestions, floating chat with unread badge, ideas, Common Ground, reveal, safety, bond level up celebrations.
 - *Moments*: Gallery, Timeline, By person; favourites; drawings and constellations rendered.
 - *My profile*: planet builder, basics, about, interests, prompts, lifestyle, work, Vibe Quiz, preview as stranger to Orbit.
@@ -41,6 +42,8 @@ report queue with opt in evidence and actions, members with masked emails and st
 
 **Activities:** Deep Talk (new), Would You Rather (personalised), In Sync, Two Truths and a Lie, Connect Four,
 Memory Match, Draw Together (prompt ideas), Story Chain, Constellation (3D), Watch Together (picks).
+
+**Logo:** Shared Orbit on the ink tile: a cream world and a saffron world on crossing orbits around a plum heart, with a saffron spark. On hover the orbits swing a full turn in opposite directions, the heart beats and the spark twinkles. Used in the header, footer, app and admin shells, sign in, loaders, 404, favicon and social images.
 
 **Checklist from the brief:** privacy, terms, safety, contact; cookie consent gating analytics; meta tags, OG and
 Twitter images, favicon, manifest, sitemap and robots; alt text and labelled SVGs; custom 404 and error pages; HTTPS
@@ -54,7 +57,7 @@ in the UI, no pill buttons, no emoji, no em dashes, no fake numbers (every score
 
 ## 4. How to run and test
 See [SETUP_INSTRUCTIONS](../SETUP_INSTRUCTIONS.md) and [TESTING](TESTING.md).
-Results: backend 114, frontend 34, end to end 27, all passing. Typecheck, lint and build clean.
+Results: backend 116, frontend 38, end to end 27, all passing. Typecheck, lint and build clean.
 
 ## 5. Before launch (not doable from code)
 - Domain, hosting (backend with a persistent disk; frontend on Vercel), and the URLs in env files.

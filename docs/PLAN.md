@@ -88,7 +88,7 @@ buttons over content, layout audit clean at 360 to 1440 px.
 - **Six demo personas** on the sign in page (`GET /api/auth/demo` lists them, `POST /api/auth/demo {as, key}` signs in).
 - **Endless Discover**: when the stack is empty, passes are recycled (`recycled: true` in the feed response, with a toast). 55 demo members.
 - **Sidebar** back to the earlier layout (profile header, four big tabs, Matches and Messages panel with photo tiles, shortcuts) in the ink, cream and saffron theme, with a sliding tab indicator, photo zoom and a slow "breathing" dot for new matches.
-- **Logo**: an "S" drawn as one thread in two halves (cream and saffron); on hover it redraws itself with a measured line animation.
+- **Logo**: Shared Orbit on the ink tile: two worlds (cream and saffron) on crossing orbits around a plum heart; on hover the orbits swing round in opposite directions, the heart beats and the spark twinkles.
 
 # Version 5.2: photo and planet, two sides of one person
 - The planet artwork from `frontend/design_components/Planet Orbit.svg` is now every member's avatar. `frontend/scripts/generate-planets.py` recolours its surface for the 12 avatar colours (gold ring and plum stars kept), crops it and writes `frontend/public/planets/<colour>.svg`.

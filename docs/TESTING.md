@@ -4,8 +4,8 @@
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend unit and integration (Vitest, supertest, two real Socket.IO clients) | `npm test --prefix backend` | 114 passed |
-| Frontend unit and component (Vitest, Testing Library) | `npm test --prefix frontend` | 36 passed |
+| Backend unit and integration (Vitest, supertest, two real Socket.IO clients) | `npm test --prefix backend` | 116 passed |
+| Frontend unit and component (Vitest, Testing Library) | `npm test --prefix frontend` | 38 passed |
 | End to end (Playwright, Chromium, production build, real API) | `npm run test:e2e` | 27 passed |
 | Typecheck (both), ESLint with React Compiler rules, production build | `npm run typecheck`, `npm run lint` | clean |
 
