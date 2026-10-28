@@ -116,6 +116,19 @@ CREATE TABLE IF NOT EXISTS connections (
 );
 CREATE INDEX IF NOT EXISTS connections_addressee ON connections(addressee_id, status);
 
+CREATE TABLE IF NOT EXISTS plans (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  connection_id INTEGER NOT NULL REFERENCES connections(id) ON DELETE CASCADE,
+  room_code     TEXT NOT NULL,
+  host_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  guest_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  activity      TEXT NOT NULL,
+  status        TEXT NOT NULL DEFAULT 'pending',
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  responded_at  TEXT
+);
+CREATE INDEX IF NOT EXISTS plans_people ON plans(host_id, guest_id, status);
+
 CREATE TABLE IF NOT EXISTS passes (
   user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   target_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

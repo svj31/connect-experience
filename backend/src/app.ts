@@ -1,3 +1,4 @@
+import { togetherRoutes } from "./routes/together.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
@@ -55,6 +56,7 @@ export function createApp({ repo, hub, rateLimits = true }: AppOptions) {
   app.use("/api/admin", adminRoutes(repo, hub));
   app.use("/api/me", homeRoutes(repo, hub));
   app.use("/api/discover", swipeRoutes(repo, hub));
+  app.use("/api/together", togetherRoutes(repo, hub));
   app.use("/api", publicRoutes(repo));
 
   app.use("/api", (_req, res) => {

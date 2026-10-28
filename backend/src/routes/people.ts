@@ -283,8 +283,9 @@ export function connectionRoutes(repo: Repo, hub: RoomHub) {
     }
     hub.setActivity(conn.room_code, parsed.data.activity);
     const otherId = conn.requester_id === req.userId ? conn.addressee_id : conn.requester_id;
-    hub.notify(otherId, "room:invite", { roomCode: conn.room_code, activity: parsed.data.activity, name: repo.userById(req.userId!)!.display_name });
-    res.json({ roomCode: conn.room_code });
+    const plan = repo.createPlan({ connectionId: conn.id, roomCode: conn.room_code, hostId: req.userId!, guestId: otherId, activity: parsed.data.activity });
+    hub.notify(otherId, "room:invite", { planId: plan.id, roomCode: conn.room_code, activity: parsed.data.activity, name: repo.userById(req.userId!)!.display_name });
+    res.json({ roomCode: conn.room_code, planId: plan.id });
   });
 
   return r;

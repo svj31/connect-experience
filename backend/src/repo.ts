@@ -1,3 +1,4 @@
+import { plansRepo } from "./plans.js";
 import { randomInt } from "node:crypto";
 import type { DB } from "./db.js";
 
@@ -133,7 +134,7 @@ export function makeRoomCode(): string {
 }
 
 export function createRepo(db: DB) {
-  return { ...baseRepo(db), ...extendRepo(db) };
+  return { ...baseRepo(db), ...extendRepo(db), ...plansRepo(db) };
 }
 
 function baseRepo(db: DB) {
