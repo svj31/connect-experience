@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Coach } from "../ui/Coach";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ACTIVITIES, CATEGORIES, activityById, type ActivityInfo, type Category } from "@/lib/activities";
@@ -135,6 +136,7 @@ export function Together() {
         <Link href="/app/chats" className="ml-auto flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink"><Icon name="chat" size={16} /> Just chat</Link>
       </div>
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_380px]">
+      {!category && <Coach id="together" kind="tap" text="Tap a world: Talk, Play, Create or Watch. Its activities appear as moons." />}
         <div className="h-[46vh] min-h-[300px] lg:h-full">
           <TogetherSystem
             me={{ name: user?.displayName ?? "You", avatar: user?.avatar ?? {} }}

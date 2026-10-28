@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Coach } from "../ui/Coach";
 import { TitleWords } from "../ui/TitleWords";
 import { api, errorMessage } from "@/lib/api";
 import { GENDER_LABELS, INTENT_LABELS, cap } from "@/lib/labels";
@@ -161,6 +162,8 @@ export function Discover() {
         )}
       </div>
       <div className="min-h-0 flex-1">
+      {view === "swipe" && <Coach id="discover-swipe" kind="swipe" text="Drag the card right to like, left to pass. Arrow keys work too." />}
+      {view === "profiles" && <Coach id="discover-profiles" kind="like" text="Scroll through their profile, then tap a heart on the photo or prompt you like." />}
       {view === "profiles" ? <ProfileFeed /> : view === "swipe" ? <SwipeDeck /> : (
       <div className="grid h-full gap-6 lg:grid-cols-[260px_1fr]">
         <aside className={`${showFilters ? "block" : "hidden"} no-scrollbar max-h-full overflow-y-auto rounded-[24px] border border-line bg-surface p-5 lg:block`} aria-label="Filters">

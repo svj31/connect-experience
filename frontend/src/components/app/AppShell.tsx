@@ -13,6 +13,7 @@ import { timeAgo } from "@/lib/labels";
 import { LogoMark, Wordmark } from "../brand/Logo";
 import { ThemeToggle } from "../site/ThemeToggle";
 import { Avatar } from "../ui/Avatar";
+import { ScrollCoach } from "../ui/Coach";
 import { Icon } from "../ui/Icon";
 import { PageLoader } from "../ui/Loader";
 
@@ -27,6 +28,14 @@ export const NAV = [
   { href: "/app/profile", label: "Profile", icon: "user" },
 ];
 const MOBILE = ["/app/discover", "/app/standouts", "/app/connections", "/app/chats", "/app/profile"];
+
+/** Pages long enough to need a "there is more below" hint the first time. */
+const SCROLL_HINTS: Record<string, string> = {
+  "/app": "Scroll for your universe, picks for you and your week.",
+  "/app/connections": "Scroll to see everyone who liked you.",
+  "/app/moments": "Scroll through everything you have made together.",
+  "/app/standouts": "Scroll for more standouts picked for you today.",
+};
 
 const isActive = (pathname: string, href: string) => (href === "/app" ? pathname === "/app" : pathname.startsWith(href));
 
@@ -275,6 +284,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </p>
         )}
         <main id="main" className="flex-1 px-4 pt-6 pb-28 sm:px-6 lg:px-10 lg:pt-10 lg:pb-12">{children}</main>
+        {SCROLL_HINTS[pathname] && <ScrollCoach key={pathname} id={`scroll${pathname.replaceAll("/", "-")}`} text={SCROLL_HINTS[pathname]} />}
       </div>
 
       <nav aria-label="App" className="fixed inset-x-0 bottom-0 z-40 bg-surface/95 backdrop-blur-xl grid grid-cols-5 border-t border-line pb-[env(safe-area-inset-bottom)] lg:hidden">
