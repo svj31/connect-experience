@@ -1,70 +1,75 @@
-# Overlap: Project Summary
+# SaathVerse: Project Summary
 
 AFFECIO HACKS '26, Problem Statement 06, "Make Connection an Experience: Interactive Dating".
-Plan: [PLAN.md](PLAN.md). Architecture and API: [ARCHITECTURE.md](ARCHITECTURE.md). Tests: [TESTING.md](TESTING.md).
-Demo script: [DEMO_SCRIPT.md](DEMO_SCRIPT.md). Logo files: [brand/](brand/).
+See also: [PLAN](PLAN.md), [ARCHITECTURE](ARCHITECTURE.md), [TESTING](TESTING.md), [DEMO_SCRIPT](DEMO_SCRIPT.md),
+[brand](brand/README.md), and the walkthroughs in [../instructions](../instructions).
 
 ## 1. The idea
-
-**Overlap.** Two circles, one for each person; the lens where they meet is the logo and the point of the product.
-People meet by doing something together at a live "table" instead of browsing profiles. What you reveal about
-yourself grows only when you choose, and conversation starters come from your real answers.
-
-What makes it stand out against the judging criteria:
+**SaathVerse** (Saath means together) is a dating and friendship app where two people get to know each other by
+*doing* things together. Vibe Match explains how well two profiles line up; Bond shows how much two people have
+actually shared, level by level, with streaks. Profiles open up section by section as the bond grows.
 
 | Criterion (weight) | What we built |
 | --- | --- |
-| Technical (30%) | Realtime multiplayer with server authoritative state for 9 activities, per player hidden views, SQLite persistence, auth, rate limits, three.js scenes, 98 automated tests |
-| Innovation (25%) | Activity first matching, consent based progressive reveal gated by shared moments, a 3D constellation you build together, a moments "thread" in the 3D table, Common Ground from real answers |
-| Impact (20%) | Removes photo judging and dead "hey" chats; safety tools built in; works on phones |
-| UI/UX (15%) | Light editorial design, one clear call to action, themed loaders per page, scroll reveal, accessible forms and dialogs, AA contrast |
-| Demo (10%) | Seeded demo accounts and a timed script |
+| Technical (30%) | Realtime server authoritative activities (10), one shared socket with live notifications, roles and moderation, privacy engine, explainable matching, SQLite with in place migrations, 156 automated tests |
+| Innovation (25%) | Bond levels that unlock profile sections, Vibe Match with reasons, personalised games (questions from shared interests), planet avatars instead of photos, 3D constellation, Deep Talk |
+| Impact (20%) | No photo judging, no dead chats, consent based reveal, kindness nudges, opt in report evidence, quick exit, date check-in planner, data export and deletion |
+| UI/UX (15%) | Playful violet and rose theme, light and dark, animated logo, themed cursor, starfield, loaders per page, celebrations, multiple views per page, mobile bottom nav, AA contrast |
+| Demo (10%) | One click member and admin demo accounts with a week of seeded history, walkthrough and script |
 
 ## 2. What was built
 
-**Activities (all live, both people):** Would You Rather, In Sync (guess your partner), Two Truths and a Lie,
-Draw Together, Story Chain, Constellation (3D), Connect Four, Memory Match (cooperative), Watch Together (synced
-YouTube). Plus chat with typing indicator, icebreakers and floating reactions.
+**Landing page:** problem with animated illustrations, the idea with a live planet builder and Vibe preview,
+activity categories with a playable Would You Rather round, Bond level explorer, reveal slider, safety features,
+and member and admin sign in (plus demos) in the header and at the end.
 
-**Around the table:** lobby with Open Tables and filters, Quick Match by activity and shared interests, private
-tables by code, presence, progressive reveal (bio after 1 moment, handle after 3), Common Ground, Moments gallery
-(drawings and constellations re-rendered as SVG), report and block, account deletion.
+**Member app:**
+- *Home*: question of the day, profile completeness, stats, your universe (Orbit, Cards, Timeline), picks for you, try next, weekly chart, activity mix.
+- *Discover*: filters (age, intent, gender, city, interests, minimum vibe, online, name), sort, Stack, Grid and Galaxy views, connect with a note, pass.
+- *Profile pages*: Vibe breakdown, Bond orbit and points, sections locked with "unlocks at" hints, suggested activities, report or block.
+- *Connections*: connections, requests, sent; List, Cards and Bond ladder views; do something menu; remove.
+- *Chats*: conversation list with streaks, live chat, icebreakers from shared interests, activity chips, safety.
+- *Together*: what (Talk, Play, Create, Watch, "for you" badges), who (connection, Quick Match or open table, invite code), locked or free.
+- *Room*: 3D table, grouped activity switcher with suggestions, floating chat with unread badge, ideas, Common Ground, reveal, safety, bond level up celebrations.
+- *Moments*: Gallery, Timeline, By person; favourites; drawings and constellations rendered.
+- *My profile*: planet builder, basics, about, interests, prompts, lifestyle, work, Vibe Quiz, preview as stranger to Orbit.
+- *Settings*: theme, cursor, motion, discovery toggles, age range, visibility per section, data export, delete account.
+- *Safety centre*: quick exit, date check-in planner, tips, your reports and their status, blocked list.
 
-**Site checklist from the brief:** privacy policy, terms, safety guide, contact form; cookie consent that gates
-analytics; first party analytics (event name and path only); meta titles and descriptions; OG and Twitter
-images; SVG favicon and manifest; sitemap and robots; alt text and labelled SVGs; custom 404 and error page;
-HTTPS redirect and HSTS; secrets kept server side (verified by a test); form validation on client and server;
-spam protection (honeypot, minimum fill time, rate limits); mobile layouts; contrast checked; no raster images
-at all, so nothing to compress.
+**Admin console:** overview analytics (sign ups, chat hours, activities, bond levels, intents, site events),
+report queue with opt in evidence and actions, members with masked emails and status, audit log, admin profile.
 
-**Design rules followed:** light palette (paper, ink, coral, teal), no purple, no gradients, rectangular
-6px buttons, inline SVG icons (no emoji), no em dashes, no fake reviews or metrics, no AI photos, no cursor
-effects, motion off under reduced motion.
+**Activities:** Deep Talk (new), Would You Rather (personalised), In Sync, Two Truths and a Lie, Connect Four,
+Memory Match, Draw Together (prompt ideas), Story Chain, Constellation (3D), Watch Together (picks).
 
-## 3. How to run and test
+**Checklist from the brief:** privacy, terms, safety, contact; cookie consent gating analytics; meta tags, OG and
+Twitter images, favicon, manifest, sitemap and robots; alt text and labelled SVGs; custom 404 and error pages; HTTPS
+redirect and HSTS; secrets server side; form validation on both sides; spam protection (honeypot, fill time, rate
+limits); mobile layouts; AA contrast in both themes; themed loaders; subtle scroll reveal; no raster images.
 
-See [README](../README.md) for setup and [TESTING.md](TESTING.md) for commands, results and a manual script.
-Current results: server 60 passed, web unit 19 passed, end to end 19 passed. Typecheck, lint and production
-build are clean.
+## 3. Changes to earlier design rules, at your request
+You asked for cursor animations and a violet based logo palette, so this version adds an optional themed cursor
+(switchable in Settings, off for touch and reduced motion) and a violet, lilac and rose palette. Still no gradients
+in the UI, no pill buttons, no emoji, no em dashes, no fake numbers (every score is computed from real data).
 
-## 4. Before launch (not doable from code)
+## 4. How to run and test
+See [SETUP_INSTRUCTIONS](../SETUP_INSTRUCTIONS.md) and [TESTING](TESTING.md).
+Results: backend 98, frontend 31, end to end 27, all passing. Typecheck, lint and build clean.
 
-- Connect a custom domain and set `NEXT_PUBLIC_SITE_URL`, `WEB_ORIGIN`, `NEXT_PUBLIC_SOCKET_URL`.
-- Set a real `JWT_SECRET` and `ADMIN_TOKEN`; replace the placeholder contact email in `web/src/lib/site.ts`.
-- Host the API somewhere with a persistent disk for SQLite (Render, Railway, Fly) and the web app on Vercel.
-- Have the privacy policy and terms reviewed for your jurisdiction. There is no "Made with AI" tag anywhere.
-- Disclose AI tool use in the submission as the rules require.
+## 5. Before launch (not doable from code)
+- Domain, hosting (backend with a persistent disk; frontend on Vercel), and the URLs in env files.
+- Real `JWT_SECRET` and `ADMIN_INVITE_CODE`; set `DEMO_LOGIN=off` and `SEED_DEMO=off`.
+- Replace the placeholder contact email in `frontend/src/lib/site.ts`; legal review of privacy and terms.
+- Disclose AI tool use in the submission.
 
-## 5. Suggested improvements
-
-1. **Voice or video rooms** (WebRTC) for a later stage of a connection, unlocked by reveal level.
-2. **Email verification and password reset**, needed for a real launch.
-3. **Moderation dashboard** for reports, and automatic text filtering in chat.
-4. **More content**: question packs by theme, more story openers, a Pictionary style guessing game.
-5. **Persist in progress game state** to SQLite so a server restart does not reset an unfinished round
-   (finished rounds, answers and moments are already saved).
-6. **Redis adapter for Socket.IO** to run more than one API instance.
-7. **Scheduled tables** ("Thursday 9pm, film night") and reminders.
-8. **Postgres** when usage outgrows SQLite; the repository layer keeps this change contained.
-9. **Accessibility audit with a screen reader user**, beyond the automated checks.
-10. **Internationalisation**, starting with Hindi.
+## 6. Suggested improvements
+1. Photo verification (selfie match) and a verified badge, with photos revealed only at a chosen bond level.
+2. Voice and video rooms (WebRTC) unlocked at Orbit bond.
+3. Email verification, password reset and two factor sign in for admins.
+4. Push notifications and scheduled dates ("Thursday 9 pm, film night") with reminders.
+5. Persist in progress game state so a restart does not reset an unfinished round.
+6. Learn Vibe Match weights from which connections reach Spark, with a fairness review.
+7. Redis adapter for Socket.IO and Postgres for scale.
+8. More content: question packs, Pictionary, music quiz, regional language prompts.
+9. Moderator tooling: assignment, SLA timers, appeals.
+10. Internationalisation, starting with Hindi.

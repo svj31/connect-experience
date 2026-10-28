@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+/*
+  SaathVerse palette, from the Shared Orbit logo: violet, lilac, rose and blush on soft
+  lavender paper. Flat colors only. Every text color is checked against WCAG AA on each
+  surface in both themes (lowest pair 4.66:1). Dark mode has its own steps, not an inversion.
+*/
+:root {
+  --bg: #fbf8ff;
+  --bg-deep: #f3edff;
+  --surface: #ffffff;
+  --line: #e8dff8;
+  --line-strong: #cbbdef;
+  --ink: #211a38;
+  --muted: #5d5476;
+  --violet: #6343cc;
+  --violet-dark: #4f31b3;
+  --violet-soft: #ece5ff;
+  --lilac: #c5b3f8;
+  --rose: #b4327a;
+  --rose-dark: #962566;
+  --rose-soft: #fbe2f0;
+  --blush: #f9d9f0;
+  --spark: #e5a2d5;
+  --mint: #23725f;
+  --mint-soft: #dcf2ea;
+  --sun: #94600c;
+  --sun-soft: #fbefd2;
+  --sky: #2f5f9e;
+  --danger: #b42318;
+  --on-primary: #ffffff;
+  --chart-1: #6d4fd1;
+  --chart-2: #d0569f;
+  --star: #c5b3f8;
+  --shadow: 0 1px 2px rgb(33 26 56 / 0.06), 0 8px 24px -12px rgb(33 26 56 / 0.18);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #130f22;
+  --bg-deep: #1b1630;
+  --surface: #211a3a;
+  --line: #2f2752;
+  --line-strong: #4a3e7a;
+  --ink: #f4f0ff;
+  --muted: #b9afd9;
+  --violet: #b4a2ff;
+  --violet-dark: #cbbdff;
+  --violet-soft: #2d2357;
+  --lilac: #7b67d8;
+  --rose: #f39bc9;
+  --rose-dark: #f7b6d8;
+  --rose-soft: #3d1f3c;
+  --blush: #4a2546;
+  --spark: #e5a2d5;
+  --mint: #7fd6bd;
+  --mint-soft: #173a33;
+  --sun: #f2c46b;
+  --sun-soft: #3a2e14;
+  --sky: #9cc2ff;
+  --danger: #ff8a80;
+  --on-primary: #130f22;
+  --chart-1: #8a74f5;
+  --chart-2: #d9508a;
+  --star: #9c8ae6;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme {
+  --color-paper: var(--bg);
+  --color-paper-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-violet: var(--violet);
+  --color-violet-dark: var(--violet-dark);
+  --color-violet-soft: var(--violet-soft);
+  --color-lilac: var(--lilac);
+  --color-rose: var(--rose);
+  --color-rose-dark: var(--rose-dark);
+  --color-rose-soft: var(--rose-soft);
+  --color-blush: var(--blush);
+  --color-spark: var(--spark);
+  --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
+  --color-sun: var(--sun);
+  --color-sun-soft: var(--sun-soft);
+  --color-sky: var(--sky);
+  --color-danger: var(--danger);
+  --color-on-primary: var(--on-primary);
+  /* Older names used by the activity components: "you" is violet, "partner" is rose. */
+  --color-coral: var(--violet);
+  --color-coral-dark: var(--violet-dark);
+  --color-coral-soft: var(--violet-soft);
+  --color-teal: var(--rose);
+  --color-teal-dark: var(--rose-dark);
+  --color-teal-soft: var(--rose-soft);
+  --color-leaf: var(--mint);
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+
+  --animate-rise: rise 0.5s ease-out both;
+  --animate-pop: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float-up: float-up 1.8s ease-out forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-twinkle: twinkle 2.4s ease-in-out infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-heartbeat: heartbeat 1.4s ease-in-out infinite;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes float-up {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  15% { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { transform: translateY(-140px) scale(1.1) rotate(8deg); opacity: 0; }
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.35; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes heartbeat { 0%, 60%, 100% { transform: scale(1); } 15% { transform: scale(1.14); } 30% { transform: scale(0.98); } 45% { transform: scale(1.08); } }
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--blush); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+
+/* Cards lift a little under the pointer, like something you could pick up. */
+.lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.lift:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--line-strong); }
+
+/* Scroll reveal: settles in once, when seen. */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- Logo: on hover the worlds orbit, the heart beats, the spark twinkles ---------- */
+.sv-logo .orbit-a, .sv-logo .orbit-b, .sv-logo .worlds, .sv-logo .heart, .sv-logo .spark, .sv-logo .dot {
+  transform-box: view-box;
+  transform-origin: 110px 76px;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sv-logo .spark { transform-origin: 110px 34px; }
+.sv-logo .dot { transform-origin: 170px 39px; }
+.sv-logo:hover .orbit-a, .sv-logo.is-live .orbit-a { animation: sv-orbit-a 3s linear infinite; }
+.sv-logo:hover .orbit-b, .sv-logo.is-live .orbit-b { animation: sv-orbit-b 3s linear infinite; }
+.sv-logo:hover .worlds, .sv-logo.is-live .worlds { animation: sv-worlds 3s linear infinite; }
+.sv-logo:hover .heart, .sv-logo.is-live .heart { animation: heartbeat 1.2s ease-in-out infinite; }
+.sv-logo:hover .spark, .sv-logo.is-live .spark { animation: sv-spark 1.2s ease-in-out infinite; }
+.sv-logo:hover .dot, .sv-logo.is-live .dot { animation: twinkle 0.9s ease-in-out infinite; transform-origin: 170px 39px; }
+@keyframes sv-orbit-a { to { transform: rotate(360deg); } }
+@keyframes sv-orbit-b { to { transform: rotate(-360deg); } }
+@keyframes sv-worlds { to { transform: rotate(360deg); } }
+@keyframes sv-spark { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.35) rotate(45deg); } }
+
+/* ---------- Loaders, one per kind of wait ---------- */
+.ld-orbit .w1 { animation: ld-around 1.8s linear infinite; transform-origin: 50px 50px; }
+.ld-orbit .w2 { animation: ld-around 1.8s linear infinite reverse; transform-origin: 50px 50px; }
+.ld-orbit .core { animation: heartbeat 1.8s ease-in-out infinite; transform-origin: 50px 50px; transform-box: view-box; }
+@keyframes ld-around { to { transform: rotate(360deg); } }
+
+.ld-hearts path { animation: ld-rise 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.ld-hearts path:nth-child(2) { animation-delay: 0.3s; }
+.ld-hearts path:nth-child(3) { animation-delay: 0.6s; }
+@keyframes ld-rise { 0% { transform: translateY(10px) scale(0.6); opacity: 0; } 40% { opacity: 1; } 100% { transform: translateY(-22px) scale(1.05); opacity: 0; } }
+
+.ld-chat circle { animation: ld-bounce 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.ld-chat circle:nth-of-type(2) { animation-delay: 0.15s; }
+.ld-chat circle:nth-of-type(3) { animation-delay: 0.3s; }
+@keyframes ld-bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+.ld-cards rect { animation: ld-flip 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.ld-cards rect:nth-child(2) { animation-delay: 0.3s; }
+.ld-cards rect:nth-child(3) { animation-delay: 0.6s; }
+@keyframes ld-flip { 0%, 60%, 100% { transform: scaleX(1); } 30% { transform: scaleX(0.08); } }
+
+.ld-stars circle { animation: twinkle 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.ld-stars circle:nth-child(2) { animation-delay: 0.2s; }
+.ld-stars circle:nth-child(3) { animation-delay: 0.4s; }
+.ld-stars circle:nth-child(4) { animation-delay: 0.6s; }
+.ld-stars circle:nth-child(5) { animation-delay: 0.8s; }
+.ld-stars line { stroke-dasharray: 40; animation: ld-link 2.6s ease-in-out infinite; }
+@keyframes ld-link { 0% { stroke-dashoffset: 40; } 60%, 100% { stroke-dashoffset: 0; } }
+
+.ld-reel .spin { animation: ld-around 2.2s linear infinite; transform-origin: 50px 50px; }
+.ld-shield .scan { animation: ld-scan 1.6s ease-in-out infinite; }
+@keyframes ld-scan { 0%, 100% { transform: translateY(-14px); opacity: 0.2; } 50% { transform: translateY(14px); opacity: 1; } }
+.ld-compass .needle { animation: ld-seek 2.4s ease-in-out infinite; transform-origin: 50px 50px; }
+@keyframes ld-seek { 0% { transform: rotate(-40deg); } 50% { transform: rotate(50deg); } 100% { transform: rotate(-40deg); } }
+
+/* Skeleton shimmer for lists while they load. */
+.skeleton { position: relative; overflow: hidden; background: var(--bg-deep); }
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+  animation: shimmer 1.4s infinite;
+}
+:root[data-theme="dark"] .skeleton::after { background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent); }
+@keyframes shimmer { to { transform: translateX(100%); } }
+
+/* Spark burst on matches, wins and level ups. */
+.burst span { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; animation: burst 0.9s ease-out forwards; }
+@keyframes burst {
+  0% { transform: translate(-50%, -50%) rotate(var(--r)) translateY(0) scale(0.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(var(--r)) translateY(calc(var(--d) * -1)) scale(1); opacity: 0; }
+}
+
+/* The two worlds collide into a heart. Used by the match celebration. */
+@keyframes collide-l { 0% { transform: translateX(-120px) scale(0.7); } 60% { transform: translateX(-18px) scale(1); } 100% { transform: translateX(-30px) scale(1); } }
+@keyframes collide-r { 0% { transform: translateX(120px) scale(0.7); } 60% { transform: translateX(18px) scale(1); } 100% { transform: translateX(30px) scale(1); } }
+.collide-l { animation: collide-l 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.collide-r { animation: collide-r 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* ---------- Background: a quiet starfield with drifting orbit lines ---------- */
+.sv-sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--bg); }
+.sv-sky .stars { position: absolute; inset: -50%; background-image: radial-gradient(circle, var(--star) 1px, transparent 1.5px); background-size: 44px 44px; opacity: 0.45; animation: drift 120s linear infinite; }
+.sv-sky .stars.b { background-size: 97px 97px; background-position: 20px 30px; opacity: 0.6; animation-duration: 180s; }
+.sv-sky .ring { position: absolute; border: 1.5px dashed var(--line-strong); border-radius: 50%; opacity: 0.5; animation: spin 140s linear infinite; }
+@keyframes drift { to { transform: translate(44px, 88px); } }
+
+/* ---------- Custom cursor ---------- */
+.sv-cursor-on, .sv-cursor-on * { cursor: none !important; }
+.sv-cursor-on input, .sv-cursor-on textarea, .sv-cursor-on [contenteditable] { cursor: text !important; }
+.sv-cursor-on canvas { cursor: crosshair !important; }
+.sv-cursor { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; }
+.sv-cursor .dot { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--violet); transition: transform 0.15s ease, opacity 0.2s; }
+.sv-cursor .ring {
+  position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+  border: 1.5px solid var(--violet); opacity: 0.55; transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, opacity 0.25s, border-color 0.25s, background 0.25s;
+}
+.sv-cursor .ring::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--rose); top: -3px; left: 50%; margin-left: -3px; }
+.sv-cursor.is-hover .ring { width: 52px; height: 52px; margin: -26px 0 0 -26px; border-color: var(--rose); background: color-mix(in srgb, var(--rose) 8%, transparent); opacity: 0.9; }
+.sv-cursor.is-hover .dot { opacity: 0; }
+.sv-cursor .heart { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; color: var(--rose); opacity: 0; transform: scale(0.4); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s; }
+.sv-cursor.is-hover .heart { opacity: 1; transform: scale(1); }
+.sv-cursor.is-text .ring { width: 4px; height: 26px; margin: -13px 0 0 -2px; border-radius: 2px; opacity: 0.6; }
+.sv-cursor.is-text .ring::after, .sv-cursor.is-text .dot { opacity: 0; }
+.sv-cursor.is-down .ring { width: 24px; height: 24px; margin: -12px 0 0 -12px; }
+.sv-trail { position: fixed; z-index: 9998; pointer-events: none; width: 6px; height: 6px; margin: -3px 0 0 -3px; animation: trail 0.8s ease-out forwards; }
+@keyframes trail { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: translateY(14px) scale(0.2); } }
+
+/* Two text colors on the profile hero need a little extra weight on blush. */
+.text-balance { text-wrap: balance; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+:root[data-motion="reduced"] *, :root[data-motion="reduced"] *::before, :root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+:root[data-motion="reduced"] .reveal { opacity: 1; transform: none; }
+
+/* ---------- Landing: problem illustrations ---------- */
+@keyframes swipe-away { 0%, 20% { transform: translateX(0) rotate(0); opacity: 1; } 45% { transform: translateX(140%) rotate(18deg); opacity: 0; } 46%, 100% { transform: translateX(0) rotate(0); opacity: 0; } }
+@keyframes swipe-away-l { 0%, 50% { transform: translateX(0) rotate(0); opacity: 1; } 75% { transform: translateX(-140%) rotate(-18deg); opacity: 0; } 76%, 100% { opacity: 0; } }
+.swipe-1 { animation: swipe-away 4s ease-in infinite; }
+.swipe-2 { animation: swipe-away-l 4s ease-in infinite; }
+@keyframes fade-msg { 0%, 15% { opacity: 0; transform: translateY(6px); } 25%, 70% { opacity: 1; transform: none; } 90%, 100% { opacity: 0.25; } }
+.msg-1 { animation: fade-msg 4s ease-out infinite; }
+.msg-2 { animation: fade-msg 4s ease-out infinite 0.6s; }
+@keyframes overshare { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.08); } }
+.overshare { animation: overshare 2.4s ease-in-out infinite; transform-origin: top; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 40s linear infinite; }

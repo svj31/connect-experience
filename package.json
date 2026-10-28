@@ -1,14 +1,18 @@
 {
-  "name": "overlap",
+  "name": "saathverse",
   "private": true,
-  "description": "Overlap: interactive dating for AFFECIO HACKS '26, Problem Statement 06",
+  "description": "SaathVerse: two worlds, one connection. Interactive dating for AFFECIO HACKS '26, Problem Statement 06",
   "scripts": {
-    "install:all": "npm install --prefix server && npm install --prefix web",
-    "seed": "npm run seed --prefix server",
-    "dev:server": "npm run dev --prefix server",
-    "dev:web": "npm run dev --prefix web",
-    "test": "npm test --prefix server && npm test --prefix web",
-    "test:e2e": "npm run test:e2e --prefix web",
-    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix web"
+    "setup": "sh scripts/setup.sh",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "seed": "npm run seed --prefix backend",
+    "reset-db": "sh scripts/reset-db.sh",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "demo": "sh scripts/demo.sh",
+    "test": "npm test --prefix backend && npm test --prefix frontend",
+    "test:e2e": "npm run test:e2e --prefix frontend",
+    "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend",
+    "lint": "npm run lint --prefix frontend"
   }
 }

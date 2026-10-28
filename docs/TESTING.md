@@ -1,58 +1,55 @@
 # Testing
 
-## Automated
+## Results on 28 October 2026
 
-| Suite | Command | What it covers | Result on 27 Oct 2026 |
-| --- | --- | --- | --- |
-| Server unit | `npm test --prefix server` | all 9 game reducers, Common Ground scoring, matchmaking, validation, tokens, bot checks, default avatars | 60 passed (all server files) |
-| Server integration | same command | REST via supertest (auth, profile, rooms, reveal gating, safety, contact, analytics, headers, rate limit, account deletion) and Socket.IO with two real clients (hidden picks, moments, chat limits, reactions, table closing, Quick Match) | included above |
-| Web unit and component | `npm test --prefix web` | client validation, consent gating of analytics, safe redirects, accessible fields, activity components | 19 passed |
-| End to end | `npm run test:e2e --prefix web` | see below | 19 passed |
+| Suite | Command | Result |
+| --- | --- | --- |
+| Backend unit and integration (Vitest, supertest, two real Socket.IO clients) | `npm test --prefix backend` | 98 passed |
+| Frontend unit and component (Vitest, Testing Library) | `npm test --prefix frontend` | 31 passed |
+| End to end (Playwright, Chromium, production build, real API) | `npm run test:e2e` | 27 passed |
+| Typecheck (both), ESLint with React Compiler rules, production build | `npm run typecheck`, `npm run lint` | clean |
 
-End to end tests run in Chromium against the production build and the real API:
+## What is covered
 
-- Every public page: 200, title, description, OG image, one h1, `lang`, alt text, no em dashes, no console errors.
-- Custom 404, robots, sitemap, favicon, OG image, manifest, security headers, no secrets in shipped JavaScript.
-- Link checker over every internal link on public pages.
-- Phone width has no sideways scroll. Cookie banner choice persists.
-- Signup and contact form validation, including the bot check (the test waits past the minimum fill time).
-- **Two browser date:** sign up, profile, host a table, guest finds it in the lobby (with shared interests shown),
-  Would You Rather with hidden picks, chat, Connect Four turns, Watch Together link validation, a 3D
-  constellation placed by clicking the canvas and named, reveal level 1 unlocking and the bio appearing for the
-  partner, Common Ground with real counts, sending a spark to chat, reactions, and Moments.
-- Quick Match pairing two people. A phone sized room with private table join by code and chat tab unread badge.
+**Backend.** All 10 activity reducers including Deep Talk; Vibe Match (null when too little to compare, perfect
+match, ranking, intent pairs, mutual preference); Bond (streaks, levels, message cap); privacy per section and
+unlock hints; suspension expiry; completeness; personalisation (shared interests first, played activities move
+down, watch links, question of the day, Would You Rather topic order); chat checks. Integration: full profile
+save, under 18 and duplicate prompt rejection, Discover filters, passes and hidden profiles, gender preference
+both ways, request with live notification, accept, play invite, connection rooms that do not close, room
+suggestions, mutual match, decline, cancel, remove, blocks, dashboard, settings validation, catalog, data export,
+report evidence only on opt in, flagged messages, locked tables over sockets, demo sign in, admin access control,
+invite code, analytics totals, masked emails, suspend blocks login, reinstate, admins cannot be moderated, audit
+log, suspended accounts refused. All earlier tests (auth, rooms, rate limits, headers, realtime) still pass.
 
-## Running end to end locally
+**Frontend components.** Planet avatars, field errors, loaders, 10 activities without em dashes, landing demos
+(Would You Rather reveal, Vibe preview, Bond explorer, reveal slider), Vibe ring and breakdown, chart tables,
+relative times, kindness nudge, safety tip, Deep Talk hidden answers, Connect Four turns, Memory Match labels.
+
+**End to end.** Every public page (title, description, OG image, one h1, labelled SVGs, no em dashes, no console
+errors), 404, SEO files, security headers and no secrets in JS, link checker, sign in redirects for member and
+admin areas, old address redirects, logo hover animation and theme toggle, phone widths. Journeys: two new people
+build profiles, find each other with filters, request with a note, live notification, accept with celebration,
+chat from Chats to the room's floating chat with unread badge, kindness nudge, Together hub to Deep Talk with both
+answers revealed, Bond and Vibe on the profile; Quick Match on a locked Connect Four table; demo member dashboard
+views, Discover stack and galaxy, bond ladder, requests, favourites, privacy, dark mode, safety planner; members
+blocked from admin; admin invite code; admin pause, restore and audit log; phone bottom nav and room chat.
+
+## Running
 
 ```bash
-npm run build --prefix web
-RATE_LIMITS=off DATABASE_PATH=./data/e2e.db npm start --prefix server   # RATE_LIMITS=off only for tests
-npm start --prefix web
-npm run test:e2e --prefix web
+npm test                     # backend + frontend unit and integration
+npm run build --prefix frontend
+npm run test:e2e             # starts or reuses both servers (first time: npx playwright install chromium)
 ```
 
-Playwright starts both servers itself if they are not already running. First run: `npx playwright install chromium`.
-
-## Manual checks done
-
-- Visual review of landing, signup, 404, lobby, room (desktop and phone), constellation.
-- WCAG contrast computed for every text and background pair: all at least 4.5:1 (lowest: coral on white, 5.02).
-
 ## Issues found by testing and fixed
-
-1. Production HTTPS redirect also fired on localhost, making `next start` unusable locally. Local hosts are now exempt.
-2. Room header buttons on phones lost their accessible names (text hidden with `display:none`). Now `sr-only`.
-3. All new users had the same coral circle avatar, so both seats looked identical. Defaults now vary.
-4. Pages showing a spinner forever when a session cookie had expired. Added a redirect to sign in.
-5. `/auth/me` returned 401 for signed out visitors, filling the console with errors. Now `{ user: null }`.
-6. Placeholder text was 4.38:1 contrast. Raised to full muted color.
-7. 17 React Compiler lint errors (impure calls in render, state set in effects, refs read in render),
-   all fixed properly, none suppressed.
-
-## Manual test script for judges or teammates
-
-1. Open the app in a normal window and a private window. Sign up as two people.
-2. Window A: start a public table. Window B: sit down from the lobby.
-3. Play a Would You Rather round, switch to Draw Together and draw at the same time, then Constellation.
-4. Name the constellation, open Reveal in A and choose level 1. B's Reveal panel now shows A's bio.
-5. Open Common Ground and press Use on a spark. Open Moments in either window.
+1. Zod 4 treats enum keyed records as exhaustive, so a half finished Vibe Quiz was rejected. Now a partial record.
+2. Live sockets and pages used two separate connections; requests sent before a page loaded were missed. Now one shared socket per user.
+3. Logo marks used as decoration had `role="img"` with an empty label. Decorative copies are now hidden from screen readers.
+4. The privacy page still linked to the old `/profile` address. Fixed, and old addresses now redirect (308).
+5. `scrollTo` is missing in some environments and crashed the chat. Guarded.
+6. React Compiler purity errors in the 3D sparkles (random numbers in render). Replaced with a deterministic hash.
+7. The dashboard universe drew bond rings in reverse. Inner rings are now the closest bonds.
+8. The cursor heart and ring fought over the same transform. The heart now sits inside the ring.
+9. A stale production server served old chunks during testing (500 on CSS). Documented: rebuild with the server stopped.

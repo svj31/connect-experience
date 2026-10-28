@@ -1,0 +1,927 @@
+{
+ "password": "saathverse123",
+ "domain": "saathverse.test",
+ "admin": {
+  "key": "admin",
+  "displayName": "Asha (Admin)"
+ },
+ "people": [
+  {
+   "key": "ava",
+   "displayName": "Ava",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "men",
+   "birthYear": 1999,
+   "city": "Mumbai",
+   "intent": "long-term",
+   "interests": [
+    "music",
+    "travel",
+    "food",
+    "films",
+    "coffee",
+    "writing"
+   ],
+   "bio": "Collects train tickets and bad puns. Will plan the trip, will not pack early.",
+   "job": "Product designer",
+   "education": "NID Ahmedabad",
+   "avatarShape": "circle",
+   "avatarColor": "violet",
+   "avatar": {
+    "ring": "tilted",
+    "pattern": "swirl",
+    "face": "smile"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "dog",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "time",
+   "personality": "ambivert",
+   "starSign": "libra",
+   "languages": [
+    "English",
+    "Hindi",
+    "Marathi"
+   ],
+   "prompts": [
+    {
+     "id": "p-sunday",
+     "answer": "Filter coffee, a long walk at Marine Drive, then a film nobody recommended"
+    },
+    {
+     "id": "p-green",
+     "answer": "I remember the small things you mention once"
+    },
+    {
+     "id": "p-first-date",
+     "answer": "A food crawl where we split everything"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 2,
+    "q-conflict": 0,
+    "q-texting": 1,
+    "q-date": 0,
+    "q-money": 1
+   },
+   "heightCm": 165,
+   "handle": "@ava.saath"
+  },
+  {
+   "key": "rohan",
+   "displayName": "Rohan",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "women",
+   "birthYear": 1997,
+   "city": "Mumbai",
+   "intent": "long-term",
+   "interests": [
+    "gaming",
+    "science",
+    "music",
+    "outdoors",
+    "travel",
+    "board games"
+   ],
+   "bio": "Weekend hiker, weekday debugger. Makes a mean masala chai.",
+   "job": "Backend engineer",
+   "education": "IIT Bombay",
+   "avatarShape": "triangle",
+   "avatarColor": "mint",
+   "avatar": {
+    "ring": "single",
+    "pattern": "bands",
+    "face": "grin"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "often",
+    "pets": "want-one",
+    "kids": "want",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "time",
+   "personality": "ambivert",
+   "starSign": "sagittarius",
+   "languages": [
+    "English",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-weird",
+     "answer": "Guessing the year a song came out"
+    },
+    {
+     "id": "p-debate",
+     "answer": "Board games are better than video games. Fight me"
+    },
+    {
+     "id": "p-together",
+     "answer": "You are fine losing at Catan with grace"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 2,
+    "q-conflict": 0,
+    "q-texting": 2,
+    "q-date": 1,
+    "q-money": 1
+   },
+   "heightCm": 178,
+   "handle": "@rohan.saath"
+  },
+  {
+   "key": "mira",
+   "displayName": "Mira",
+   "pronouns": "they/them",
+   "gender": "non-binary",
+   "lookingFor": "everyone",
+   "birthYear": 2000,
+   "city": "Bengaluru",
+   "intent": "long-term-open",
+   "interests": [
+    "art",
+    "books",
+    "writing",
+    "photography",
+    "poetry",
+    "coffee"
+   ],
+   "bio": "Draws on receipts. Reads on buses. Will send you a poem at 2am.",
+   "job": "Illustrator",
+   "education": "Srishti Institute",
+   "avatarShape": "star",
+   "avatarColor": "rose",
+   "avatar": {
+    "ring": "double",
+    "pattern": "spots",
+    "face": "shy"
+   },
+   "lifestyle": {
+    "drinking": "never",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "cat",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "vegetarian"
+   },
+   "loveLanguage": "words",
+   "personality": "introvert",
+   "starSign": "pisces",
+   "languages": [
+    "English",
+    "Kannada",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-comfort",
+     "answer": "Curd rice and a sad film"
+    },
+    {
+     "id": "p-orbit",
+     "answer": "People who notice the light at golden hour"
+    },
+    {
+     "id": "p-learn",
+     "answer": "Teach me something about the stars"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 0,
+    "q-plans": 2,
+    "q-conflict": 2,
+    "q-texting": 1,
+    "q-date": 2,
+    "q-money": 2
+   },
+   "heightCm": 160,
+   "handle": "@mira.saath"
+  },
+  {
+   "key": "kabir",
+   "displayName": "Kabir",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "women",
+   "birthYear": 1996,
+   "city": "Delhi",
+   "intent": "long-term-open",
+   "interests": [
+    "films",
+    "comedy",
+    "food",
+    "tech",
+    "cricket",
+    "podcasts"
+   ],
+   "bio": "Will rate any biryani out of ten. Has a spreadsheet to prove it.",
+   "job": "Data analyst",
+   "education": "Delhi University",
+   "avatarShape": "hexagon",
+   "avatarColor": "sky",
+   "avatar": {
+    "ring": "single",
+    "pattern": "craters",
+    "face": "wink"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "none",
+    "kids": "want",
+    "sleep": "depends",
+    "diet": "anything"
+   },
+   "loveLanguage": "words",
+   "personality": "extrovert",
+   "starSign": "leo",
+   "languages": [
+    "English",
+    "Hindi",
+    "Punjabi"
+   ],
+   "prompts": [
+    {
+     "id": "p-unpopular",
+     "answer": "Cricket tests are better than T20"
+    },
+    {
+     "id": "p-song",
+     "answer": "Kun Faya Kun, every single time"
+    },
+    {
+     "id": "p-first-date",
+     "answer": "Street food in Old Delhi, then a terrible pun contest"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 2,
+    "q-plans": 1,
+    "q-conflict": 3,
+    "q-texting": 0,
+    "q-date": 0,
+    "q-money": 1
+   },
+   "heightCm": 180,
+   "handle": "@kabir.saath"
+  },
+  {
+   "key": "zoya",
+   "displayName": "Zoya",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "men",
+   "birthYear": 1998,
+   "city": "Pune",
+   "intent": "long-term",
+   "interests": [
+    "dance",
+    "fitness",
+    "travel",
+    "music",
+    "yoga",
+    "food"
+   ],
+   "bio": "Salsa on Fridays, trek on Sundays. Looking for someone who keeps up.",
+   "job": "Physiotherapist",
+   "education": "Symbiosis Pune",
+   "avatarShape": "diamond",
+   "avatarColor": "peach",
+   "avatar": {
+    "ring": "tilted",
+    "pattern": "plain",
+    "face": "grin"
+   },
+   "lifestyle": {
+    "drinking": "never",
+    "smoking": "never",
+    "workout": "daily",
+    "pets": "dog",
+    "kids": "want",
+    "sleep": "early-bird",
+    "diet": "eggetarian"
+   },
+   "loveLanguage": "touch",
+   "personality": "extrovert",
+   "starSign": "aries",
+   "languages": [
+    "English",
+    "Hindi",
+    "Marathi"
+   ],
+   "prompts": [
+    {
+     "id": "p-sunday",
+     "answer": "Sunrise trek to Sinhagad and a huge breakfast"
+    },
+    {
+     "id": "p-green",
+     "answer": "I will hype you up before every big day"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 2,
+    "q-plans": 0,
+    "q-conflict": 0,
+    "q-texting": 0,
+    "q-date": 1,
+    "q-money": 1
+   },
+   "heightCm": 163,
+   "handle": "@zoya.saath"
+  },
+  {
+   "key": "arjun",
+   "displayName": "Arjun",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "women",
+   "birthYear": 1995,
+   "city": "Bengaluru",
+   "intent": "long-term",
+   "interests": [
+    "startups",
+    "tech",
+    "coffee",
+    "books",
+    "podcasts",
+    "fitness"
+   ],
+   "bio": "Building a small climate startup. Reads one book a week, pretends it is two.",
+   "job": "Founder",
+   "education": "BITS Pilani",
+   "avatarShape": "square",
+   "avatarColor": "plum",
+   "avatar": {
+    "ring": "double",
+    "pattern": "bands",
+    "face": "calm"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "often",
+    "pets": "none",
+    "kids": "open",
+    "sleep": "early-bird",
+    "diet": "anything"
+   },
+   "loveLanguage": "acts",
+   "personality": "ambivert",
+   "starSign": "capricorn",
+   "languages": [
+    "English",
+    "Hindi",
+    "Tamil"
+   ],
+   "prompts": [
+    {
+     "id": "p-learn",
+     "answer": "Teach me something about poetry"
+    },
+    {
+     "id": "p-together",
+     "answer": "You have a book recommendation ready at all times"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 0,
+    "q-conflict": 0,
+    "q-texting": 1,
+    "q-date": 2,
+    "q-money": 0
+   },
+   "heightCm": 176,
+   "handle": "@arjun.saath"
+  },
+  {
+   "key": "ishita",
+   "displayName": "Ishita",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "everyone",
+   "birthYear": 2001,
+   "city": "Mumbai",
+   "intent": "new-friends",
+   "interests": [
+    "anime",
+    "gaming",
+    "art",
+    "music",
+    "board games"
+   ],
+   "bio": "New in the city. Looking for people to play co-op games and get ramen with.",
+   "job": "UX researcher",
+   "education": "IIT Guwahati",
+   "avatarShape": "circle",
+   "avatarColor": "lilac",
+   "avatar": {
+    "ring": "single",
+    "pattern": "spots",
+    "face": "smile"
+   },
+   "lifestyle": {
+    "drinking": "never",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "cat",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "time",
+   "personality": "introvert",
+   "starSign": "gemini",
+   "languages": [
+    "English",
+    "Bengali",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-weird",
+     "answer": "Speed running Mario Kart tracks"
+    },
+    {
+     "id": "p-comfort",
+     "answer": "Maggi at midnight"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 0,
+    "q-plans": 2,
+    "q-conflict": 1,
+    "q-texting": 0,
+    "q-date": 3,
+    "q-money": 2
+   },
+   "heightCm": 158,
+   "handle": "@ishita.saath"
+  },
+  {
+   "key": "dev",
+   "displayName": "Dev",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "everyone",
+   "birthYear": 1998,
+   "city": "Hyderabad",
+   "intent": "short-term-fun",
+   "interests": [
+    "music",
+    "dance",
+    "comedy",
+    "films",
+    "travel"
+   ],
+   "bio": "Stand up open mics on weekends. Funniest person in the room, according to my mom.",
+   "job": "Marketing lead",
+   "education": "Osmania University",
+   "avatarShape": "star",
+   "avatarColor": "sun",
+   "avatar": {
+    "ring": "tilted",
+    "pattern": "swirl",
+    "face": "grin"
+   },
+   "lifestyle": {
+    "drinking": "often",
+    "smoking": "socially",
+    "workout": "sometimes",
+    "pets": "none",
+    "kids": "dont-want",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "words",
+   "personality": "extrovert",
+   "starSign": "gemini",
+   "languages": [
+    "English",
+    "Telugu",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-debate",
+     "answer": "Pineapple belongs on pizza"
+    },
+    {
+     "id": "p-first-date",
+     "answer": "An open mic, and you have to rate my set"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 2,
+    "q-plans": 3,
+    "q-conflict": 3,
+    "q-texting": 2,
+    "q-date": 3,
+    "q-money": 3
+   },
+   "heightCm": 175,
+   "handle": "@dev.saath"
+  },
+  {
+   "key": "naina",
+   "displayName": "Naina",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "men",
+   "birthYear": 1997,
+   "city": "Delhi",
+   "intent": "long-term",
+   "interests": [
+    "books",
+    "theatre",
+    "writing",
+    "poetry",
+    "coffee",
+    "volunteering"
+   ],
+   "bio": "Teaches literature, writes bad haiku, volunteers at an animal shelter on Sundays.",
+   "job": "Teacher",
+   "education": "Lady Shri Ram College",
+   "avatarShape": "hexagon",
+   "avatarColor": "rose",
+   "avatar": {
+    "ring": "double",
+    "pattern": "plain",
+    "face": "calm"
+   },
+   "lifestyle": {
+    "drinking": "never",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "dog",
+    "kids": "want",
+    "sleep": "early-bird",
+    "diet": "vegetarian"
+   },
+   "loveLanguage": "acts",
+   "personality": "introvert",
+   "starSign": "virgo",
+   "languages": [
+    "English",
+    "Hindi",
+    "Urdu"
+   ],
+   "prompts": [
+    {
+     "id": "p-sunday",
+     "answer": "Shelter walks, then a long lunch with a book"
+    },
+    {
+     "id": "p-orbit",
+     "answer": "Kindness to waiters and dogs"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 0,
+    "q-plans": 0,
+    "q-conflict": 2,
+    "q-texting": 1,
+    "q-date": 2,
+    "q-money": 0
+   },
+   "heightCm": 162,
+   "handle": "@naina.saath"
+  },
+  {
+   "key": "vikram",
+   "displayName": "Vikram",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "women",
+   "birthYear": 1994,
+   "city": "Chennai",
+   "intent": "long-term",
+   "interests": [
+    "cricket",
+    "cooking",
+    "travel",
+    "photography",
+    "music",
+    "outdoors"
+   ],
+   "bio": "Cooks a different regional dish every Sunday. Takes too many photos of food.",
+   "job": "Architect",
+   "education": "Anna University",
+   "avatarShape": "triangle",
+   "avatarColor": "teal",
+   "avatar": {
+    "ring": "single",
+    "pattern": "craters",
+    "face": "smile"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "often",
+    "pets": "dog",
+    "kids": "want",
+    "sleep": "early-bird",
+    "diet": "anything"
+   },
+   "loveLanguage": "acts",
+   "personality": "ambivert",
+   "starSign": "taurus",
+   "languages": [
+    "English",
+    "Tamil",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-comfort",
+     "answer": "Rasam rice on a rainy day"
+    },
+    {
+     "id": "p-travel",
+     "answer": "Pondicherry, every single year"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 0,
+    "q-conflict": 0,
+    "q-texting": 1,
+    "q-date": 0,
+    "q-money": 1
+   },
+   "heightCm": 181,
+   "handle": "@vikram.saath"
+  },
+  {
+   "key": "sara",
+   "displayName": "Sara",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "everyone",
+   "birthYear": 1999,
+   "city": "Kolkata",
+   "intent": "long-term-open",
+   "interests": [
+    "films",
+    "photography",
+    "art",
+    "travel",
+    "astronomy",
+    "writing"
+   ],
+   "bio": "Film photographer. I will make you stand still for one more shot.",
+   "job": "Photographer",
+   "education": "Jadavpur University",
+   "avatarShape": "diamond",
+   "avatarColor": "violet",
+   "avatar": {
+    "ring": "tilted",
+    "pattern": "swirl",
+    "face": "wink"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "cat",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "gifts",
+   "personality": "ambivert",
+   "starSign": "scorpio",
+   "languages": [
+    "English",
+    "Bengali",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-song",
+     "answer": "Tum Se Hi, no notes"
+    },
+    {
+     "id": "p-learn",
+     "answer": "Teach me something about astronomy"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 2,
+    "q-conflict": 1,
+    "q-texting": 1,
+    "q-date": 3,
+    "q-money": 1
+   },
+   "heightCm": 164,
+   "handle": "@sara.saath"
+  },
+  {
+   "key": "aditya",
+   "displayName": "Aditya",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "women",
+   "birthYear": 2000,
+   "city": "Jaipur",
+   "intent": "not-sure",
+   "interests": [
+    "gaming",
+    "tech",
+    "anime",
+    "football",
+    "board games"
+   ],
+   "bio": "Plays football badly and FIFA well. Still figuring out the rest.",
+   "job": "Software engineer",
+   "education": "Manipal University",
+   "avatarShape": "square",
+   "avatarColor": "sky",
+   "avatar": {
+    "ring": "none",
+    "pattern": "bands",
+    "face": "smile"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "often",
+    "pets": "none",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "anything"
+   },
+   "loveLanguage": "time",
+   "personality": "introvert",
+   "starSign": "aquarius",
+   "languages": [
+    "English",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-weird",
+     "answer": "Remembering every football score since 2010"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 0,
+    "q-plans": 2,
+    "q-conflict": 1,
+    "q-texting": 0,
+    "q-date": 3,
+    "q-money": 2
+   },
+   "heightCm": 172,
+   "handle": "@aditya.saath"
+  },
+  {
+   "key": "tara",
+   "displayName": "Tara",
+   "pronouns": "she/her",
+   "gender": "woman",
+   "lookingFor": "men",
+   "birthYear": 1996,
+   "city": "Bengaluru",
+   "intent": "long-term",
+   "interests": [
+    "yoga",
+    "outdoors",
+    "astronomy",
+    "books",
+    "cooking",
+    "coffee"
+   ],
+   "bio": "Yoga teacher who still cannot touch her toes on Mondays.",
+   "job": "Yoga instructor",
+   "education": "Christ University",
+   "avatarShape": "circle",
+   "avatarColor": "mint",
+   "avatar": {
+    "ring": "double",
+    "pattern": "plain",
+    "face": "calm"
+   },
+   "lifestyle": {
+    "drinking": "never",
+    "smoking": "never",
+    "workout": "daily",
+    "pets": "dog",
+    "kids": "want",
+    "sleep": "early-bird",
+    "diet": "vegan"
+   },
+   "loveLanguage": "time",
+   "personality": "ambivert",
+   "starSign": "cancer",
+   "languages": [
+    "English",
+    "Kannada",
+    "Hindi"
+   ],
+   "prompts": [
+    {
+     "id": "p-sunday",
+     "answer": "Rooftop yoga, then pancakes"
+    },
+    {
+     "id": "p-together",
+     "answer": "You like quiet mornings and loud laughs"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 0,
+    "q-conflict": 0,
+    "q-texting": 1,
+    "q-date": 2,
+    "q-money": 0
+   },
+   "heightCm": 166,
+   "handle": "@tara.saath"
+  },
+  {
+   "key": "neel",
+   "displayName": "Neel",
+   "pronouns": "he/him",
+   "gender": "man",
+   "lookingFor": "everyone",
+   "birthYear": 1999,
+   "city": "Mumbai",
+   "intent": "long-term-open",
+   "interests": [
+    "music",
+    "films",
+    "writing",
+    "podcasts",
+    "coffee",
+    "theatre"
+   ],
+   "bio": "Writes songs nobody has heard yet. Hosts a tiny podcast about tiny things.",
+   "job": "Music producer",
+   "education": "Whistling Woods",
+   "avatarShape": "hexagon",
+   "avatarColor": "plum",
+   "avatar": {
+    "ring": "tilted",
+    "pattern": "spots",
+    "face": "shy"
+   },
+   "lifestyle": {
+    "drinking": "socially",
+    "smoking": "never",
+    "workout": "sometimes",
+    "pets": "cat",
+    "kids": "open",
+    "sleep": "night-owl",
+    "diet": "vegetarian"
+   },
+   "loveLanguage": "words",
+   "personality": "introvert",
+   "starSign": "pisces",
+   "languages": [
+    "English",
+    "Hindi",
+    "Gujarati"
+   ],
+   "prompts": [
+    {
+     "id": "p-song",
+     "answer": "Anything by Prateek Kuhad"
+    },
+    {
+     "id": "p-first-date",
+     "answer": "A tiny gig and a long walk after"
+    }
+   ],
+   "quiz": {
+    "q-weekend": 1,
+    "q-plans": 2,
+    "q-conflict": 2,
+    "q-texting": 2,
+    "q-date": 3,
+    "q-money": 1
+   },
+   "heightCm": 174,
+   "handle": "@neel.saath"
+  }
+ ]
+}
