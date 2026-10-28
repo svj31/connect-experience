@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { StoryRow } from "./StoryRow";
 import { useEffect, useState } from "react";
 import { activityById } from "@/lib/activities";
 import { api, errorMessage } from "@/lib/api";
@@ -82,20 +83,21 @@ export function Dashboard() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageHeader title={`${greeting()}, ${data.greetingName}`} subtitle="Here is what is happening in your verse." />
+      <PageHeader title={`${greeting()}, ${data.greetingName}`} subtitle="Your matches, your streaks, and who to meet next." />
+      <StoryRow />
 
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-        <section className="relative overflow-hidden rounded-3xl border border-line bg-surface p-6" aria-labelledby="qotd">
+        <section className="relative overflow-hidden rounded-[24px] border border-line bg-surface p-6" aria-labelledby="qotd">
           <span className="absolute -right-8 -bottom-10 text-violet-soft" aria-hidden="true"><Icon name="deeptalk" size={120} strokeWidth={1.2} /></span>
           <p id="qotd" className="flex items-center gap-2 text-sm font-bold text-rose"><Icon name="sparkle" size={16} /> Question of the day</p>
-          <p className="relative mt-2 max-w-lg font-display text-2xl font-semibold text-balance">{data.suggestions.question}</p>
+          <p className="relative mt-2 max-w-lg font-display text-2xl font-bold text-balance">{data.suggestions.question}</p>
           <p className="relative mt-2 text-sm text-muted">Everyone gets the same one today. Ask it in a chat, or start Deep Talk to go further.</p>
           <div className="relative mt-4 flex flex-wrap gap-2">
             <ButtonLink href="/app/together?pick=deeptalk" size="sm"><Icon name="deeptalk" size={16} /> Start Deep Talk</ButtonLink>
             <ButtonLink href="/app/chats" size="sm" variant="secondary">Ask in a chat</ButtonLink>
           </div>
         </section>
-        <section className="rounded-3xl border border-line bg-surface p-6" aria-labelledby="complete">
+        <section className="rounded-[24px] border border-line bg-surface p-6" aria-labelledby="complete">
           <div className="flex items-center gap-4">
             <span className="relative h-20 w-20 shrink-0">
               <svg viewBox="0 0 40 40" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -105,7 +107,7 @@ export function Dashboard() {
               <span className="absolute inset-0 flex items-center justify-center"><Avatar name={user.displayName} config={user.avatar} size={44} decorative /></span>
             </span>
             <div>
-              <p id="complete" className="font-display text-xl font-semibold">Profile {data.completeness.percent}% complete</p>
+              <p id="complete" className="font-display text-xl font-bold">Profile {data.completeness.percent}% complete</p>
               <p className="text-sm text-muted">{data.completeness.missing.length ? `Next: ${data.completeness.missing.slice(0, 2).join(", ").toLowerCase()}` : "Everything filled in. Lovely."}</p>
             </div>
           </div>
@@ -123,13 +125,13 @@ export function Dashboard() {
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <section aria-labelledby="universe">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 id="universe" className="font-display text-2xl font-semibold">Your universe</h2>
+            <h2 id="universe" className="font-display text-2xl font-bold">Your universe</h2>
             <ViewToggle value={view} onChange={setView} options={[{ id: "orbit", label: "Orbit", icon: "orbit" }, { id: "cards", label: "Cards", icon: "grid" }, { id: "timeline", label: "Timeline", icon: "timeline" }]} />
           </div>
           {data.people.length === 0 && view !== "timeline" ? (
             <EmptyState title="Your universe is waiting" body="Connect with someone from Discover and they will start orbiting here." action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
           ) : view === "orbit" ? (
-            <div className="rounded-3xl border border-line bg-surface p-4"><UniverseView people={data.people} me={{ name: user.displayName, avatar: user.avatar }} /><p className="text-center text-xs text-muted">Closer bonds orbit nearer. Hover to pause, tap someone to see their profile.</p></div>
+            <div className="rounded-[24px] border border-line bg-surface p-4"><UniverseView people={data.people} me={{ name: user.displayName, avatar: user.avatar }} /><p className="text-center text-xs text-muted">Closer bonds orbit nearer. Hover to pause, tap someone to see their profile.</p></div>
           ) : view === "cards" ? (
             <ul className="grid gap-3 sm:grid-cols-2">
               {data.people.map((p) => (
@@ -153,7 +155,7 @@ export function Dashboard() {
               {data.moments.length === 0 && <li className="text-muted">No moments yet. Finish an activity together and it lands here.</li>}
               {data.moments.map((m) => (
                 <li key={m.id} className="relative animate-rise rounded-2xl border border-line bg-surface p-3">
-                  <span className="absolute top-4 -left-[2.05rem] flex h-6 w-6 items-center justify-center rounded-full bg-violet text-on-primary"><Icon name={m.activity} size={13} /></span>
+                  <span className="absolute top-4 -left-[2.05rem] flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white"><Icon name={m.activity} size={13} /></span>
                   <p className="font-semibold">{m.title}</p>
                   <p className="text-sm text-muted">{activityById(m.activity).name}{m.partnerName ? ` with ${m.partnerName}` : ""} · {timeAgo(m.createdAt)}</p>
                 </li>
@@ -165,7 +167,7 @@ export function Dashboard() {
         <div className="space-y-6">
           <section aria-labelledby="sugg">
             <div className="mb-3 flex items-center justify-between">
-              <h2 id="sugg" className="font-display text-2xl font-semibold">Picked for you</h2>
+              <h2 id="sugg" className="font-display text-2xl font-bold">Picked for you</h2>
               <Link href="/app/discover" className="text-sm font-semibold text-violet hover:underline">See all</Link>
             </div>
             <ul className="space-y-2">
@@ -185,7 +187,7 @@ export function Dashboard() {
           </section>
 
           <section aria-labelledby="next">
-            <h2 id="next" className="mb-3 font-display text-2xl font-semibold">Try next</h2>
+            <h2 id="next" className="mb-3 font-display text-2xl font-bold">Try next</h2>
             <ul className="grid grid-cols-2 gap-2">
               {data.suggestions.activities.map((s) => (
                 <li key={s.id}>
@@ -202,13 +204,13 @@ export function Dashboard() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-labelledby="week">
-          <h2 id="week" className="font-display text-xl font-semibold">Your week</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-labelledby="week">
+          <h2 id="week" className="font-display text-xl font-bold">Your week</h2>
           <p className="mb-4 text-sm text-muted">Messages you sent and moments you finished, per day.</p>
           <PairBars data={days} a="Messages" b="Moments" label="Messages and moments per day this week" />
         </section>
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-labelledby="mix">
-          <h2 id="mix" className="font-display text-xl font-semibold">What you love doing</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-labelledby="mix">
+          <h2 id="mix" className="font-display text-xl font-bold">What you love doing</h2>
           <p className="mb-4 text-sm text-muted">Moments by activity.</p>
           {data.activityMix.length ? (
             <HBarChart data={data.activityMix.map((a) => ({ label: activityById(a.activity).name, value: a.n }))} label="Moments by activity" />

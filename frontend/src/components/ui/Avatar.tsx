@@ -61,8 +61,8 @@ function Face({ face, dark }: { face: string; dark: boolean }) {
 }
 
 /**
- * SaathVerse avatars are little planets you design, never photos: pick a body shape, a color,
- * rings, a surface pattern and a face. Faces are revealed in conversation, not judged in a grid.
+ * A member's main photo in a circle. Members without a photo get a little planet they design
+ * (shape, color, rings, pattern, face), so nobody has an empty grey silhouette.
  */
 export function Avatar({
   shape,
@@ -91,6 +91,26 @@ export function Avatar({
   const clipId = `clip-${s}-${col}-${pattern}`;
   const bodyEl = s === "circle" || !SHAPE_PATHS[s] ? <circle cx="32" cy="32" r="21" /> : <path d={SHAPE_PATHS[s]} />;
   const ringTilt = ring === "tilted" ? -24 : -8;
+  const dot =
+    online !== undefined && online !== null ? (
+      <span
+        className={`absolute right-0 bottom-0 block rounded-full border-2 border-surface ${online ? "bg-mint" : "bg-line-strong"}`}
+        style={{ width: Math.max(10, size / 5), height: Math.max(10, size / 5) }}
+        title={online ? "Online" : "Away"}
+      >
+        <span className="sr-only">{online ? "Online" : "Away"}</span>
+      </span>
+    ) : null;
+
+  if (config?.photo) {
+    return (
+      <span className="relative inline-block shrink-0" style={{ width: size, height: size }}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- member photos come from any https host or an upload */}
+        <img src={config.photo} alt={decorative ? "" : `${name}'s photo`} width={size} height={size} loading="lazy" className="h-full w-full rounded-full bg-paper-deep object-cover" />
+        {dot}
+      </span>
+    );
+  }
 
   return (
     <span className="relative inline-block shrink-0" style={{ width: size, height: size }}>
@@ -114,15 +134,7 @@ export function Avatar({
         {ring === "double" && <ellipse cx="32" cy="34" rx="25" ry="5.5" fill="none" stroke={body} strokeWidth="1.5" transform={`rotate(${ringTilt} 32 34)`} opacity="0.7" />}
         <Face face={face} dark={darkFace} />
       </svg>
-      {online !== undefined && online !== null && (
-        <span
-          className={`absolute right-0 bottom-0 block rounded-full border-2 border-surface ${online ? "bg-mint" : "bg-line-strong"}`}
-          style={{ width: Math.max(10, size / 5), height: Math.max(10, size / 5) }}
-          title={online ? "Online" : "Away"}
-        >
-          <span className="sr-only">{online ? "Online" : "Away"}</span>
-        </span>
-      )}
+      {dot}
     </span>
   );
 }

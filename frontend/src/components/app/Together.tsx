@@ -23,8 +23,8 @@ type Who = "connection" | "new" | "code";
 
 function StepTitle({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <h2 className="mb-3 flex items-center gap-3 font-display text-2xl font-semibold">
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet text-sm font-bold text-on-primary">{n}</span>
+    <h2 className="mb-3 flex items-center gap-3 font-display text-2xl font-bold">
+      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-on-primary">{n}</span>
       {children}
     </h2>
   );
@@ -153,10 +153,10 @@ export function Together() {
               role="tab"
               aria-selected={category === c.id}
               onClick={() => { setCategory(c.id); setActivity(null); }}
-              className={`group rounded-3xl border-2 p-4 text-left transition-all ${category === c.id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:-translate-y-0.5 hover:border-line-strong"}`}
+              className={`group rounded-[24px] border-2 p-4 text-left transition-all ${category === c.id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:-translate-y-0.5 hover:border-line-strong"}`}
             >
-              <span className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:rotate-6 ${i % 2 ? "bg-rose text-on-primary" : "bg-violet text-on-primary"}`}><Icon name={c.icon} /></span>
-              <span className="mt-2 block font-display text-xl font-semibold">{c.name}</span>
+              <span className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:rotate-6 ${i % 2 ? "bg-brand text-white" : "bg-brand text-white"}`}><Icon name={c.icon} /></span>
+              <span className="mt-2 block font-display text-xl font-bold">{c.name}</span>
               <span className="block text-sm text-muted">{c.blurb}</span>
             </button>
           ))}
@@ -201,7 +201,7 @@ export function Together() {
             ))}
           </div>
 
-          <div className="mt-4 rounded-3xl border border-line bg-surface p-5">
+          <div className="mt-4 rounded-[24px] border border-line bg-surface p-5">
             {error && <p role="alert" className="mb-3 text-sm font-medium text-danger">{error}</p>}
             {who === "connection" ? (
               connections === null ? (

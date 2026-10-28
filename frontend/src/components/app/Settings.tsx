@@ -18,7 +18,7 @@ function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange
       <span><span className="block font-semibold">{label}</span>{hint && <span className="block text-sm text-muted">{hint}</span>}</span>
       <span className="relative shrink-0">
         <input type="checkbox" role="switch" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
-        <span className="block h-7 w-12 rounded-full bg-line-strong transition-colors peer-checked:bg-violet peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-violet" />
+        <span className="block h-7 w-12 rounded-full bg-line-strong transition-colors peer-checked:bg-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-violet" />
         <span className="absolute top-1 left-1 h-5 w-5 rounded-full bg-surface shadow transition-transform peer-checked:translate-x-5" />
       </span>
     </label>
@@ -27,8 +27,8 @@ function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange
 
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-3xl border border-line bg-surface p-5 sm:p-6" aria-label={title}>
-      <h2 className="mb-4 flex items-center gap-2 font-display text-2xl font-semibold"><Icon name={icon} className="text-violet" />{title}</h2>
+    <section className="rounded-[24px] border border-line bg-surface p-5 sm:p-6" aria-label={title}>
+      <h2 className="mb-4 flex items-center gap-2 font-display text-2xl font-bold"><Icon name={icon} className="text-violet" />{title}</h2>
       {children}
     </section>
   );
@@ -117,6 +117,11 @@ export function Settings() {
               </label>
             </div>
           </fieldset>
+          <label className="mt-4 block font-semibold" htmlFor="max-distance">
+            Maximum distance: {settings.maxDistanceKm ? `${settings.maxDistanceKm} km` : "anywhere"}
+          </label>
+          <input id="max-distance" type="range" min={0} max={2000} step={50} value={settings.maxDistanceKm ?? 0} onChange={(e) => setSettings({ ...settings, maxDistanceKm: Number(e.target.value) })} onPointerUp={() => saveSettings(settings)} onKeyUp={() => saveSettings(settings)} className="mt-2 w-full accent-[var(--violet)]" aria-describedby="max-distance-hint" />
+          <p id="max-distance-hint" className="text-sm text-muted">Measured between city centres. We never store your exact location. Slide to 0 for anywhere.</p>
         </Section>
 
         <Section title="Who sees what" icon="eye">
@@ -126,7 +131,7 @@ export function Settings() {
               <li key={s} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line p-3">
                 <span><span className="block font-semibold">{SECTION_LABELS[s].label}</span><span className="block text-sm text-muted">{SECTION_LABELS[s].hint}</span></span>
                 <label className="sr-only" htmlFor={`vis-${s}`}>Who can see {SECTION_LABELS[s].label}</label>
-                <select id={`vis-${s}`} value={privacy[s]} onChange={(e) => savePrivacy({ ...privacy, [s]: e.target.value as Visibility })} className="h-10 rounded-xl border border-line-strong bg-surface px-3 text-sm font-semibold">
+                <select id={`vis-${s}`} value={privacy[s]} onChange={(e) => savePrivacy({ ...privacy, [s]: e.target.value as Visibility })} className="h-10 rounded-2xl border border-transparent bg-paper-deep px-4 text-sm font-semibold">
                   {Object.entries(VISIBILITY_LABELS).map(([k, v]) => <option key={k} value={k}>{v.label}: {v.hint}</option>)}
                 </select>
               </li>
@@ -143,8 +148,8 @@ export function Settings() {
             <p className="font-semibold text-danger">Delete account</p>
             <p className="text-sm text-muted">Removes your profile, connections, messages and the tables you host. This cannot be undone.</p>
             <label htmlFor="confirm-delete" className="mt-3 block text-sm font-semibold">Type DELETE to confirm</label>
-            <div className="mt-1 flex gap-2">
-              <input id="confirm-delete" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="h-11 w-40 rounded-xl border border-line-strong bg-surface px-3" />
+            <div className="mt-1 flex flex-wrap gap-2">
+              <input id="confirm-delete" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="h-11 w-40 rounded-2xl border border-transparent bg-paper-deep px-4" />
               <Button variant="danger" disabled={confirm !== "DELETE"} loading={busy} onClick={remove}>Delete forever</Button>
             </div>
           </div>

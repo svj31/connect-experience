@@ -1,55 +1,53 @@
 import Link from "next/link";
+import { useId } from "react";
 
 /**
- * The Shared Orbit mark: two orbits for two worlds, a heart for the connection between
- * them and a spark for the excitement of meeting. On hover the worlds travel their
- * orbits, the heart beats and the spark twinkles (see .sv-logo in globals.css).
+ * The Ember mark: an app icon squircle in the brand gradient holding two hearts that overlap,
+ * two people becoming "saath" (together). On hover the hearts lean in and beat (see .sv-logo).
  */
 export function LogoMark({ size = 40, className = "", live = false, title = "SaathVerse" }: { size?: number; className?: string; live?: boolean; title?: string }) {
+  const id = useId().replace(/:/g, "");
   return (
     <svg
       width={size}
-      height={(size * 150) / 220}
-      viewBox="0 0 220 150"
+      height={size}
+      viewBox="0 0 64 64"
       role={title ? "img" : undefined}
       aria-label={title || undefined}
       aria-hidden={title ? undefined : true}
-      className={`sv-logo shrink-0 overflow-visible ${live ? "is-live" : ""} ${className}`}
+      className={`sv-logo shrink-0 ${live ? "is-live" : ""} ${className}`}
     >
-      <g className="orbit-a">
-        <ellipse cx="110" cy="76" rx="66" ry="42" transform="rotate(-32 110 76)" fill="none" stroke="#9B83E8" strokeWidth="3.5" strokeDasharray="7 6" />
+      <defs>
+        <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FF2E6A" />
+          <stop offset="0.55" stopColor="#FF5A4E" />
+          <stop offset="1" stopColor="#FF8A3D" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="18" fill={`url(#g${id})`} />
+      <g className="heart-a">
+        <path d="M25 47c-6.5-5-13-10-13-17a7 7 0 0 1 13-3.6A7 7 0 0 1 38 30c0 7-6.5 12-13 17z" fill="#fff" opacity="0.55" />
       </g>
-      <g className="orbit-b">
-        <ellipse cx="110" cy="76" rx="66" ry="42" transform="rotate(32 110 76)" fill="none" stroke="#C5B3F8" strokeWidth="3.5" />
+      <g className="heart-b">
+        <path d="M39 49c-7-5.4-14-10.8-14-18.4a7.6 7.6 0 0 1 14-3.9 7.6 7.6 0 0 1 14 3.9C53 38.2 46 43.6 39 49z" fill="#fff" />
       </g>
-      <g className="worlds">
-        <circle cx="54" cy="55" r="8" fill="#7657D6" />
-        <circle cx="166" cy="97" r="8" fill="#7657D6" />
-      </g>
-      <g className="heart">
-        <path d="M110 99 C99 88 78 74 78 59 C78 43 98 39 110 55 C122 39 142 43 142 59 C142 74 121 88 110 99Z" fill="#7657D6" />
-        <path d="M110 65 C103 57 93 64 100 73 L110 82 L120 73 C127 64 117 57 110 65Z" fill="#F9D9F0" />
-      </g>
-      <g className="spark">
-        <path d="M110 20 L114 30 L125 34 L114 38 L110 49 L106 38 L95 34 L106 30Z" fill="#E5A2D5" />
-      </g>
-      <circle className="dot" cx="170" cy="39" r="4" fill="#E5A2D5" />
+      <circle className="spark" cx="50" cy="15" r="3" fill="#fff" />
     </svg>
   );
 }
 
-export function Wordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const text = size === "lg" ? "text-3xl" : size === "sm" ? "text-lg" : "text-xl";
+export function Wordmark({ size = "md", className = "" }: { size?: "sm" | "md" | "lg"; className?: string }) {
+  const text = size === "lg" ? "text-3xl" : size === "sm" ? "text-xl" : "text-2xl";
   return (
-    <span className={`font-display ${text} font-semibold tracking-tight text-ink`}>
-      Saath<span className="text-violet">Verse</span>
+    <span className={`font-display ${text} font-extrabold tracking-[-0.04em] text-ink ${className}`}>
+      saath<span className="text-brand">verse</span>
     </span>
   );
 }
 
-export function Logo({ href = "/", size = 44, wordmark = "md" }: { href?: string; size?: number; wordmark?: "sm" | "md" | "lg" }) {
+export function Logo({ href = "/", size = 36, wordmark = "md", className = "" }: { href?: string; size?: number; wordmark?: "sm" | "md" | "lg"; className?: string }) {
   return (
-    <Link href={href} className="group flex items-center gap-2 rounded-lg" aria-label="SaathVerse home">
+    <Link href={href} className={`group flex items-center gap-2 rounded-lg ${className}`} aria-label="SaathVerse home">
       <LogoMark size={size} title="" />
       <Wordmark size={wordmark} />
     </Link>

@@ -12,6 +12,7 @@ import {
 } from "@/lib/types";
 import { Burst } from "../fx/Burst";
 import { Avatar } from "../ui/Avatar";
+import { PhotoManager } from "./PhotoManager";
 import { Button } from "../ui/Button";
 import { Field, TextArea } from "../ui/Field";
 import { Icon } from "../ui/Icon";
@@ -21,12 +22,12 @@ import { PageHeader } from "./widgets";
 
 interface Catalog { prompts: { id: string; text: string }[]; quiz: { id: string; text: string; options: string[] }[] }
 
-const select = "h-11 w-full rounded-xl border border-line-strong bg-surface px-3 focus:border-violet focus:outline-none";
+const select = "h-11 w-full rounded-2xl border border-transparent bg-paper-deep px-4 focus:border-violet focus:outline-none";
 
 function Card({ title, icon, hint, children }: { title: string; icon: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-3xl border border-line bg-surface p-5 sm:p-6" aria-label={title}>
-      <h2 className="flex items-center gap-2 font-display text-2xl font-semibold"><Icon name={icon} className="text-violet" />{title}</h2>
+    <section className="rounded-[24px] border border-line bg-surface p-5 sm:p-6" aria-label={title}>
+      <h2 className="flex items-center gap-2 font-display text-2xl font-bold"><Icon name={icon} className="text-violet" />{title}</h2>
       {hint && <p className="mt-1 text-sm text-muted">{hint}</p>}
       <div className="mt-4">{children}</div>
     </section>
@@ -39,7 +40,7 @@ function Pills<T extends string>({ value, options, onChange, label }: { value: T
       <legend className="mb-1.5 text-sm font-semibold">{label}</legend>
       <div className="flex flex-wrap gap-1.5">
         {Object.entries(options).map(([k, v]) => (
-          <button key={k} type="button" aria-pressed={value === k} onClick={() => onChange(value === k ? "" : (k as T))} className={`rounded-lg border px-2.5 py-1.5 text-sm font-semibold transition-colors ${value === k ? "border-violet bg-violet text-on-primary" : "border-line-strong hover:border-violet"}`}>
+          <button key={k} type="button" aria-pressed={value === k} onClick={() => onChange(value === k ? "" : (k as T))} className={`rounded-full border px-2.5 py-1.5 text-sm font-semibold transition-colors ${value === k ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
             {v}
           </button>
         ))}
@@ -95,7 +96,7 @@ export function ProfileEditor() {
       birthYear: user.birthYear, gender: user.gender ?? "", lookingFor: user.lookingFor, intent: user.intent, city: user.city ?? "",
       job: user.job ?? "", education: user.education ?? "", heightCm: user.heightCm, starSign: user.starSign ?? "",
       languages: user.languages ?? [], lifestyle: user.lifestyle ?? {}, loveLanguage: user.loveLanguage ?? "", personality: user.personality ?? "",
-      prompts: user.rawPrompts, quiz: user.quiz,
+      prompts: user.rawPrompts, quiz: user.quiz, photos: user.photos ?? [],
     });
   }, [user, form]);
 
@@ -145,9 +146,9 @@ export function ProfileEditor() {
         icon="user"
         subtitle={`${user.completeness.percent}% complete${user.completeness.missing.length ? `. Still to add: ${user.completeness.missing.slice(0, 3).join(", ").toLowerCase()}.` : "."}`}
         actions={
-          <div role="tablist" className="flex rounded-xl border border-line bg-surface p-1">
+          <div role="tablist" className="flex rounded-full bg-paper-deep p-1">
             {(["edit", "preview"] as const).map((t) => (
-              <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold ${tab === t ? "bg-violet text-on-primary" : "text-muted hover:text-violet"}`}>
+              <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold ${tab === t ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-muted hover:text-ink"}`}>
                 <Icon name={t === "edit" ? "edit" : "eye"} size={16} /> {t === "edit" ? "Edit" : "Preview"}
               </button>
             ))}
@@ -155,7 +156,7 @@ export function ProfileEditor() {
         }
       />
       {welcome && tab === "edit" && (
-        <div className="mb-5 flex items-center gap-4 rounded-3xl border border-violet/30 bg-violet-soft p-5">
+        <div className="mb-5 flex items-center gap-4 rounded-[24px] border border-violet/30 bg-violet-soft p-5">
           <Icon name="sparkle" size={28} className="shrink-0 text-violet" />
           <p><strong>Welcome to SaathVerse!</strong> Design your planet, add a couple of prompts and take the Vibe Quiz. The more you fill in, the better your Vibe Match and suggestions get. You choose who sees what in Settings.</p>
         </div>
@@ -166,7 +167,7 @@ export function ProfileEditor() {
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <span className="text-sm font-bold">See it as:</span>
             {["A stranger", "A connection", "Spark bond", "Orbit bond"].map((label, i) => (
-              <button key={label} aria-pressed={seenAs === i} onClick={() => setSeenAs(i)} className={`rounded-lg border px-3 py-1.5 text-sm font-semibold ${seenAs === i ? "border-violet bg-violet text-on-primary" : "border-line-strong bg-surface"}`}>{label}</button>
+              <button key={label} aria-pressed={seenAs === i} onClick={() => setSeenAs(i)} className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${seenAs === i ? "border-transparent bg-brand text-white" : "border-line-strong bg-surface"}`}>{label}</button>
             ))}
           </div>
           <ProfileView profile={asSeenBy(user, seenAs)} />
@@ -174,9 +175,12 @@ export function ProfileEditor() {
       ) : (
         <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
           <div className="space-y-5">
-            <Card title="Your planet" icon="sparkle" hint="Your avatar is a little world you design. Tap anything to change it.">
+            <Card title="Photos" icon="eye" hint="Up to six. The first one is what people see on your card.">
+              <PhotoManager photos={form.photos as string[]} onChange={(photos) => set({ photos })} error={Object.entries(errors).find(([k]) => k.startsWith("photos"))?.[1]} />
+            </Card>
+            <Card title="Your planet" icon="sparkle" hint="Shown when you have no photo, and in games. Tap anything to change it.">
               <div className="grid gap-5 sm:grid-cols-[180px_1fr]">
-                <div className="flex items-center justify-center rounded-3xl bg-paper-deep p-4">
+                <div className="flex items-center justify-center rounded-[24px] bg-paper-deep p-4">
                   <div key={JSON.stringify(avatar)} className="animate-pop"><div className="animate-float"><Avatar name={String(form.displayName)} config={avatar} size={150} /></div></div>
                 </div>
                 <div className="space-y-3">
@@ -253,7 +257,7 @@ export function ProfileEditor() {
                   <div className="flex flex-wrap gap-1.5">
                     {LANGUAGES.map((l) => {
                       const on = languages.includes(l);
-                      return <button key={l} type="button" aria-pressed={on} disabled={!on && languages.length >= 6} onClick={() => set({ languages: on ? languages.filter((x) => x !== l) : [...languages, l] })} className={`rounded-lg border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-violet bg-violet text-on-primary" : "border-line-strong"}`}>{l}</button>;
+                      return <button key={l} type="button" aria-pressed={on} disabled={!on && languages.length >= 6} onClick={() => set({ languages: on ? languages.filter((x) => x !== l) : [...languages, l] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-transparent bg-brand text-white" : "border-line-strong"}`}>{l}</button>;
                     })}
                   </div>
                 </fieldset>
@@ -271,7 +275,7 @@ export function ProfileEditor() {
                 <div className="flex flex-wrap gap-1.5">
                   {INTERESTS.map((i) => {
                     const on = interests.includes(i);
-                    return <button key={i} type="button" aria-pressed={on} disabled={!on && interests.length >= 10} onClick={() => set({ interests: on ? interests.filter((x) => x !== i) : [...interests, i] })} className={`rounded-lg border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-rose bg-rose text-on-primary" : "border-line-strong hover:border-rose"}`}>{cap(i)}</button>;
+                    return <button key={i} type="button" aria-pressed={on} disabled={!on && interests.length >= 10} onClick={() => set({ interests: on ? interests.filter((x) => x !== i) : [...interests, i] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-rose bg-brand text-white" : "border-line-strong hover:border-rose"}`}>{cap(i)}</button>;
                   })}
                 </div>
               </fieldset>
@@ -289,7 +293,7 @@ export function ProfileEditor() {
                       <button type="button" onClick={() => set({ prompts: prompts.filter((_, i) => i !== idx) })} className="rounded-lg p-2 text-muted hover:text-danger"><Icon name="trash" size={16} label="Remove prompt" /></button>
                     </div>
                     <label className="sr-only" htmlFor={`answer-${idx}`}>Your answer</label>
-                    <input id={`answer-${idx}`} value={p.answer} maxLength={160} onChange={(e) => set({ prompts: prompts.map((x, i) => (i === idx ? { ...x, answer: e.target.value } : x)) })} placeholder="Your answer" className="mt-2 h-11 w-full rounded-xl border border-line-strong bg-surface px-3 focus:border-violet focus:outline-none" />
+                    <textarea id={`answer-${idx}`} rows={2} value={p.answer} maxLength={160} onChange={(e) => set({ prompts: prompts.map((x, i) => (i === idx ? { ...x, answer: e.target.value } : x)) })} placeholder="Your answer" className="mt-2 w-full resize-none rounded-2xl border border-transparent bg-paper-deep px-4 py-3 focus:border-violet focus:bg-surface focus:outline-none" />
                   </div>
                 ))}
                 {prompts.length < 3 && catalog && (
@@ -336,10 +340,10 @@ export function ProfileEditor() {
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-5 text-center">
+            <div className="relative overflow-hidden rounded-[24px] border border-line bg-surface p-5 text-center">
               {saved > 0 && <Burst key={saved} count={14} distance={90} />}
               <Avatar name={String(form.displayName)} config={avatar} size={96} />
-              <p className="mt-2 font-display text-2xl font-semibold">{String(form.displayName)}</p>
+              <p className="mt-2 font-display text-2xl font-bold">{String(form.displayName)}</p>
               <p className="text-sm text-muted">{INTENT_LABELS[String(form.intent)]}</p>
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-line"><div className="h-full rounded-full bg-rose" style={{ width: `${user.completeness.percent}%` }} /></div>
               <p className="mt-1 text-xs text-muted">{user.completeness.percent}% complete</p>

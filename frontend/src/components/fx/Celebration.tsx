@@ -40,23 +40,24 @@ export function Celebration({
       ref={ref}
       onClose={onClose}
       aria-labelledby="celebrate-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-md overflow-visible rounded-3xl border border-line-strong bg-surface p-0 text-ink backdrop:bg-[#130f22]/60 backdrop:backdrop-blur-sm"
+      className="m-auto w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-[32px] border-0 bg-[#09090c] p-0 text-white shadow-[0_40px_120px_-30px_rgb(255_46_106/0.6)] backdrop:bg-black/70 backdrop:backdrop-blur-md"
     >
       {open && (
-        <div className="relative px-6 pt-10 pb-7 text-center">
-          <div className="relative mx-auto flex h-36 items-center justify-center">
+        <div className="relative px-6 pt-12 pb-8 text-center">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgb(255_46_106/0.45),transparent)]" />
+          <div className="relative mx-auto flex h-40 items-center justify-center">
             <Burst count={22} distance={140} />
-            <div className="collide-l absolute">{me && <Avatar name={me.name} config={me.avatar} size={84} />}</div>
-            <div className="collide-r absolute">{them && <Avatar name={them.name} config={them.avatar} size={84} />}</div>
-            <svg viewBox="0 0 24 24" width="40" height="40" className="relative animate-heartbeat drop-shadow" fill="var(--rose)" aria-hidden="true">
-              <path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z" />
-            </svg>
+            <div className="collide-l absolute">{me && <span className="block rounded-full ring-4 ring-white"><Avatar name={me.name} config={me.avatar} size={104} /></span>}</div>
+            <div className="collide-r absolute">{them && <span className="block rounded-full ring-4 ring-white"><Avatar name={them.name} config={them.avatar} size={104} /></span>}</div>
+            <span className="bg-brand relative flex h-14 w-14 animate-heartbeat items-center justify-center rounded-full ring-4 ring-[#09090c]" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z" /></svg>
+            </span>
           </div>
-          <h2 id="celebrate-title" className="mt-4 font-display text-3xl font-semibold">{title}</h2>
-          <p className="mx-auto mt-2 max-w-xs text-muted">{message}</p>
-          <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-            {primary && <Button onClick={primary.onClick}>{primary.label}</Button>}
-            <Button variant="secondary" onClick={onClose}>Keep exploring</Button>
+          <h2 id="celebrate-title" className="text-brand relative mt-6 font-display text-5xl font-extrabold tracking-tight italic">{title}</h2>
+          <p className="relative mx-auto mt-3 max-w-xs text-white/75">{message}</p>
+          <div className="relative mt-8 flex flex-col gap-2">
+            {primary && <Button size="lg" onClick={primary.onClick}>{primary.label}</Button>}
+            <Button variant="ghost" size="lg" className="!text-white hover:!bg-white/10" onClick={onClose}>Keep swiping</Button>
           </div>
         </div>
       )}

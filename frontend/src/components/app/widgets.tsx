@@ -12,8 +12,8 @@ export function PageHeader({ title, subtitle, icon, actions }: { title: string; 
   return (
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="animate-rise">
-        <h1 className="flex items-center gap-2.5 font-display text-3xl font-semibold sm:text-4xl">
-          {icon && <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-soft text-violet"><Icon name={icon} size={22} /></span>}
+        <h1 className="flex items-center gap-3 font-display text-3xl font-extrabold tracking-tight sm:text-[2.6rem]">
+          {icon && <span className="bg-brand shadow-brand flex h-11 w-11 items-center justify-center rounded-2xl"><Icon name={icon} size={22} /></span>}
           {title}
         </h1>
         {subtitle && <p className="mt-1.5 text-muted">{subtitle}</p>}
@@ -50,14 +50,14 @@ export function useView<T extends string>(key: string, initial: T): [T, (v: T) =
 
 export function ViewToggle<T extends string>({ value, onChange, options, label = "View" }: { value: T; onChange: (v: T) => void; options: { id: T; label: string; icon: string }[]; label?: string }) {
   return (
-    <div role="radiogroup" aria-label={label} className="flex rounded-xl border border-line bg-surface p-1">
+    <div role="radiogroup" aria-label={label} className="flex rounded-full bg-paper-deep p-1">
       {options.map((o) => (
         <button
           key={o.id}
           role="radio"
           aria-checked={value === o.id}
           onClick={() => onChange(o.id)}
-          className={`flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold transition-colors ${value === o.id ? "bg-violet text-on-primary" : "text-muted hover:text-violet"}`}
+          className={`flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-all ${value === o.id ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-muted hover:text-ink"}`}
         >
           <Icon name={o.icon} size={16} /> <span className="hidden sm:inline">{o.label}</span>
           <span className="sr-only sm:hidden">{o.label}</span>
@@ -69,13 +69,13 @@ export function ViewToggle<T extends string>({ value, onChange, options, label =
 
 export function Chip({ children, tone = "plain", className = "" }: { children: ReactNode; tone?: "plain" | "violet" | "rose" | "mint" | "sun"; className?: string }) {
   const tones = {
-    plain: "border-line bg-paper text-ink",
+    plain: "border-line bg-paper-deep text-ink",
     violet: "border-transparent bg-violet-soft text-violet",
     rose: "border-transparent bg-rose-soft text-rose",
     mint: "border-transparent bg-mint-soft text-mint",
     sun: "border-transparent bg-sun-soft text-sun",
   };
-  return <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs font-bold ${tones[tone]} ${className}`}>{children}</span>;
+  return <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-bold ${tones[tone]} ${className}`}>{children}</span>;
 }
 
 /** A small ring showing Vibe Match out of 100. */
@@ -103,7 +103,7 @@ export function VibeBreakdown({ vibe }: { vibe: Vibe }) {
       <div className="flex items-center gap-4">
         <VibeRing score={vibe.score} size={76} />
         <div>
-          <p className="font-display text-2xl font-semibold">{vibe.score >= 75 ? "Strong vibe" : vibe.score >= 55 ? "Good vibe" : vibe.score >= 35 ? "Some common ground" : "Different worlds"}</p>
+          <p className="font-display text-2xl font-bold">{vibe.score >= 75 ? "Strong vibe" : vibe.score >= 55 ? "Good vibe" : vibe.score >= 35 ? "Some common ground" : "Different worlds"}</p>
           <p className="text-sm text-muted">A guide, not a verdict. Doing something together tells you more.</p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export function VibeBreakdown({ vibe }: { vibe: Vibe }) {
         {vibe.parts.map((p) => (
           <li key={p.key}>
             <div className="flex justify-between text-sm"><span className="font-semibold">{p.label}</span><span className="text-muted">{p.score} <span className="text-xs">(weight {p.weight})</span></span></div>
-            <div className="mt-1 h-2 overflow-hidden rounded-full bg-line"><div className="h-full rounded-full bg-violet transition-all duration-700" style={{ width: `${p.score}%` }} /></div>
+            <div className="mt-1 h-2 overflow-hidden rounded-full bg-line"><div className="bg-brand h-full rounded-full transition-all duration-700" style={{ width: `${p.score}%` }} /></div>
           </li>
         ))}
       </ul>
@@ -152,51 +152,67 @@ export function BondMeter({ bond, compact = false }: { bond: Bond; compact?: boo
         {bond.streak > 0 && <span className="flex items-center gap-1 font-bold text-rose" title={`${bond.streak} day streak`}><Icon name="fire" size={15} />{bond.streak}<span className="sr-only"> day streak</span></span>}
       </div>
       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(bond.progress * 100)} aria-label={`Progress to ${bond.nextName ?? "the top level"}`}>
-        <div className="h-full rounded-full bg-rose transition-all duration-700" style={{ width: `${Math.max(4, bond.progress * 100)}%` }} />
+        <div className="bg-brand h-full rounded-full transition-all duration-700" style={{ width: `${Math.max(4, bond.progress * 100)}%` }} />
       </div>
       {!compact && <p className="mt-1 text-xs text-muted">{bond.nextName ? `${bond.toNext} points to ${bond.nextName}` : "Top level reached"}</p>}
     </div>
   );
 }
 
+/** A photo first card for grids: the photo with name and age over it, then the prompt and actions. */
 export function PersonTile({ person, href, actions, footer, className = "" }: { person: PersonCard; href?: string; actions?: ReactNode; footer?: ReactNode; className?: string }) {
-  const details = [person.age, person.city].filter(Boolean).join(", ");
+  const km = person.distanceKm;
+  const where = km === null || km === undefined ? person.city : km < 5 ? "Nearby" : `${km} km away`;
+  const photo = person.photos?.[0] ?? person.avatar.photo;
+  const media = (
+    <div className="relative aspect-[4/5] overflow-hidden bg-paper-deep">
+      {photo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+      ) : (
+        <div className="bg-brand flex h-full items-center justify-center"><Avatar name={person.displayName} config={person.avatar} size={120} decorative /></div>
+      )}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-16 text-white">
+        <h3 className="font-display text-2xl leading-none font-extrabold">{person.displayName}{person.age ? <span className="ml-1.5 font-semibold text-white/90">{person.age}</span> : null}</h3>
+        <p className="mt-1.5 flex items-center gap-2 text-sm font-semibold text-white/85">
+          {person.online && <span className="h-2 w-2 rounded-full bg-[#3ee6a0]" aria-label="Online" />}
+          {where && <span className="flex items-center gap-1"><Icon name="pin" size={13} />{where}</span>}
+        </p>
+      </div>
+      {person.vibe.score !== null && (
+        <span className="glass absolute top-3 right-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-extrabold text-ink"><Icon name="sparkle" size={13} className="text-violet" />{person.vibe.score}%</span>
+      )}
+    </div>
+  );
   return (
-    <article className={`lift flex h-full flex-col rounded-3xl border border-line bg-surface p-5 ${className}`}>
-      <div className="flex items-start gap-3">
-        <Avatar name={person.displayName} config={person.avatar} size={64} online={person.online} />
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-display text-xl font-semibold">
-            {href ? <Link href={href} className="hover:text-violet">{person.displayName}</Link> : person.displayName}
-          </h3>
-          <p className="truncate text-sm text-muted">{details || "Details hidden"}{person.pronouns ? ` · ${person.pronouns}` : ""}</p>
-          <Chip tone="violet" className="mt-1.5">{INTENT_SHORT[person.intent] ?? "Open"}</Chip>
+    <article className={`lift group flex h-full flex-col overflow-hidden rounded-[24px] border border-line bg-surface ${className}`}>
+      {href ? <Link href={href} aria-label={`${person.displayName}${person.age ? `, ${person.age}` : ""}`}>{media}</Link> : media}
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Chip tone="violet">{INTENT_SHORT[person.intent] ?? "Open"}</Chip>
+          {person.interests.slice(0, 3).map((i) => <Chip key={i} tone={person.vibe.sharedInterests.includes(i) ? "rose" : "plain"}>{cap(i)}</Chip>)}
         </div>
-        <VibeRing score={person.vibe.score} />
+        {person.vibe.reasons.length > 0 && <p className="mt-3 flex gap-1.5 text-sm font-bold text-violet"><Icon name="sparkle" size={16} className="mt-0.5 shrink-0" />{person.vibe.reasons[0]}</p>}
+        {person.prompt ? (
+          <blockquote className="mt-3 rounded-2xl bg-paper-deep p-3 text-sm">
+            <span className="block text-xs font-bold text-muted">{person.prompt.text}</span>
+            <span className="mt-0.5 block font-semibold">{person.prompt.answer}</span>
+          </blockquote>
+        ) : person.bio ? (
+          <p className="mt-3 line-clamp-2 text-sm text-muted">{person.bio}</p>
+        ) : null}
+        {footer}
+        {actions && <div className="mt-auto flex flex-wrap gap-2 pt-4">{actions}</div>}
       </div>
-      {person.vibe.reasons.length > 0 && <p className="mt-3 flex gap-1.5 text-sm font-semibold text-rose"><Icon name="sparkle" size={16} className="mt-0.5 shrink-0" />{person.vibe.reasons[0]}</p>}
-      {person.prompt ? (
-        <blockquote className="mt-3 rounded-2xl bg-paper-deep p-3 text-sm">
-          <span className="block text-xs font-bold text-muted">{person.prompt.text}</span>
-          <span className="mt-0.5 block font-semibold">{person.prompt.answer}</span>
-        </blockquote>
-      ) : person.bio ? (
-        <p className="mt-3 line-clamp-2 text-sm text-muted">{person.bio}</p>
-      ) : null}
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {person.interests.slice(0, 5).map((i) => <Chip key={i} tone={person.vibe.sharedInterests.includes(i) ? "rose" : "plain"}>{cap(i)}</Chip>)}
-      </div>
-      {footer}
-      {actions && <div className="mt-auto flex flex-wrap gap-2 pt-4">{actions}</div>}
     </article>
   );
 }
 
 export function EmptyState({ title, body, action }: { title: string; body: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center rounded-3xl border border-dashed border-line-strong bg-surface/70 px-6 py-12 text-center">
-      <div className="animate-float"><LogoMark size={110} live title="" /></div>
-      <h2 className="mt-4 font-display text-2xl font-semibold">{title}</h2>
+    <div className="flex flex-col items-center rounded-[28px] border border-line bg-surface px-6 py-14 text-center">
+      <div className="animate-float"><LogoMark size={88} live title="" /></div>
+      <h2 className="mt-5 font-display text-2xl font-extrabold tracking-tight">{title}</h2>
       <p className="mt-1 max-w-sm text-muted">{body}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
@@ -208,7 +224,7 @@ export function StatTile({ label, value, icon, tone = "violet", hint }: { label:
   return (
     <div className="lift rounded-2xl border border-line bg-surface p-4">
       <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${bg}`}><Icon name={icon} size={18} /></span>
-      <p className="mt-3 font-display text-3xl font-semibold">{value}</p>
+      <p className="mt-3 font-display text-3xl font-bold">{value}</p>
       <p className="text-sm font-semibold text-muted">{label}</p>
       {hint && <p className="mt-0.5 text-xs text-muted">{hint}</p>}
     </div>

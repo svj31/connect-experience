@@ -18,8 +18,8 @@ function Locked({ hint }: { hint: string }) {
 
 function Section({ title, icon, locked, children }: { title: string; icon: string; locked?: string; children: ReactNode }) {
   return (
-    <section className="rounded-3xl border border-line bg-surface p-5" aria-label={title}>
-      <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold"><Icon name={icon} size={18} className="text-violet" />{title}</h2>
+    <section className="rounded-[24px] border border-line bg-surface p-6" aria-label={title}>
+      <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-extrabold"><Icon name={icon} size={18} className="text-violet" />{title}</h2>
       {locked ? <Locked hint={locked} /> : children}
     </section>
   );
@@ -44,34 +44,55 @@ export function ProfileView({ profile, shared = [], hero, aside }: { profile: Pr
   return (
     <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
       <div className="space-y-5">
-        <section className="relative overflow-hidden rounded-3xl border border-line bg-surface p-6">
-          <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-violet-soft" aria-hidden="true" />
-          <div className="relative flex flex-wrap items-center gap-5">
-            <div className="animate-float"><Avatar name={profile.displayName} config={profile.avatar} size={120} online={profile.online} /></div>
-            <div className="min-w-0 flex-1">
-              <h1 className="font-display text-4xl font-semibold">{profile.displayName}{profile.age ? <span className="text-muted">, {profile.age}</span> : null}</h1>
-              <p className="mt-1 text-muted">{[profile.pronouns, profile.city].filter(Boolean).join(" · ") || "Basics are private"}</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <Chip tone="violet"><Icon name="heart" size={12} />{INTENT_LABELS[profile.intent] ?? "Open to see"}</Chip>
-                {profile.online && <Chip tone="mint">Online now</Chip>}
+        <section className="relative overflow-hidden rounded-[28px] border border-line bg-surface">
+          {profile.photos?.length ? (
+            <div className="relative">
+              <ul className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-label={`${profile.displayName}'s photos`}>
+                {profile.photos.map((src, i) => (
+                  <li key={i} className="relative aspect-[4/5] w-full shrink-0 snap-center sm:aspect-[16/11]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`${profile.displayName}, photo ${i + 1} of ${profile.photos!.length}`} className="h-full w-full object-cover" />
+                  </li>
+                ))}
+              </ul>
+              {profile.photos.length > 1 && <p className="glass absolute top-3 right-3 rounded-full px-3 py-1 text-xs font-bold">Swipe for {profile.photos.length} photos</p>}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-6 pt-24 text-white">
+                <h1 className="font-display text-5xl font-extrabold tracking-tight">{profile.displayName}{profile.age ? <span className="ml-2 font-semibold text-white/90">{profile.age}</span> : null}</h1>
+                <p className="mt-1 flex flex-wrap items-center gap-3 font-semibold text-white/85">
+                  {profile.online && <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#3ee6a0]" />Online now</span>}
+                  {[profile.pronouns, profile.city].filter(Boolean).join(" · ")}
+                </p>
               </div>
             </div>
+          ) : (
+            <div className="bg-brand relative flex flex-wrap items-center gap-5 p-6 text-white">
+              <div className="animate-float rounded-full ring-4 ring-white/70"><Avatar name={profile.displayName} config={profile.avatar} size={112} online={profile.online} /></div>
+              <div className="min-w-0 flex-1">
+                <h1 className="font-display text-4xl font-extrabold tracking-tight">{profile.displayName}{profile.age ? <span className="font-semibold text-white/90">, {profile.age}</span> : null}</h1>
+                <p className="mt-1 text-white/85">{[profile.pronouns, profile.city].filter(Boolean).join(" · ") || "Basics are private"}</p>
+              </div>
+            </div>
+          )}
+          <div className="flex flex-wrap gap-1.5 px-6 pt-5">
+            <Chip tone="violet"><Icon name="heart" size={12} />{INTENT_LABELS[profile.intent] ?? "Open to see"}</Chip>
           </div>
+          <div className="p-6 pt-3">
           {hero}
           {profile.bio !== null ? (
             profile.bio && <p className="relative mt-5 text-lg">{profile.bio}</p>
           ) : (
             <div className="relative mt-5"><Locked hint={lock("about") ?? "Private"} /></div>
           )}
+          </div>
         </section>
 
         <Section title="Prompts" icon="deeptalk" locked={lock("prompts")}>
           {profile.prompts?.length ? (
             <ul className="space-y-3">
               {profile.prompts.map((p, i) => (
-                <li key={p.id} className={`rounded-2xl p-4 ${i % 2 ? "bg-rose-soft" : "bg-violet-soft"}`}>
+                <li key={p.id} className={`rounded-[24px] p-5 ${i % 2 ? "bg-rose-soft" : "bg-violet-soft"}`}>
                   <p className="text-sm font-bold text-muted">{p.text}</p>
-                  <p className="mt-1 font-display text-xl font-semibold">{p.answer}</p>
+                  <p className="mt-1 font-display text-2xl font-bold leading-snug">{p.answer}</p>
                 </li>
               ))}
             </ul>
@@ -84,7 +105,7 @@ export function ProfileView({ profile, shared = [], hero, aside }: { profile: Pr
           <div className="flex flex-wrap gap-2">
             {profile.interests.length === 0 && <p className="text-sm text-muted">No interests added yet.</p>}
             {profile.interests.map((i) => (
-              <span key={i} className={`rounded-xl px-3 py-1.5 text-sm font-bold ${shared.includes(i) ? "bg-rose text-on-primary" : "bg-paper-deep"}`}>
+              <span key={i} className={`rounded-full px-3 py-1.5 text-sm font-bold ${shared.includes(i) ? "bg-brand text-white" : "bg-paper-deep"}`}>
                 {cap(i)}{shared.includes(i) && <span className="sr-only"> (shared)</span>}
               </span>
             ))}

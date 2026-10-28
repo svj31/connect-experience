@@ -10,6 +10,7 @@ import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
 import { ConnectButton } from "./ConnectButton";
+import { SwipeDeck } from "./SwipeDeck";
 import { EmptyState, PageHeader, PersonTile, ViewToggle, useView } from "./widgets";
 
 interface Filters {
@@ -27,7 +28,7 @@ interface Filters {
 
 const DEFAULTS: Filters = { minAge: 18, maxAge: 60, intent: "", gender: "", city: "", interests: [], minVibe: 0, online: false, sort: "vibe", q: "" };
 
-const select = "h-10 w-full rounded-xl border border-line-strong bg-surface px-3 text-sm font-semibold focus:border-violet focus:outline-none";
+const select = "h-10 w-full rounded-2xl border border-transparent bg-paper-deep px-4 text-sm font-semibold focus:border-violet focus:outline-none";
 
 function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial<Filters>) => void; cities: string[]; onReset: () => void }) {
   return (
@@ -78,7 +79,7 @@ function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial
           {INTERESTS.map((i) => {
             const on = f.interests.includes(i);
             return (
-              <button key={i} type="button" aria-pressed={on} onClick={() => set({ interests: on ? f.interests.filter((x) => x !== i) : [...f.interests, i] })} className={`rounded-lg border px-2 py-1 text-xs font-bold ${on ? "border-violet bg-violet text-on-primary" : "border-line-strong hover:border-violet"}`}>
+              <button key={i} type="button" aria-pressed={on} onClick={() => set({ interests: on ? f.interests.filter((x) => x !== i) : [...f.interests, i] })} className={`rounded-full border px-2 py-1 text-xs font-bold ${on ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
                 {cap(i)}
               </button>
             );
@@ -89,59 +90,6 @@ function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial
         <input type="checkbox" checked={f.online} onChange={(e) => set({ online: e.target.checked })} className="h-4 w-4 accent-[var(--violet)]" /> Online now only
       </label>
       <Button variant="ghost" size="sm" onClick={onReset}><Icon name="refresh" size={15} /> Reset filters</Button>
-    </div>
-  );
-}
-
-/** One person at a time, like a card stack. Connect or pass, with keyboard shortcuts. */
-function StackView({ people, onPass, onConnected }: { people: PersonCard[]; onPass: (id: number) => void; onConnected: (id: number) => void }) {
-  const [leaving, setLeaving] = useState<"left" | "right" | null>(null);
-  const top = people[0];
-  const pass = useCallback(() => {
-    if (!top) return;
-    setLeaving("left");
-    setTimeout(() => {
-      setLeaving(null);
-      onPass(top.id);
-    }, 280);
-  }, [top, onPass]);
-  useEffect(() => {
-    const key = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement).closest("input, textarea, select, dialog")) return;
-      if (e.key === "ArrowLeft") pass();
-    };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, [pass]);
-  if (!top) return <EmptyState title="That is everyone for now" body="Widen your filters, or reset passes to see people again." />;
-  return (
-    <div className="mx-auto max-w-md">
-      <div className="relative">
-        {people[1] && <div className="absolute inset-x-4 -bottom-3 h-full rounded-3xl border border-line bg-surface/70" aria-hidden="true" />}
-        <div
-          key={top.id}
-          className="relative animate-pop transition-all duration-300"
-          style={leaving ? { transform: `translateX(${leaving === "left" ? -120 : 120}%) rotate(${leaving === "left" ? -14 : 14}deg)`, opacity: 0 } : undefined}
-        >
-          <PersonTile
-            person={top}
-            href={`/app/people/${top.id}`}
-            className="min-h-[420px]"
-            actions={
-              <div className="flex w-full items-center justify-center gap-3">
-                <button onClick={pass} className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-line-strong text-muted transition-transform hover:scale-110 hover:border-danger hover:text-danger" aria-label={`Pass on ${top.displayName}`} title="Pass (left arrow)">
-                  <Icon name="close" size={24} />
-                </button>
-                <Link href={`/app/people/${top.id}`} className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-line-strong text-muted transition-transform hover:scale-110 hover:border-violet hover:text-violet" aria-label={`View ${top.displayName}'s profile`}>
-                  <Icon name="user" size={22} />
-                </Link>
-                <ConnectButton person={top} prompt={top.prompt ? `${top.prompt.text}: ${top.prompt.answer}` : undefined} onDone={() => onConnected(top.id)} />
-              </div>
-            }
-          />
-        </div>
-      </div>
-      <p className="mt-6 text-center text-xs text-muted">{people.length} in your stack. Left arrow passes.</p>
     </div>
   );
 }
@@ -160,7 +108,7 @@ function GalaxyView({ people }: { people: PersonCard[] }) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[640px] rounded-full border border-line bg-surface/60">
       {[15, 30, 45].map((r) => <div key={r} className="absolute rounded-full border border-dashed border-line-strong" style={{ inset: `${50 - r}%` }} aria-hidden="true" />)}
-      <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-violet px-2 py-1 text-xs font-bold text-on-primary">You</span>
+      <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-brand px-2 py-1 text-xs font-bold text-on-primary">You</span>
       <ul>
         {placed.map(({ p, x, y }, i) => (
           <li key={p.id} className="absolute animate-pop" style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${i * 40}ms` }}>
@@ -180,7 +128,7 @@ export function Discover() {
   const [people, setPeople] = useState<PersonCard[] | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useView<"stack" | "grid" | "galaxy">("discover", "grid");
+  const [view, setView] = useView<"swipe" | "grid" | "galaxy">("discover-v2", "swipe");
   const [showFilters, setShowFilters] = useState(false);
   const set = (p: Partial<Filters>) => setFilters((f) => ({ ...f, ...p }));
 
@@ -207,9 +155,10 @@ export function Discover() {
   }, [query]);
 
   useEffect(() => {
+    if (view === "swipe") return;
     const t = setTimeout(load, 250);
     return () => clearTimeout(t);
-  }, [load]);
+  }, [load, view]);
 
   const remove = (id: number) => setPeople((list) => list?.filter((p) => p.id !== id) ?? null);
   const pass = async (id: number) => {
@@ -220,14 +169,21 @@ export function Discover() {
 
   return (
     <div className="mx-auto max-w-7xl">
+      {view === "swipe" ? (
+        <div className="mb-4 flex items-center justify-center">
+          <h1 className="sr-only">Discover</h1>
+          <ViewToggle value={view} onChange={setView} options={[{ id: "swipe", label: "Swipe", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }, { id: "galaxy", label: "Galaxy", icon: "orbit" }]} />
+        </div>
+      ) : (
       <PageHeader
         title="Discover"
-        icon="discover"
-        subtitle="People who fit what you are looking for, sorted by Vibe Match. Every score shows its reasons."
+        icon="fire"
+        subtitle="Browse with filters. Every Vibe Match shows its reasons."
         actions={
           <>
+            <>
             <label className="sr-only" htmlFor="sort">Sort by</label>
-            <select id="sort" value={filters.sort} onChange={(e) => set({ sort: e.target.value as Filters["sort"] })} className="h-11 rounded-xl border border-line-strong bg-surface px-3 text-sm font-semibold">
+            <select id="sort" value={filters.sort} onChange={(e) => set({ sort: e.target.value as Filters["sort"] })} className="h-11 rounded-full border border-line-strong bg-surface px-4 text-sm font-semibold">
               <option value="vibe">Best vibe first</option>
               <option value="active">Recently active</option>
               <option value="recent">Newest</option>
@@ -235,12 +191,15 @@ export function Discover() {
             <Button variant="secondary" className="lg:hidden" onClick={() => setShowFilters((s) => !s)} aria-expanded={showFilters}>
               <Icon name="filter" size={16} /> Filters{activeCount ? ` (${activeCount})` : ""}
             </Button>
-            <ViewToggle value={view} onChange={setView} options={[{ id: "stack", label: "Stack", icon: "cards" }, { id: "grid", label: "Grid", icon: "grid" }, { id: "galaxy", label: "Galaxy", icon: "orbit" }]} />
+            </>
+            <ViewToggle value={view} onChange={setView} options={[{ id: "swipe", label: "Swipe", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }, { id: "galaxy", label: "Galaxy", icon: "orbit" }]} />
           </>
         }
       />
+      )}
+      {view === "swipe" ? <SwipeDeck /> : (
       <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <aside className={`${showFilters ? "block" : "hidden"} h-fit rounded-3xl border border-line bg-surface p-5 lg:sticky lg:top-24 lg:block`} aria-label="Filters">
+        <aside className={`${showFilters ? "block" : "hidden"} h-fit rounded-[24px] border border-line bg-surface p-5 lg:sticky lg:top-24 lg:block`} aria-label="Filters">
           <FilterPanel f={filters} set={set} cities={cities} onReset={async () => {
             setFilters(DEFAULTS);
             await api("/people/passes", { method: "DELETE" }).catch(() => undefined);
@@ -252,8 +211,6 @@ export function Discover() {
             <EmptyState title="Discover is resting" body={error} />
           ) : !people ? (
             <Loader variant="compass" caption="Scanning the verse for your people" />
-          ) : view === "stack" ? (
-            <StackView people={people} onPass={pass} onConnected={remove} />
           ) : view === "galaxy" ? (
             people.length ? <GalaxyView people={people} /> : <EmptyState title="Nobody in range" body="Try widening the age range or removing a filter." />
           ) : people.length === 0 ? (
@@ -278,6 +235,7 @@ export function Discover() {
           )}
         </section>
       </div>
+      )}
     </div>
   );
 }

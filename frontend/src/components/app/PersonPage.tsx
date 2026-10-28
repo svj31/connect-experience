@@ -57,7 +57,7 @@ export function PersonPage({ id }: { id: number }) {
   }
 
   const actions = (
-    <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Actions">
+    <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Actions">
       {connection?.status === "accepted" ? (
         <>
           <div className="grid grid-cols-2 gap-2">
@@ -108,8 +108,8 @@ export function PersonPage({ id }: { id: number }) {
           <>
             {actions}
             {bond && (
-              <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Your bond">
-                <h2 className="font-display text-xl font-semibold">Your bond</h2>
+              <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Your bond">
+                <h2 className="font-display text-xl font-bold">Your bond</h2>
                 <BondOrbit bond={bond} me={{ name: user.displayName, avatar: user.avatar }} them={{ name: profile.displayName, avatar: profile.avatar }} />
                 <BondMeter bond={bond} />
                 <ul className="mt-3 space-y-1 text-sm">
@@ -117,8 +117,8 @@ export function PersonPage({ id }: { id: number }) {
                 </ul>
               </section>
             )}
-            <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Vibe Match">
-              <h2 className="mb-3 font-display text-xl font-semibold">Vibe Match</h2>
+            <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Vibe Match">
+              <h2 className="mb-3 font-display text-xl font-bold">Vibe Match</h2>
               <VibeBreakdown vibe={data.vibe} />
             </section>
           </>

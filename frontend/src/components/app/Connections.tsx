@@ -56,7 +56,7 @@ function Row({ c, onRemove }: { c: Connection; onRemove: (c: Connection) => void
     <li className="lift flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-surface p-4">
       <Avatar name={p.displayName} config={p.avatar} size={56} online={p.online} />
       <div className="min-w-[10rem] flex-1">
-        <Link href={`/app/people/${p.id}`} className="font-display text-lg font-semibold hover:text-violet">{p.displayName}</Link>
+        <Link href={`/app/people/${p.id}`} className="font-display text-lg font-bold hover:text-violet">{p.displayName}</Link>
         <p className="truncate text-sm text-muted">{c.lastMessage ? `${c.lastMessage.mine ? "You: " : ""}${c.lastMessage.body}` : `Connected ${timeAgo(c.since)}`}</p>
       </div>
       <div className="w-44">{c.bond && <BondMeter bond={c.bond} compact />}</div>
@@ -98,7 +98,7 @@ export function Connections() {
 
   const tabs = [
     { id: "all", label: "Connections", n: data?.connections.length },
-    { id: "requests", label: "Requests", n: data?.incoming.length },
+    { id: "requests", label: "Likes you", n: data?.incoming.length },
     { id: "sent", label: "Sent", n: data?.outgoing.length },
   ];
 
@@ -110,17 +110,17 @@ export function Connections() {
         subtitle="Everyone you are connected with, how close your bond is, and what to do next."
         actions={tab === "all" && <ViewToggle value={view} onChange={setView} options={[{ id: "list", label: "List", icon: "list" }, { id: "cards", label: "Cards", icon: "grid" }, { id: "ladder", label: "Bond ladder", icon: "layers" }]} />}
       />
-      <div role="tablist" className="mb-5 flex gap-1 overflow-x-auto border-b border-line">
+      <div role="tablist" className="no-scrollbar mb-5 flex gap-1 overflow-x-auto pb-1">
         {tabs.map((t) => (
           <button
             key={t.id}
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => router.replace(t.id === "all" ? "/app/connections" : `/app/connections?tab=${t.id}`)}
-            className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 font-bold whitespace-nowrap ${tab === t.id ? "border-violet text-violet" : "border-transparent text-muted hover:text-ink"}`}
+            className={`flex items-center gap-2 rounded-full px-4 py-2 font-bold whitespace-nowrap transition-colors ${tab === t.id ? "bg-brand text-white shadow-brand" : "text-muted hover:bg-paper-deep hover:text-ink"}`}
           >
             {t.label}
-            {t.n ? <span className={`rounded-md px-1.5 text-xs ${t.id === "requests" ? "bg-rose text-on-primary" : "bg-paper-deep"}`}>{t.n}</span> : null}
+            {t.n ? <span className={`rounded-full px-2 py-0.5 text-xs ${tab === t.id ? "bg-white/25" : t.id === "requests" ? "bg-brand text-white" : "bg-paper-deep"}`}>{t.n}</span> : null}
           </button>
         ))}
       </div>
@@ -131,27 +131,28 @@ export function Connections() {
         <Loader variant="hearts" caption="Gathering your people" />
       ) : tab === "requests" || tab === "sent" ? (
         (tab === "requests" ? data.incoming : data.outgoing).length === 0 ? (
-          <EmptyState title={tab === "requests" ? "No requests right now" : "Nothing pending"} body={tab === "requests" ? "When someone wants to connect, they show up here." : "Requests you send wait here until they reply."} action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
+          <EmptyState title={tab === "requests" ? "No new likes yet" : "Nothing pending"} body={tab === "requests" ? "When someone likes you, they show up here. Like them back to match." : "Likes you send wait here until they like you back."} action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
         ) : (
           <ul className="grid gap-4 md:grid-cols-2">
-            {(tab === "requests" ? data.incoming : data.outgoing).map((c) => (
-              <li key={c.id} className="animate-rise rounded-3xl border border-line bg-surface p-5">
+            {[...(tab === "requests" ? data.incoming : data.outgoing)].sort((a, b) => Number(Boolean(b.superLike)) - Number(Boolean(a.superLike))).map((c) => (
+              <li key={c.id} className={`animate-rise rounded-[24px] border bg-surface p-5 ${c.superLike ? "border-sky" : "border-line"}`}>
+                {c.superLike && <p className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wide text-sky uppercase"><Icon name="star" size={14} />{c.outgoing ? "You super liked" : "Super liked you"}</p>}
                 <div className="flex items-center gap-3">
                   <Avatar name={c.person.displayName} config={c.person.avatar} size={60} online={c.person.online} />
                   <div className="min-w-0 flex-1">
-                    <Link href={`/app/people/${c.person.id}`} className="font-display text-xl font-semibold hover:text-violet">{c.person.displayName}{c.person.age ? `, ${c.person.age}` : ""}</Link>
-                    <p className="text-sm text-muted">{c.outgoing ? "Sent" : "Asked"} {timeAgo(c.since)}</p>
+                    <Link href={`/app/people/${c.person.id}`} className="font-display text-xl font-bold hover:text-violet">{c.person.displayName}{c.person.age ? `, ${c.person.age}` : ""}</Link>
+                    <p className="text-sm text-muted">{c.outgoing ? "You liked" : "Liked you"} {timeAgo(c.since)}</p>
                   </div>
                   <VibeRing score={c.person.vibe.score} />
                 </div>
                 {c.note && <p className="mt-3 rounded-2xl bg-violet-soft p-3 text-sm">&ldquo;{c.note}&rdquo;</p>}
                 {c.person.vibe.reasons[0] && <p className="mt-2 flex gap-1.5 text-sm font-semibold text-rose"><Icon name="sparkle" size={15} className="mt-0.5" />{c.person.vibe.reasons[0]}</p>}
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {c.outgoing ? (
                     <Button size="sm" variant="secondary" onClick={() => decline(c)}>Cancel request</Button>
                   ) : (
                     <>
-                      <Button size="sm" onClick={() => accept(c)}><Icon name="heart" size={15} /> Accept</Button>
+                      <Button size="sm" onClick={() => accept(c)}><Icon name="heart" size={15} /> Like back</Button>
                       <Button size="sm" variant="secondary" onClick={() => decline(c)}>Not now</Button>
                       <ButtonLink size="sm" variant="ghost" href={`/app/people/${c.person.id}`}>View profile</ButtonLink>
                     </>
@@ -168,9 +169,9 @@ export function Connections() {
       ) : view === "cards" ? (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data.connections.map((c) => (
-            <li key={c.id} className="lift rounded-3xl border border-line bg-surface p-5 text-center">
+            <li key={c.id} className="lift rounded-[24px] border border-line bg-surface p-5 text-center">
               {c.bond && <BondOrbit bond={c.bond} me={{ name: user.displayName, avatar: user.avatar }} them={{ name: c.person.displayName, avatar: c.person.avatar }} size={200} />}
-              <Link href={`/app/people/${c.person.id}`} className="font-display text-xl font-semibold hover:text-violet">{c.person.displayName}</Link>
+              <Link href={`/app/people/${c.person.id}`} className="font-display text-xl font-bold hover:text-violet">{c.person.displayName}</Link>
               <div className="mt-2 text-left">{c.bond && <BondMeter bond={c.bond} />}</div>
               <div className="mt-4 flex justify-center gap-2">
                 <ButtonLink href={`/app/chats?c=${c.id}`} size="sm" variant="secondary"><Icon name="chat" size={15} /> Chat</ButtonLink>
@@ -185,7 +186,7 @@ export function Connections() {
             const here = data.connections.filter((c) => c.bond?.level === l.level);
             return (
               <section key={l.level} className="rounded-2xl border border-line bg-surface/80 p-3" aria-label={`${l.name} bonds`}>
-                <h2 className="font-display text-lg font-semibold">{l.name}</h2>
+                <h2 className="font-display text-lg font-bold">{l.name}</h2>
                 <p className="text-xs text-muted">From {l.min} points</p>
                 <ul className="mt-3 space-y-2">
                   {here.length === 0 && <li className="rounded-xl border border-dashed border-line-strong p-2 text-center text-xs text-muted">Nobody yet</li>}

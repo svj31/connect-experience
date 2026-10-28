@@ -39,13 +39,13 @@ export function SafetyCentre() {
     <div className="mx-auto max-w-5xl">
       <PageHeader title="Safety centre" icon="shield" subtitle="Tools that are always here, and people who read every report." actions={<Button variant="accent" onClick={quickExit}><Icon name="exit" size={17} /> Quick exit</Button>} />
       <div className="grid gap-5 lg:grid-cols-2">
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Date check-in planner">
-          <h2 className="flex items-center gap-2 font-display text-2xl font-semibold"><Icon name="pin" className="text-rose" />Date check-in planner</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Date check-in planner">
+          <h2 className="flex items-center gap-2 font-display text-2xl font-bold"><Icon name="pin" className="text-rose" />Date check-in planner</h2>
           <p className="mt-1 text-sm text-muted">Fill in the basics and send the message to someone you trust. Nothing here is saved.</p>
           <div className="mt-4 grid gap-2 sm:grid-cols-3">
             {(["who", "where", "when"] as const).map((k) => (
               <label key={k} className="text-sm font-semibold">{cap(k)}
-                <input value={plan[k]} onChange={(e) => setPlan({ ...plan, [k]: e.target.value })} className="mt-1 h-10 w-full rounded-xl border border-line-strong bg-surface px-3 font-normal" placeholder={k === "who" ? "Their name" : k === "where" ? "Cafe name" : "Sat, 5 pm"} />
+                <input value={plan[k]} onChange={(e) => setPlan({ ...plan, [k]: e.target.value })} className="mt-1 h-10 w-full rounded-2xl border border-transparent bg-paper-deep px-4 font-normal" placeholder={k === "who" ? "Their name" : k === "where" ? "Cafe name" : "Sat, 5 pm"} />
               </label>
             ))}
           </div>
@@ -54,15 +54,15 @@ export function SafetyCentre() {
             <Icon name="copy" size={15} /> {copied ? "Copied" : "Copy message"}
           </Button>
         </section>
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Safety tips">
-          <h2 className="flex items-center gap-2 font-display text-2xl font-semibold"><Icon name="heart" className="text-violet" />Good habits</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Safety tips">
+          <h2 className="flex items-center gap-2 font-display text-2xl font-bold"><Icon name="heart" className="text-violet" />Good habits</h2>
           <ul className="mt-3 space-y-3">
             {TIPS.map(([t, b]) => <li key={t}><p className="font-semibold">{t}</p><p className="text-sm text-muted">{b}</p></li>)}
           </ul>
           <Link href="/safety" className="mt-3 inline-block text-sm font-semibold text-violet hover:underline">Read the full safety guide</Link>
         </section>
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Your reports">
-          <h2 className="font-display text-2xl font-semibold">Your reports</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Your reports">
+          <h2 className="font-display text-2xl font-bold">Your reports</h2>
           {!data ? <Loader variant="shield" size={64} /> : data.reports.length === 0 ? <p className="mt-2 text-sm text-muted">You have not reported anyone. If something feels off, use the shield in any chat or room.</p> : (
             <ul className="mt-3 space-y-2">
               {data.reports.map((r) => (
@@ -74,8 +74,8 @@ export function SafetyCentre() {
             </ul>
           )}
         </section>
-        <section className="rounded-3xl border border-line bg-surface p-5" aria-label="Blocked people">
-          <h2 className="font-display text-2xl font-semibold">Blocked</h2>
+        <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Blocked people">
+          <h2 className="font-display text-2xl font-bold">Blocked</h2>
           {!data ? <Loader variant="shield" size={64} /> : data.blocked.length === 0 ? <p className="mt-2 text-sm text-muted">Nobody blocked.</p> : (
             <ul className="mt-3 space-y-2">
               {data.blocked.map((b) => (

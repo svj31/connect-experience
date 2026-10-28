@@ -69,11 +69,11 @@ function MomentBody({ moment }: { moment: Moment }) {
 
 function MomentCard({ m, onFavorite }: { m: Moment; onFavorite: (m: Moment) => void }) {
   return (
-    <article className="lift mb-4 break-inside-avoid rounded-3xl border border-line bg-surface p-4">
+    <article className="lift mb-4 break-inside-avoid rounded-[24px] border border-line bg-surface p-4">
       <MomentBody moment={m} />
       <div className="mt-3 flex items-start gap-2">
         <div className="min-w-0 flex-1">
-          <h2 className="font-display text-lg leading-snug font-semibold">{m.title}</h2>
+          <h2 className="font-display text-lg leading-snug font-bold">{m.title}</h2>
           <p className="text-sm text-muted">
             {activityById(m.activity).name}
             {m.partnerName && <> with {m.partnerId ? <Link href={`/app/people/${m.partnerId}`} className="font-semibold text-violet hover:underline">{m.partnerName}</Link> : m.partnerName}</>}
@@ -121,7 +121,7 @@ export function Moments() {
       />
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <label htmlFor="m-activity" className="sr-only">Activity</label>
-        <select id="m-activity" value={activity} onChange={(e) => setActivity(e.target.value)} className="h-10 rounded-xl border border-line-strong bg-surface px-3 text-sm font-semibold">
+        <select id="m-activity" value={activity} onChange={(e) => setActivity(e.target.value)} className="h-10 rounded-2xl border border-transparent bg-paper-deep px-4 text-sm font-semibold">
           <option value="">All activities</option>
           {ACTIVITIES.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
         </select>
@@ -145,7 +145,7 @@ export function Moments() {
         <ol className="relative mx-auto max-w-2xl border-l-2 border-dashed border-line-strong pl-8">
           {shown.map((m) => (
             <li key={m.id} className="relative mb-6">
-              <span className="absolute top-3 -left-[2.65rem] flex h-8 w-8 items-center justify-center rounded-full border-2 border-surface bg-violet text-on-primary"><Icon name={m.activity} size={15} /></span>
+              <span className="absolute top-3 -left-[2.65rem] flex h-8 w-8 items-center justify-center rounded-full border-2 border-surface bg-brand text-white"><Icon name={m.activity} size={15} /></span>
               <p className="mb-1 text-xs font-bold text-muted">{new Date(m.createdAt.replace(" ", "T") + "Z").toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}</p>
               <MomentCard m={m} onFavorite={favorite} />
             </li>
@@ -155,7 +155,7 @@ export function Moments() {
         <div className="space-y-8">
           {byPerson.map(([name, list]) => (
             <section key={name} aria-label={`Moments with ${name}`}>
-              <h2 className="mb-3 font-display text-2xl font-semibold">With {name} <span className="text-base text-muted">({list.length})</span></h2>
+              <h2 className="mb-3 font-display text-2xl font-bold">With {name} <span className="text-base text-muted">({list.length})</span></h2>
               <div className="flex snap-x gap-4 overflow-x-auto pb-2">
                 {list.map((m) => <div key={m.id} className="w-72 shrink-0 snap-start"><MomentCard m={m} onFavorite={favorite} /></div>)}
               </div>

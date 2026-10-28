@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { StoryRow } from "./StoryRow";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { activityById } from "@/lib/activities";
@@ -39,7 +40,7 @@ function Conversation({ c, me, onBack }: { c: Connection; me: number; onBack: ()
         <button onClick={onBack} className="rounded-lg p-1 text-muted hover:text-ink lg:hidden" aria-label="Back to conversations"><Icon name="arrowLeft" /></button>
         <Avatar name={c.person.displayName} config={c.person.avatar} size={44} online={online} />
         <div className="min-w-0 flex-1">
-          <Link href={`/app/people/${c.person.id}`} className="font-display text-lg font-semibold hover:text-violet">{c.person.displayName}</Link>
+          <Link href={`/app/people/${c.person.id}`} className="font-display text-lg font-bold hover:text-violet">{c.person.displayName}</Link>
           <p className="text-xs text-muted">{online ? "Online now" : "Away"}</p>
         </div>
         <ButtonLink href={`/app/room/${c.roomCode}`} size="sm" variant="accent"><Icon name="orbit" size={15} /> <span className="hidden sm:inline">Together</span></ButtonLink>
@@ -101,11 +102,12 @@ export function Chats() {
   return (
     <div className="mx-auto max-w-6xl">
       <PageHeader title="Chats" icon="chat" subtitle="Private conversations with your connections. Jump into an activity any time." />
+      <StoryRow />
       {list.length === 0 ? (
         <EmptyState title="No chats yet" body="Chats open when someone accepts your connection request." action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
       ) : (
         <div className="grid h-[calc(100dvh-15rem)] min-h-[480px] gap-4 lg:grid-cols-[320px_1fr]">
-          <aside className={`${selected ? "hidden lg:flex" : "flex"} min-h-0 flex-col rounded-3xl border border-line bg-surface`} aria-label="Conversations">
+          <aside className={`${selected ? "hidden lg:flex" : "flex"} min-h-0 flex-col rounded-[24px] border border-line bg-surface`} aria-label="Conversations">
             <div className="border-b border-line p-3">
               <label htmlFor="chat-search" className="sr-only">Search conversations</label>
               <div className="flex items-center gap-2 rounded-xl border border-line-strong px-3">
@@ -143,7 +145,7 @@ export function Chats() {
             {selected ? (
               <Conversation key={selected.id} c={selected} me={user.id} onBack={() => router.replace("/app/chats")} />
             ) : (
-              <div className="flex h-full items-center justify-center rounded-3xl border border-dashed border-line-strong bg-surface/60">
+              <div className="flex h-full items-center justify-center rounded-[24px] border border-dashed border-line-strong bg-surface/60">
                 <Loader variant="chat" caption="Pick a conversation to start" />
               </div>
             )}

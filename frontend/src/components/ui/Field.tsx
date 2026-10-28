@@ -1,7 +1,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
 
 const inputBase =
-  "w-full rounded-xl border bg-surface px-3 text-ink placeholder:text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-violet/25";
+  "w-full rounded-2xl border bg-paper-deep px-4 text-ink placeholder:text-muted transition-colors focus:bg-surface focus:outline-none focus:ring-4 focus:ring-violet/15";
 
 export function Field({
   label,
@@ -23,7 +23,7 @@ export function Field({
           id={id}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className={`${inputBase} h-11 ${error ? "border-danger" : "border-line-strong focus:border-violet"}`}
+          className={`${inputBase} h-12 ${error ? "border-danger" : "border-transparent focus:border-violet"}`}
           {...rest}
         />
         {children}
@@ -51,7 +51,7 @@ export function TextArea({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-        className={`${inputBase} min-h-28 py-2.5 ${error ? "border-danger" : "border-line-strong focus:border-violet"}`}
+        className={`${inputBase} min-h-28 py-2.5 ${error ? "border-danger" : "border-transparent focus:border-violet"}`}
         {...rest}
       />
       {hint && !error && <p id={`${id}-hint`} className="mt-1 text-sm text-muted">{hint}</p>}
