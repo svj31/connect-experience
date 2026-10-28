@@ -4,7 +4,7 @@
 
 | Suite | Command | Result |
 | --- | --- | --- |
-| Backend unit and integration (Vitest, supertest, two real Socket.IO clients) | `npm test --prefix backend` | 98 passed |
+| Backend unit and integration (Vitest, supertest, two real Socket.IO clients) | `npm test --prefix backend` | 111 passed |
 | Frontend unit and component (Vitest, Testing Library) | `npm test --prefix frontend` | 31 passed |
 | End to end (Playwright, Chromium, production build, real API) | `npm run test:e2e` | 27 passed |
 | Typecheck (both), ESLint with React Compiler rules, production build | `npm run typecheck`, `npm run lint` | clean |
@@ -20,7 +20,7 @@ both ways, request with live notification, accept, play invite, connection rooms
 suggestions, mutual match, decline, cancel, remove, blocks, dashboard, settings validation, catalog, data export,
 report evidence only on opt in, flagged messages, locked tables over sockets, demo sign in, admin access control,
 invite code, analytics totals, masked emails, suspend blocks login, reinstate, admins cannot be moderated, audit
-log, suspended accounts refused. All earlier tests (auth, rooms, rate limits, headers, realtime) still pass.
+log, suspended accounts refused. Discover feed and swipes: city distance, ranking order, cache expiry, like then like back is a match with a room, two simultaneous likes give exactly one match, pass and undo, super like flag and daily quota (429). All earlier tests (auth, rooms, rate limits, headers, realtime) still pass.
 
 **Frontend components.** Planet avatars, field errors, loaders, 10 activities without em dashes, landing demos
 (Would You Rather reveal, Vibe preview, Bond explorer, reveal slider), Vibe ring and breakdown, chart tables,
@@ -32,8 +32,11 @@ admin areas, old address redirects, logo hover animation and theme toggle, phone
 build profiles, find each other with filters, request with a note, live notification, accept with celebration,
 chat from Chats to the room's floating chat with unread badge, kindness nudge, Together hub to Deep Talk with both
 answers revealed, Bond and Vibe on the profile; Quick Match on a locked Connect Four table; demo member dashboard
-views, Discover stack and galaxy, bond ladder, requests, favourites, privacy, dark mode, safety planner; members
+views, Discover swipe deck (pass, undo, keyboard like) and galaxy, bond ladder, Likes you, favourites, privacy, dark mode, safety planner; members
 blocked from admin; admin invite code; admin pause, restore and audit log; phone bottom nav and room chat.
+
+## Layout audit
+`BASE_URL=http://localhost:3000 node frontend/tests/layout-audit.mjs` checks every public, member and admin page at 360, 390, 768 and 1440 px for sideways scroll, clipped control text and overlapping controls. Last run: no issues.
 
 ## Running
 
@@ -41,6 +44,9 @@ blocked from admin; admin invite code; admin pause, restore and audit log; phone
 npm test                     # backend + frontend unit and integration
 npm run build --prefix frontend
 npm run test:e2e             # starts or reuses both servers (first time: npx playwright install chromium)
+
+# App already running on 3000 and 4000? Test a fresh build side by side (separate .next-e2e folder):
+E2E_WEB_PORT=3100 E2E_API_PORT=4100 npm run test:e2e --prefix frontend
 ```
 
 ## Issues found by testing and fixed
@@ -53,3 +59,7 @@ npm run test:e2e             # starts or reuses both servers (first time: npx pl
 7. The dashboard universe drew bond rings in reverse. Inner rings are now the closest bonds.
 8. The cursor heart and ring fought over the same transform. The heart now sits inside the ring.
 9. A stale production server served old chunks during testing (500 on CSS). Documented: rebuild with the server stopped.
+10. Node 22+ has its own global `localStorage` that hides jsdom's, which broke the consent tests. The test setup now installs an in memory Storage.
+11. Moments were ordered by insert id, so a newer row about an older moment came first and the By person e2e check was flaky. Now ordered by date.
+12. `npm run test:e2e` silently reused an app already running on 3000/4000 (old code). Ports are now configurable for an isolated run.
+13. The swipe deck's action bar was hidden under the phone bottom navigation. Card height is now clamped to the viewport.

@@ -1,19 +1,26 @@
-# SaathVerse brand
+# SaathVerse brand: Ember (2026)
 
-**Name.** Saath (Hindi for together) + Verse (universe). **Tagline:** Two worlds. One connection.
+**Name.** Saath (Hindi for together) + Verse. **Tagline:** Don't just match. Do something together.
 
-**Mark: Shared Orbit.** Two orbital paths are two people's worlds; the heart in the middle is the connection
-that grows between them; the spark is the excitement of meeting someone new. On hover the worlds travel
-their orbits, the heart beats and the spark twinkles.
+**Mark.** An app icon squircle in the Ember gradient holding two overlapping white hearts: two people
+becoming *saath*. A small spark sits top right. On hover the back heart leans in and the front heart beats.
+Files: [logo-mark.svg](logo-mark.svg), [logo-wordmark.svg](logo-wordmark.svg), `frontend/src/app/icon.svg`.
+
+**Wordmark.** Lowercase `saathverse` in Bricolage Grotesque ExtraBold, tight tracking; "verse" in the gradient.
 
 | Token | Light | Dark | Use |
 | --- | --- | --- | --- |
-| Violet | #6343cc | #b4a2ff | Primary, "you", buttons |
-| Rose | #b4327a | #f39bc9 | Partner, hearts, highlights |
-| Lilac | #c5b3f8 | #7b67d8 | Orbits, decoration |
-| Blush | #f9d9f0 | #4a2546 | Soft fills |
-| Paper | #fbf8ff | #130f22 | Background |
-| Ink | #211a38 | #f4f0ff | Text |
+| Ember gradient | #FF2E6A to #FF5A4E to #FF8A3D (135 deg) | same | Primary buttons, active tabs, logo, highlights |
+| Primary text (`--violet`) | #e11d5a | #ff4f80 | Links and accents on text (AA) |
+| Accent (`--rose`) | #d4461a | #ff8a5c | Secondary highlights |
+| Ink | #111116 | #f6f6f8 | Text |
+| Paper | #ffffff | #09090c | Background |
+| Surface | #ffffff | #16161c | Cards |
 
-Flat colors only, no gradients. Rounded rectangles, never pill buttons. Every text pair meets WCAG AA.
-Chart colors (validated for color blindness): violet #6d4fd1 and rose #d0569f, dark mode #8a74f5 and #d9508a.
+Swipe semantics use the colors people already know: pass red #ff4458, super like blue #2b9bff,
+undo amber #f5a524, like = Ember gradient.
+
+**Type.** Display: Bricolage Grotesque (800). Body: Plus Jakarta Sans.
+**Shape.** Pill buttons, 24 to 32 px card radius, photo first cards with a dark bottom fade for text.
+**Photos.** Members upload up to six; demo profiles use free Unsplash portraits. Planet avatars remain the fallback.
+**Removed in this version:** starfield background, custom cursor, violet palette, Fraunces serif.

@@ -8,9 +8,9 @@ interests in the Vibe preview, click through bond levels, drag the reveal slider
 
 **0:45 Try the live demo (Ava).** Dashboard: question of the day, universe in Orbit view, streak, picks for you.
 
-**1:05 Discover.** Filters, Stack view, a card that says "You both love music and travel". Galaxy view.
+**1:05 Discover.** The swipe deck: drag a card left (NOPE), press Undo, then swipe right on Kabir or Arjun (they already liked Ava) for an instant "It's a Saath!" match. Show distance and the Vibe reasons on the card, then Browse with filters and Galaxy.
 
-**1:20 Connections.** Accept Kabir's request: "It's a Saath!" celebration. Bond ladder view.
+**1:20 Connections.** The Likes you tab: Like back the other one: "It's a Saath!" celebration. Bond ladder view.
 
 **1:35 Together.** Talk, Deep Talk, with Rohan. Second window as Rohan: both answer, answers flip together.
 Open the floating chat (unread badge), send a reaction, try an unkind word to show the kindness nudge.

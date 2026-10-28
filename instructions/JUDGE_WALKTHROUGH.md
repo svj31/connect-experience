@@ -14,8 +14,8 @@ Start the app (`npm run setup` once, then `npm run demo`) and open http://localh
 ## 2. Member side (5 min)
 Click **Try the live demo** (you become Ava).
 - **Home**: Question of the day, stats, *Your universe* in Orbit, Cards and Timeline views, picks for you, charts.
-- **Discover**: filters on the left; Stack, Grid and Galaxy views; every card says *why* the Vibe score.
-- **Connections**: requests from Kabir and Arjun are waiting. Accept one for the "It's a Saath!" celebration.
+- **Discover**: a swipe deck. Drag or use the buttons (or arrow keys): pass, like, super like, like with a note on a prompt, undo a pass. Kabir and Arjun already liked Ava, so liking them back is an instant match. Browse (with filters) and Galaxy views are one click away; every card says *why* the Vibe score.
+- **Connections**: the Likes you tab shows Kabir and Arjun. Like back for the "It's a Saath!" celebration.
   Try the Bond ladder view.
 - **Profile of Rohan** (from Connections): Bond orbit, Vibe breakdown, sections that unlock by bond level.
 - **Chats**: open Rohan; note the activity chips suggested for the pair.

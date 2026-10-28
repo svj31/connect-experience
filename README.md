@@ -42,8 +42,8 @@ GIT_COMMANDS.md  suggested commits and push commands
 ## Tests
 
 ```bash
-npm test          # backend 98 + frontend 31
+npm test          # backend 111 + frontend 31
 npm run test:e2e  # 27 end to end tests in Chromium
 ```
 
-Start with [docs/SUMMARY.md](docs/SUMMARY.md).
+Start with [docs/SUMMARY.md](docs/SUMMARY.md). Design: [docs/HLD.md](docs/HLD.md) and [docs/LLD.md](docs/LLD.md).

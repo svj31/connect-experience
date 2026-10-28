@@ -1,7 +1,7 @@
 # SaathVerse: Project Summary
 
 AFFECIO HACKS '26, Problem Statement 06, "Make Connection an Experience: Interactive Dating".
-See also: [PLAN](PLAN.md), [ARCHITECTURE](ARCHITECTURE.md), [TESTING](TESTING.md), [DEMO_SCRIPT](DEMO_SCRIPT.md),
+See also: [PLAN](PLAN.md), [HLD](HLD.md), [LLD](LLD.md), [ARCHITECTURE](ARCHITECTURE.md), [TESTING](TESTING.md), [DEMO_SCRIPT](DEMO_SCRIPT.md),
 [brand](brand/README.md), and the walkthroughs in [../instructions](../instructions).
 
 ## 1. The idea
@@ -11,10 +11,10 @@ actually shared, level by level, with streaks. Profiles open up section by secti
 
 | Criterion (weight) | What we built |
 | --- | --- |
-| Technical (30%) | Realtime server authoritative activities (10), one shared socket with live notifications, roles and moderation, privacy engine, explainable matching, SQLite with in place migrations, 156 automated tests |
+| Technical (30%) | Realtime server authoritative activities (10), one shared socket with live notifications, roles and moderation, privacy engine, explainable matching, SQLite with in place migrations, atomic swipe to match, ranked and cached Discover feed, 168 automated tests |
 | Innovation (25%) | Bond levels that unlock profile sections, Vibe Match with reasons, personalised games (questions from shared interests), planet avatars instead of photos, 3D constellation, Deep Talk |
 | Impact (20%) | No photo judging, no dead chats, consent based reveal, kindness nudges, opt in report evidence, quick exit, date check-in planner, data export and deletion |
-| UI/UX (15%) | Playful violet and rose theme, light and dark, animated logo, themed cursor, starfield, loaders per page, celebrations, multiple views per page, mobile bottom nav, AA contrast |
+| UI/UX (15%) | Production dating app design ("Ember" brand): photo first swipe cards with tap through photos, Tinder style web layout with matches and messages sidebar, icon tab bar on phones, cinematic marketing landing with live phone mockup, split screen sign in, full screen match moment, light and dark, AA contrast |
 | Demo (10%) | One click member and admin demo accounts with a week of seeded history, walkthrough and script |
 
 ## 2. What was built
@@ -25,9 +25,9 @@ and member and admin sign in (plus demos) in the header and at the end.
 
 **Member app:**
 - *Home*: question of the day, profile completeness, stats, your universe (Orbit, Cards, Timeline), picks for you, try next, weekly chart, activity mix.
-- *Discover*: filters (age, intent, gender, city, interests, minimum vibe, online, name), sort, Stack, Grid and Galaxy views, connect with a note, pass.
+- *Discover*: a swipe deck by default (drag or buttons: pass, like, super like, like with a note on a prompt, undo a pass), ranked by Vibe Match, distance, activity and who already liked you, with daily like limits; Browse (filters for age, intent, gender, city, interests, minimum vibe, online, name) and Galaxy views.
 - *Profile pages*: Vibe breakdown, Bond orbit and points, sections locked with "unlocks at" hints, suggested activities, report or block.
-- *Connections*: connections, requests, sent; List, Cards and Bond ladder views; do something menu; remove.
+- *Connections*: connections, Likes you (super likes first, Like back), sent; List, Cards and Bond ladder views; do something menu; remove.
 - *Chats*: conversation list with streaks, live chat, icebreakers from shared interests, activity chips, safety.
 - *Together*: what (Talk, Play, Create, Watch, "for you" badges), who (connection, Quick Match or open table, invite code), locked or free.
 - *Room*: 3D table, grouped activity switcher with suggestions, floating chat with unread badge, ideas, Common Ground, reveal, safety, bond level up celebrations.
@@ -54,7 +54,7 @@ in the UI, no pill buttons, no emoji, no em dashes, no fake numbers (every score
 
 ## 4. How to run and test
 See [SETUP_INSTRUCTIONS](../SETUP_INSTRUCTIONS.md) and [TESTING](TESTING.md).
-Results: backend 98, frontend 31, end to end 27, all passing. Typecheck, lint and build clean.
+Results: backend 111, frontend 31, end to end 27, all passing. Typecheck, lint and build clean.
 
 ## 5. Before launch (not doable from code)
 - Domain, hosting (backend with a persistent disk; frontend on Vercel), and the URLs in env files.
@@ -69,7 +69,7 @@ Results: backend 98, frontend 31, end to end 27, all passing. Typecheck, lint an
 4. Push notifications and scheduled dates ("Thursday 9 pm, film night") with reminders.
 5. Persist in progress game state so a restart does not reset an unfinished round.
 6. Learn Vibe Match weights from which connections reach Spark, with a fairness review.
-7. Redis adapter for Socket.IO and Postgres for scale.
+7. Redis adapter for Socket.IO, Postgres, precomputed feeds in Redis and geohash sharding (see [HLD](HLD.md) section 6).
 8. More content: question packs, Pictionary, music quiz, regional language prompts.
 9. Moderator tooling: assignment, SLA timers, appeals.
 10. Internationalisation, starting with Hindi.

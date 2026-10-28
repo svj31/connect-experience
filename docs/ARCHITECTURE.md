@@ -25,6 +25,7 @@ Browser ──HTTPS──> Next.js frontend (:3000) ──rewrite /api/*──> 
 | `bond.ts` | Bond points = moments x12 + answers x2 + messages (capped at 200) + active days x6. Levels Stardust 0, Spark 30, Orbit 90, Constellation 200, Galaxy 400. Streak = consecutive active days ending today or yesterday. |
 | `people.ts` | Privacy per section (`everyone`, `connections`, `spark`, `orbit`, `private`), profile views per viewer, completeness. |
 | `personalize.ts` | Activity ranking for a person or pair, watch picks and draw prompts by interest, question of the day. |
+| `feed.ts`, `geo.ts` | Discover ranking (Vibe, proximity, activity, liked you, newcomer, completeness), a per member stack cache with TTL, and city to city distance. See [LLD](LLD.md). |
 | `moderation.ts` | Flags unkind chat (counted for admins) and returns a safety tip when contact details are shared. |
 
 ## Data model (SQLite, migrated in place)
@@ -37,6 +38,7 @@ Browser ──HTTPS──> Next.js frontend (:3000) ──rewrite /api/*──> 
 | rooms | spaces: kind, locked, host, guest, activity |
 | messages | chat, with a `flagged` marker |
 | answers, moments, reveals | game answers, finished activities, reveal level at tables |
+| swipes | one Discover decision per pair (like, pass, superlike, matched); seen set, quotas, undo |
 | blocks, reports | safety; reports carry status, admin note and opt in evidence |
 | admin_actions | audit log |
 | contact_messages, analytics_events | site form and consent based analytics |
@@ -48,6 +50,7 @@ Browser ──HTTPS──> Next.js frontend (:3000) ──rewrite /api/*──> 
 | Auth | `POST auth/signup`, `auth/login`, `auth/logout`, `auth/admin-signup` (invite code), `auth/demo`; `GET auth/me`, `auth/demo`; `POST auth/socket-ticket` |
 | Profile | `PUT profile`, `profile/privacy`, `profile/settings`; `DELETE profile`; `GET profile/export`, `profile/moments`; `POST profile/moments/:id/favorite` |
 | People | `GET people` (filters: minAge, maxAge, intent, gender, city, interests, minVibe, online, sort, q), `people/suggestions`, `people/:id`; `POST people/:id/pass`; `DELETE people/passes` |
+| Discover | `GET discover/feed?refresh=1&limit=`, `discover/swipes/quota`; `POST discover/swipes {targetId, decision, note}` (atomic match), `discover/swipes/undo` |
 | Connections | `GET connections`; `POST connections`, `connections/:id/accept`, `/decline`, `/play`; `DELETE connections/:id` |
 | Me | `GET me/dashboard`, `me/suggestions?with=id`, `me/catalog` |
 | Rooms | `GET rooms/open`, `rooms/mine`, `rooms/:code`, `/messages`, `/moments`, `/common-ground`, `/suggestions`; `POST rooms`, `/join`, `/leave`; `PUT /reveal` |
