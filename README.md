@@ -12,7 +12,7 @@ Built for **AFFECIO HACKS '26 · Problem Statement 06: _Make Connection an Exper
 
 <br />
 
-[![Live demo](https://img.shields.io/badge/Live_demo-coming_soon-5b3a8c?style=for-the-badge&logo=vercel&logoColor=white)](#-live-demo)
+[![Live demo](https://img.shields.io/badge/Live_demo-connect--experience.vercel.app-5b3a8c?style=for-the-badge&logo=vercel&logoColor=white)](https://connect-experience.vercel.app/)
 [![Run locally](https://img.shields.io/badge/Run_locally-2_commands-f2a900?style=for-the-badge&logo=gnubash&logoColor=161412)](#-quick-start)
 [![Tests](https://img.shields.io/badge/tests-181_passing-1f7a55?style=for-the-badge&logo=vitest&logoColor=white)](#-testing-and-quality)
 [![Repo](https://img.shields.io/badge/GitHub-svj31%2Fconnect--experience-161412?style=for-the-badge&logo=github)](https://github.com/svj31/connect-experience)
@@ -95,8 +95,8 @@ Conventional dating apps are built around **browsing profiles and exchanging mes
 
 | | Link | Notes |
 | --- | --- | --- |
-| 🌐 **Live app** | _Deployment in progress for the final round_ | The URL will be added here |
-| 🎥 **Demo video** | _Recorded for the final submission_ | Walkthrough script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
+| 🌐 **Live app** | [connect-experience.vercel.app](https://connect-experience.vercel.app/) | Production deployment on Vercel + Render |
+| 🎥 **Demo video** | [Watch Google Drive video](https://drive.google.com/drive/folders/1WaHT-JFHgupF96xmTnOKqsmhuVE0MT9C?usp=sharing) | Walkthrough script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
 | 💻 **Run it yourself** | [Quick start](#-quick-start) | Two commands, about 2 minutes, then open http://localhost:3000 |
 
 **One-click demo accounts** (password `saathverse123` for all of them):
@@ -1030,7 +1030,7 @@ Run through this verification sequence to confirm the entire production pipeline
 - [x] Bond levels with progressive profile reveal; photo and planet identity
 - [x] Safety centre, moderation console, audit log
 - [x] Accessibility, light and dark, responsive layouts, gesture onboarding
-- [ ] Public deployment and demo video (final round)
+- [x] Public deployment and demo video (final round)
 - [ ] Photo verification and a verified badge
 - [ ] Voice and video rooms (WebRTC) unlocked at higher bond levels
 - [ ] Postgres + Redis (Socket.IO adapter, feed precompute, geohash sharding)
