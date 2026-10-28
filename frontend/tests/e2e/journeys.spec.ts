@@ -19,6 +19,7 @@ test.describe("two people meet, connect, chat and play", () => {
 
     // Anaya finds Bilal with filters and sees why they might click.
     await a.page.goto("/app/discover");
+    await a.page.getByRole("radio", { name: "Browse" }).click();
     await a.page.getByLabel("City").selectOption(CITY);
     await expect(a.page.locator("article")).toHaveCount(1);
     const card = a.page.locator("article", { hasText: "Bilal" });
@@ -32,7 +33,7 @@ test.describe("two people meet, connect, chat and play", () => {
     await expect(b.page.getByText("Anaya wants to connect").first()).toBeVisible();
     await b.page.goto("/app/connections?tab=requests");
     await expect(b.page.getByText("Fellow stargazer! Constellation sometime?")).toBeVisible();
-    await b.page.getByRole("button", { name: "Accept" }).click();
+    await b.page.getByRole("button", { name: "Like back" }).click();
     const party = b.page.getByRole("dialog", { name: "It's a Saath!" });
     await expect(party).toBeVisible();
     await expect(a.page.getByText("Bilal accepted your request")).toBeVisible();
@@ -75,7 +76,7 @@ test.describe("two people meet, connect, chat and play", () => {
 
     // Bond and Vibe show on the profile.
     await a.page.goto("/app/connections");
-    await a.page.getByRole("link", { name: "Bilal" }).first().click();
+    await a.page.locator("#main").getByRole("link", { name: "Bilal" }).first().click();
     await expect(a.page.getByRole("region", { name: "Your bond" })).toContainText("Stardust");
     await expect(a.page.getByRole("region", { name: "Vibe Match" })).toContainText("Shared interests");
     await a.ctx.close();
@@ -119,19 +120,29 @@ test.describe("demo member", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Ava");
     await expect(page.getByText("Question of the day")).toBeVisible();
     await page.getByRole("radio", { name: "Cards" }).click();
-    await expect(page.getByRole("link", { name: "Rohan" })).toBeVisible();
+    await expect(page.locator("#main").getByRole("link", { name: "Rohan", exact: true }).last()).toBeVisible();
     await page.getByRole("radio", { name: "Timeline" }).click();
     await expect(page.getByText("The Midnight Chai")).toBeVisible();
     await expect(page.getByRole("table", { name: /Messages and moments/ })).toBeAttached();
   });
 
-  test("Discover stack and galaxy views", async ({ page }) => {
+  test("Discover swipe deck, undo, and galaxy view", async ({ page }) => {
     await page.goto("/app/discover");
-    await page.getByRole("radio", { name: "Stack" }).click();
+    await expect(page.getByText(/likes left today/)).toBeVisible();
     const pass = page.getByRole("button", { name: /^Pass on / });
     const first = await pass.getAttribute("aria-label");
     await pass.click();
     await expect(page.getByRole("button", { name: /^Pass on / })).not.toHaveAttribute("aria-label", first!);
+    // A pass can be undone, bringing the same person back to the top.
+    await page.getByRole("button", { name: "Undo last pass" }).click();
+    await expect(page.getByRole("button", { name: /^Pass on / })).toHaveAttribute("aria-label", first!);
+    // Keyboard: right arrow likes the top card.
+    const liked = await page.getByRole("button", { name: /^Like \S+$/ }).getAttribute("aria-label");
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByRole("button", { name: /^Like \S+$/ })).not.toHaveAttribute("aria-label", liked!);
+    // Ava's top picks include people who already liked her, so this may be a match.
+    const party = page.getByRole("dialog", { name: "It's a Saath!" });
+    if (await party.isVisible()) await page.keyboard.press("Escape");
     await page.getByRole("radio", { name: "Galaxy" }).click();
     await expect(page.locator("a[title*='Vibe']").first()).toBeVisible();
     await page.getByRole("button", { name: "Reset filters" }).click();
@@ -141,7 +152,7 @@ test.describe("demo member", () => {
     await page.goto("/app/connections");
     await page.getByRole("radio", { name: "Bond ladder" }).click();
     await expect(page.getByRole("region", { name: "Orbit bonds" })).toContainText("Rohan");
-    await page.getByRole("tab", { name: /Requests/ }).click();
+    await page.getByRole("tab", { name: /Likes you/ }).click();
     await expect(page.getByText(/biryani opinions/)).toBeVisible();
 
     await page.goto("/app/moments");

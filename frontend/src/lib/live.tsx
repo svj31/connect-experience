@@ -106,7 +106,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
             className="pointer-events-auto animate-pop rounded-2xl border border-line-strong bg-surface p-3 text-left shadow-[var(--shadow)]"
           >
             <p className="flex items-center gap-2 text-sm font-bold">
-              <span className={`h-2 w-2 rounded-full ${t.kind === "warning" ? "bg-sun" : t.kind === "accepted" ? "bg-rose" : "bg-violet"}`} aria-hidden="true" />
+              <span className={`h-2 w-2 rounded-full ${t.kind === "warning" ? "bg-sun" : t.kind === "accepted" ? "bg-rose" : "bg-brand"}`} aria-hidden="true" />
               {t.title}
             </p>
             {t.body && <p className="mt-0.5 text-sm text-muted">{t.body}</p>}

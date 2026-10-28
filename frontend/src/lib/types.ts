@@ -10,6 +10,8 @@ export const AVATAR_PATTERNS = ["plain", "bands", "spots", "swirl", "craters"] a
 export const AVATAR_FACES = ["smile", "grin", "wink", "calm", "shy", "none"] as const;
 
 export interface AvatarConfig {
+  /** Main photo URL, when the member added one. */
+  photo?: string | null;
   shape: AvatarShape;
   color: AvatarColor;
   ring: (typeof AVATAR_RINGS)[number];
@@ -27,7 +29,7 @@ export const INTERESTS = [
 export type Visibility = "everyone" | "connections" | "spark" | "orbit" | "private";
 export type PrivacySection = "basics" | "about" | "lifestyle" | "work" | "prompts" | "socials";
 export type Privacy = Record<PrivacySection, Visibility> & { discoverable: boolean; showOnline: boolean; showVibe: boolean };
-export interface Settings { theme: "light" | "dark" | "system"; cursor: boolean; motion: "full" | "reduced"; ageMin: number; ageMax: number }
+export interface Settings { theme: "light" | "dark" | "system"; cursor: boolean; motion: "full" | "reduced"; ageMin: number; ageMax: number; maxDistanceKm?: number }
 export type Lifestyle = Partial<Record<"drinking" | "smoking" | "workout" | "pets" | "kids" | "sleep" | "diet", string>>;
 
 /** A profile as the viewer may see it. Null fields are hidden by the owner's privacy choices. */
@@ -36,6 +38,7 @@ export interface Profile {
   displayName: string;
   pronouns: string;
   avatar: AvatarConfig;
+  photos?: string[];
   avatarShape: AvatarShape;
   avatarColor: AvatarColor;
   interests: string[];
@@ -87,6 +90,9 @@ export interface PersonCard {
   bio: string | null;
   prompt: { id: string; text: string; answer: string } | null;
   online: boolean | null;
+  photos?: string[];
+  /** City to city distance from the viewer, when both cities are known. */
+  distanceKm?: number | null;
   vibe: VibeSummary;
 }
 
@@ -108,6 +114,7 @@ export interface Connection {
   status: "pending" | "accepted";
   outgoing: boolean;
   note: string;
+  superLike?: boolean;
   roomCode: string | null;
   since: string;
   person: PersonCard;
