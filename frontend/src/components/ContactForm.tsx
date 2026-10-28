@@ -54,7 +54,7 @@ export function ContactForm() {
   if (sent) {
     return (
       <div role="status" className="animate-pop rounded-lg border border-teal/40 bg-teal-soft p-6">
-        <p className="flex items-center gap-2 font-display text-2xl font-semibold text-mint"><Icon name="check" /> Message received</p>
+        <p className="flex items-center gap-2 font-display text-2xl font-bold text-mint"><Icon name="check" /> Message received</p>
         <p className="mt-1">Thanks, {values.name.split(" ")[0]}. We will reply to {values.email}.</p>
       </div>
     );

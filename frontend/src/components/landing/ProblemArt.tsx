@@ -12,7 +12,7 @@ export function SwipeArt() {
 export function DeadChatArt() {
   return (
     <div className="mx-auto flex h-40 w-48 flex-col justify-center gap-2" aria-hidden="true">
-      <span className="msg-1 self-end rounded-2xl rounded-br-sm bg-violet px-3 py-1.5 text-sm font-semibold text-on-primary">hey</span>
+      <span className="msg-1 self-end rounded-2xl rounded-br-sm bg-brand px-3 py-1.5 text-sm font-semibold text-on-primary">hey</span>
       <span className="msg-2 self-start rounded-2xl rounded-bl-sm border border-line bg-surface px-3 py-1.5 text-sm text-muted">hey</span>
       <span className="self-center text-xs text-muted">Seen 3 days ago</span>
     </div>

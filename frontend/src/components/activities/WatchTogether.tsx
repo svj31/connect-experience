@@ -122,7 +122,7 @@ export function WatchTogether({ game, act, ideas }: ActivityProps) {
                 type="button"
                 disabled={busy}
                 onClick={() => run({ type: "load", url: w.url })}
-                className="shrink-0 rounded-xl border border-line-strong bg-surface px-3 py-2 text-left text-sm hover:border-violet hover:bg-violet-soft"
+                className="shrink-0 rounded-2xl border border-transparent bg-paper-deep px-4 py-2 text-left text-sm hover:border-violet hover:bg-violet-soft"
               >
                 <span className="block font-semibold">{w.title}</span>
                 <span className="block text-xs text-muted">{w.mood}</span>
@@ -138,7 +138,7 @@ export function WatchTogether({ game, act, ideas }: ActivityProps) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Paste a YouTube link"
-          className="h-11 flex-1 rounded-xl border border-line-strong bg-surface px-3 focus:border-teal focus:outline-none"
+          className="h-11 flex-1 rounded-2xl border border-transparent bg-paper-deep px-4 focus:border-teal focus:outline-none"
         />
         <Button type="submit" variant="secondary" loading={busy} disabled={!url.trim()}>Load video</Button>
       </form>
@@ -160,7 +160,7 @@ export function WatchTogether({ game, act, ideas }: ActivityProps) {
             }}
             className="absolute inset-0 flex items-center justify-center bg-black/55 font-semibold text-white"
           >
-            <span className="flex items-center gap-2 rounded-xl bg-violet px-4 py-3 text-on-primary"><Icon name="play" /> Your partner pressed play. Tap to join.</span>
+            <span className="flex items-center gap-2 rounded-xl bg-brand px-4 py-3 text-on-primary"><Icon name="play" /> Your partner pressed play. Tap to join.</span>
           </button>
         )}
       </div>

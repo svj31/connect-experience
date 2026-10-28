@@ -27,9 +27,9 @@ export function DeepTalk({ game, act, restart, partnerName }: ActivityProps) {
 
   return (
     <Panel title="Deep Talk" subtitle="Answer honestly. Nobody sees an answer until you both have one." aside={<Progress value={game.round} total={game.total} label={DEPTH[game.card.level]} />}>
-      <div key={game.card.id} className="animate-pop rounded-3xl border-2 border-violet/30 bg-violet-soft p-6 text-center">
+      <div key={game.card.id} className="animate-pop rounded-[24px] border-2 border-violet/30 bg-violet-soft p-6 text-center">
         <p className="text-xs font-bold tracking-widest text-violet uppercase">{DEPTH[game.card.level]}</p>
-        <p className="mx-auto mt-2 max-w-xl font-display text-2xl font-semibold text-balance sm:text-3xl">{game.card.text}</p>
+        <p className="mx-auto mt-2 max-w-xl font-display text-2xl font-bold text-balance sm:text-3xl">{game.card.text}</p>
       </div>
 
       {game.revealed ? (

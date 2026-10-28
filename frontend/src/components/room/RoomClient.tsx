@@ -104,7 +104,7 @@ export function RoomClient({ code }: { code: string }) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
         <div className="animate-float"><LogoMark size={120} live title="" /></div>
-        <h1 className="mt-4 font-display text-3xl font-semibold">{room.fatal}</h1>
+        <h1 className="mt-4 font-display text-3xl font-bold">{room.fatal}</h1>
         <p className="mt-2 text-muted">Head back to find someone else, or start something new.</p>
         <Link href="/app/together" className={buttonClass("primary", "md", "mt-6")}>Back to Together</Link>
       </div>
@@ -125,14 +125,14 @@ export function RoomClient({ code }: { code: string }) {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-30 border-b border-line bg-paper/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-3 py-2 sm:gap-3 sm:px-5">
-          <Link href={info.kind === "connection" ? "/app/connections" : "/app/together"} className="flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-semibold text-muted hover:bg-violet-soft hover:text-violet">
+          <Link href={info.kind === "connection" ? "/app/connections" : "/app/together"} className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-muted hover:bg-violet-soft hover:text-violet">
             <Icon name="arrowLeft" size={16} /> <span className="sr-only sm:not-sr-only">Back</span>
           </Link>
           {partner ? (
             <Link href={`/app/people/${partner.id}`} className="flex min-w-0 flex-1 items-center gap-2.5 rounded-xl p-1 hover:bg-violet-soft">
               <Avatar name={partner.displayName} config={partnerAvatar} size={40} online={partnerOnline} />
               <span className="min-w-0">
-                <span className="block truncate font-display text-lg leading-tight font-semibold">{partner.displayName}</span>
+                <span className="block truncate font-display text-lg leading-tight font-bold">{partner.displayName}</span>
                 <span className="flex items-center gap-1.5 text-xs text-muted">
                   <span className={`h-2 w-2 rounded-full ${connected ? "bg-mint" : "bg-sun"}`} aria-hidden="true" />
                   {partnerOnline ? "Here now" : "Away"} · {current.name}{info.locked ? " · one activity" : ""}
@@ -141,7 +141,7 @@ export function RoomClient({ code }: { code: string }) {
             </Link>
           ) : (
             <div className="min-w-0 flex-1">
-              <h1 className="truncate font-display text-lg font-semibold">{info.title}</h1>
+              <h1 className="truncate font-display text-lg font-bold">{info.title}</h1>
               <p className="text-xs text-muted">Waiting for someone to sit down</p>
             </div>
           )}
@@ -158,7 +158,7 @@ export function RoomClient({ code }: { code: string }) {
       </header>
 
       <div className="mx-auto w-full max-w-6xl flex-1 space-y-4 px-3 py-4 sm:px-5">
-        <section aria-label="The table" className="relative overflow-hidden rounded-3xl border border-line bg-surface">
+        <section aria-label="The table" className="relative overflow-hidden rounded-[24px] border border-line bg-surface">
           <div className="relative h-36 sm:h-40">
             <RoomScene
               me={{ shape: user.avatarShape, color: user.avatarColor, online: meOnline }}
@@ -182,7 +182,7 @@ export function RoomClient({ code }: { code: string }) {
         </section>
 
         {!partner ? (
-          <section className="animate-rise rounded-3xl border border-line bg-surface p-6 text-center sm:p-10">
+          <section className="animate-rise rounded-[24px] border border-line bg-surface p-6 text-center sm:p-10">
             <Loader variant="orbit" caption={info.isPublic ? "Your table is listed in Together. Waiting for someone to sit down." : "Waiting for your guest."} />
             <p className="text-sm text-muted">Or invite someone directly with this code</p>
             <p className="mt-2 font-mono text-4xl font-bold tracking-[0.25em]">{info.code}</p>
@@ -193,7 +193,7 @@ export function RoomClient({ code }: { code: string }) {
             {info.locked ? (
               <p className="flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2.5 text-sm"><Icon name="lock" size={16} className="text-violet" /> This table is set to <strong>{current.name}</strong>.</p>
             ) : (
-              <nav aria-label="Activities" className="rounded-3xl border border-line bg-surface p-3">
+              <nav aria-label="Activities" className="rounded-[24px] border border-line bg-surface p-3">
                 <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-1">
                   {CATEGORIES.map((c) => (
                     <div key={c.id} className="shrink-0">
@@ -208,7 +208,7 @@ export function RoomClient({ code }: { code: string }) {
                                 onClick={() => pick(a.id)}
                                 aria-current={active ? "true" : undefined}
                                 title={suggested ? topIdeas.find((s) => s.id === a.id)?.reason : a.short}
-                                className={`relative flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-violet bg-violet text-on-primary" : "border-line bg-paper hover:border-violet hover:text-violet"}`}
+                                className={`relative flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-transparent bg-brand text-white" : "border-line bg-paper hover:border-violet hover:text-violet"}`}
                               >
                                 <Icon name={a.id} size={16} /> {a.name}
                                 {suggested && !active && <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-rose" aria-label="Suggested for you two" />}
@@ -223,7 +223,7 @@ export function RoomClient({ code }: { code: string }) {
               </nav>
             )}
 
-            <div className="rounded-3xl border border-line bg-surface p-4 sm:p-6">
+            <div className="rounded-[24px] border border-line bg-surface p-4 sm:p-6">
               {!snapshot || !ActivityView ? (
                 <Loader variant={current.category === "watch" ? "reel" : current.id === "constellation" ? "stars" : current.category === "talk" ? "chat" : "cards"} caption={`Setting up ${current.name}`} />
               ) : !snapshot.game ? (
@@ -256,7 +256,7 @@ export function RoomClient({ code }: { code: string }) {
         }}
         aria-expanded={chatOpen}
         aria-controls="room-chat"
-        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet text-on-primary shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
+        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
       >
         <Icon name={chatOpen ? "close" : "chat"} size={24} label={chatOpen ? "Close chat" : unread ? `Open chat, ${unread} unread` : "Open chat"} />
         {unread > 0 && !chatOpen && <span className="absolute -top-1.5 -right-1.5 flex h-6 min-w-6 animate-pop items-center justify-center rounded-full border-2 border-paper bg-rose px-1 text-xs font-bold text-on-primary">{unread}</span>}
@@ -278,7 +278,7 @@ export function RoomClient({ code }: { code: string }) {
           extraPrompts={ideas?.sharedInterests.slice(0, 2).map((i) => `We both like ${i}. What got you into it?`)}
           header={
             <header className="flex items-center justify-between border-b border-line px-4 py-3">
-              <h2 className="font-display text-lg font-semibold">Chat with {partner?.displayName ?? "your partner"}</h2>
+              <h2 className="font-display text-lg font-bold">Chat with {partner?.displayName ?? "your partner"}</h2>
               <button onClick={() => setChatOpen(false)} className="rounded-lg p-1 text-muted hover:text-ink"><Icon name="close" size={18} label="Close chat" /></button>
             </header>
           }

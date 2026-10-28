@@ -30,13 +30,13 @@ export function AdminMembers() {
   return (
     <div className="mx-auto max-w-7xl">
       <PageHeader title="Members" icon="users" subtitle="Account status and safety signals. Emails are partly hidden; profiles and chats are not shown here." />
-      <div className="mb-4 flex max-w-md items-center gap-2 rounded-xl border border-line-strong bg-surface px-3">
+      <div className="mb-4 flex max-w-md items-center gap-2 rounded-2xl border border-transparent bg-paper-deep px-4">
         <Icon name="search" size={16} className="text-muted" />
         <label htmlFor="member-search" className="sr-only">Search members</label>
         <input id="member-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or email" className="h-11 w-full bg-transparent focus:outline-none" />
       </div>
       {error ? <EmptyState title="Could not load members" body={error} /> : !users ? <Loader variant="shield" /> : (
-        <div className="overflow-x-auto rounded-3xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-[24px] border border-line bg-surface">
           <table className="w-full min-w-[820px] text-left text-sm">
             <thead className="border-b border-line text-muted">
               <tr><th className="px-4 py-3">Member</th><th>Status</th><th>City</th><th>Connections</th><th>Reports</th><th>Last active</th><th className="px-4 text-right">Actions</th></tr>

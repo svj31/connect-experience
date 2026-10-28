@@ -1,69 +1,73 @@
 @import "tailwindcss";
 
 /*
-  SaathVerse palette, from the Shared Orbit logo: violet, lilac, rose and blush on soft
-  lavender paper. Flat colors only. Every text color is checked against WCAG AA on each
-  surface in both themes (lowest pair 4.66:1). Dark mode has its own steps, not an inversion.
+  SaathVerse 2026 brand: "Ember". One hot brand gradient (rose to ember orange) on clean white or
+  near black, like the dating apps people already trust. Token names are historic: "violet" is the
+  primary (rose) and "rose" is the accent (ember). Text colors meet WCAG AA on their surfaces.
 */
 :root {
-  --bg: #fbf8ff;
-  --bg-deep: #f3edff;
+  --bg: #ffffff;
+  --bg-deep: #f5f5f7;
   --surface: #ffffff;
-  --line: #e8dff8;
-  --line-strong: #cbbdef;
-  --ink: #211a38;
-  --muted: #5d5476;
-  --violet: #6343cc;
-  --violet-dark: #4f31b3;
-  --violet-soft: #ece5ff;
-  --lilac: #c5b3f8;
-  --rose: #b4327a;
-  --rose-dark: #962566;
-  --rose-soft: #fbe2f0;
-  --blush: #f9d9f0;
-  --spark: #e5a2d5;
-  --mint: #23725f;
-  --mint-soft: #dcf2ea;
-  --sun: #94600c;
-  --sun-soft: #fbefd2;
-  --sky: #2f5f9e;
-  --danger: #b42318;
+  --line: #ececf1;
+  --line-strong: #dadae2;
+  --ink: #111116;
+  --muted: #61616d;
+  --violet: #e11d5a;
+  --violet-dark: #be1249;
+  --violet-soft: #ffe9ef;
+  --lilac: #ffb4c8;
+  --rose: #d4461a;
+  --rose-dark: #b33a14;
+  --rose-soft: #fff0e9;
+  --blush: #ffd9e3;
+  --spark: #ff8a5c;
+  --mint: #0f7a57;
+  --mint-soft: #dff5ec;
+  --sun: #8a5a00;
+  --sun-soft: #fff3d6;
+  --sky: #1d63c9;
+  --danger: #c42020;
   --on-primary: #ffffff;
-  --chart-1: #6d4fd1;
-  --chart-2: #d0569f;
-  --star: #c5b3f8;
-  --shadow: 0 1px 2px rgb(33 26 56 / 0.06), 0 8px 24px -12px rgb(33 26 56 / 0.18);
+  --chart-1: #ff3d6e;
+  --chart-2: #ff7a45;
+  --star: #ffb4c8;
+  --grad: linear-gradient(135deg, #ff2e6a 0%, #ff5a4e 55%, #ff8a3d 100%);
+  --shadow: 0 1px 2px rgb(17 17 22 / 0.05), 0 12px 32px -14px rgb(17 17 22 / 0.22);
+  --shadow-brand: 0 14px 30px -12px rgb(255 46 106 / 0.55);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --bg: #130f22;
-  --bg-deep: #1b1630;
-  --surface: #211a3a;
-  --line: #2f2752;
-  --line-strong: #4a3e7a;
-  --ink: #f4f0ff;
-  --muted: #b9afd9;
-  --violet: #b4a2ff;
-  --violet-dark: #cbbdff;
-  --violet-soft: #2d2357;
-  --lilac: #7b67d8;
-  --rose: #f39bc9;
-  --rose-dark: #f7b6d8;
-  --rose-soft: #3d1f3c;
-  --blush: #4a2546;
-  --spark: #e5a2d5;
-  --mint: #7fd6bd;
-  --mint-soft: #173a33;
-  --sun: #f2c46b;
-  --sun-soft: #3a2e14;
-  --sky: #9cc2ff;
-  --danger: #ff8a80;
-  --on-primary: #130f22;
-  --chart-1: #8a74f5;
-  --chart-2: #d9508a;
-  --star: #9c8ae6;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+  --bg: #09090c;
+  --bg-deep: #111116;
+  --surface: #16161c;
+  --line: #24242c;
+  --line-strong: #363640;
+  --ink: #f6f6f8;
+  --muted: #a3a3b0;
+  --violet: #ff4f80;
+  --violet-dark: #ff7a9e;
+  --violet-soft: #2b0f19;
+  --lilac: #8a2a48;
+  --rose: #ff8a5c;
+  --rose-dark: #ffa27c;
+  --rose-soft: #2b170e;
+  --blush: #3a1422;
+  --spark: #ff8a5c;
+  --mint: #4fd1a1;
+  --mint-soft: #0f2a21;
+  --sun: #f5c451;
+  --sun-soft: #2e2410;
+  --sky: #7fb2ff;
+  --danger: #ff7a7a;
+  --on-primary: #ffffff;
+  --chart-1: #ff4f80;
+  --chart-2: #ff8a5c;
+  --star: #ff4f80;
+  --grad: linear-gradient(135deg, #ff2e6a 0%, #ff5a4e 55%, #ff8a3d 100%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -16px rgb(0 0 0 / 0.8);
+  --shadow-brand: 0 14px 34px -12px rgb(255 46 106 / 0.6);
   color-scheme: dark;
 }
 
@@ -100,7 +104,7 @@
   --color-teal-soft: var(--rose-soft);
   --color-leaf: var(--mint);
 
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-display: var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
   --font-sans: var(--font-jakarta), system-ui, sans-serif;
 
   --animate-rise: rise 0.5s ease-out both;
@@ -137,6 +141,14 @@ body {
 }
 
 ::selection { background: var(--blush); color: var(--ink); }
+
+/* Brand gradient helpers. */
+@utility bg-brand { background-image: var(--grad); color: #fff; }
+@utility text-brand { background-image: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@utility shadow-brand { box-shadow: var(--shadow-brand); }
+.glass { background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 
@@ -148,24 +160,11 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
 .reveal.is-visible { opacity: 1; transform: none; }
 
-/* ---------- Logo: on hover the worlds orbit, the heart beats, the spark twinkles ---------- */
-.sv-logo .orbit-a, .sv-logo .orbit-b, .sv-logo .worlds, .sv-logo .heart, .sv-logo .spark, .sv-logo .dot {
-  transform-box: view-box;
-  transform-origin: 110px 76px;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.sv-logo .spark { transform-origin: 110px 34px; }
-.sv-logo .dot { transform-origin: 170px 39px; }
-.sv-logo:hover .orbit-a, .sv-logo.is-live .orbit-a { animation: sv-orbit-a 3s linear infinite; }
-.sv-logo:hover .orbit-b, .sv-logo.is-live .orbit-b { animation: sv-orbit-b 3s linear infinite; }
-.sv-logo:hover .worlds, .sv-logo.is-live .worlds { animation: sv-worlds 3s linear infinite; }
-.sv-logo:hover .heart, .sv-logo.is-live .heart { animation: heartbeat 1.2s ease-in-out infinite; }
-.sv-logo:hover .spark, .sv-logo.is-live .spark { animation: sv-spark 1.2s ease-in-out infinite; }
-.sv-logo:hover .dot, .sv-logo.is-live .dot { animation: twinkle 0.9s ease-in-out infinite; transform-origin: 170px 39px; }
-@keyframes sv-orbit-a { to { transform: rotate(360deg); } }
-@keyframes sv-orbit-b { to { transform: rotate(-360deg); } }
-@keyframes sv-worlds { to { transform: rotate(360deg); } }
-@keyframes sv-spark { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.35) rotate(45deg); } }
+/* ---------- Logo: on hover the two hearts lean together and beat ---------- */
+.sv-logo .heart-a, .sv-logo .heart-b, .sv-logo .spark { transform-box: fill-box; transform-origin: center; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.sv-logo:hover .heart-a, .sv-logo.is-live .heart-a { transform: translateX(3px) rotate(-6deg); }
+.sv-logo:hover .heart-b, .sv-logo.is-live .heart-b { animation: heartbeat 1.2s ease-in-out infinite; }
+.sv-logo:hover .spark, .sv-logo.is-live .spark { animation: twinkle 0.9s ease-in-out infinite; }
 
 /* ---------- Loaders, one per kind of wait ---------- */
 .ld-orbit .w1 { animation: ld-around 1.8s linear infinite; transform-origin: 50px 50px; }
@@ -220,8 +219,8 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 }
 
 /* The two worlds collide into a heart. Used by the match celebration. */
-@keyframes collide-l { 0% { transform: translateX(-120px) scale(0.7); } 60% { transform: translateX(-18px) scale(1); } 100% { transform: translateX(-30px) scale(1); } }
-@keyframes collide-r { 0% { transform: translateX(120px) scale(0.7); } 60% { transform: translateX(18px) scale(1); } 100% { transform: translateX(30px) scale(1); } }
+@keyframes collide-l { 0% { transform: translateX(-120px) scale(0.7); } 60% { transform: translateX(-52px) scale(1); } 100% { transform: translateX(-64px) scale(1); } }
+@keyframes collide-r { 0% { transform: translateX(120px) scale(0.7); } 60% { transform: translateX(52px) scale(1); } 100% { transform: translateX(64px) scale(1); } }
 .collide-l { animation: collide-l 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 .collide-r { animation: collide-r 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
@@ -284,3 +283,14 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
 .overshare { animation: overshare 2.4s ease-in-out infinite; transform-origin: top; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 .marquee { animation: marquee 40s linear infinite; }
+
+/* ---------- Landing phone: the top card swipes right on a loop ---------- */
+@keyframes mock-swipe { 0%, 45% { transform: none; opacity: 1; } 60% { transform: translateX(18%) rotate(6deg); } 72% { transform: translateX(140%) rotate(22deg); opacity: 0; } 73%, 85% { transform: none; opacity: 0; } 100% { opacity: 1; } }
+@keyframes mock-like { 0%, 45% { opacity: 0; } 58%, 72% { opacity: 1; } 73%, 100% { opacity: 0; } }
+.mock-swipe { animation: mock-swipe 5s ease-in-out infinite; }
+.mock-like { animation: mock-like 5s ease-in-out infinite; }
+/* Header controls over the dark hero. */
+.dark-hero button:not(.bg-brand) { color: #fff; }
+
+/* Grid and flex children may shrink below their content width, so one long item never pushes the page sideways. */
+.grid > *, main .flex-1 { min-width: 0; }

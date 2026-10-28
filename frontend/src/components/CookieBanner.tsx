@@ -28,9 +28,9 @@ export function CookieBanner() {
   return (
     <section
       aria-label="Cookie consent"
-      className="fixed inset-x-3 bottom-20 z-50 mx-auto max-w-md animate-rise rounded-3xl border border-line-strong bg-surface p-5 shadow-[var(--shadow)] sm:inset-x-auto sm:left-4 lg:bottom-4"
+      className="fixed inset-x-3 bottom-20 z-50 mx-auto max-w-md animate-rise rounded-[24px] border border-line-strong bg-surface p-5 shadow-[var(--shadow)] sm:inset-x-auto sm:left-4 lg:bottom-4"
     >
-      <h2 className="font-display text-lg font-semibold">Cookies and analytics</h2>
+      <h2 className="font-display text-lg font-bold">Cookies and analytics</h2>
       <p className="mt-1 text-sm text-muted">
         We use one essential cookie to keep you signed in. With your permission we also count page visits,
         without names or emails, to see which activities people enjoy. Read the{" "}

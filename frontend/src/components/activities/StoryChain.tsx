@@ -41,7 +41,7 @@ export function StoryChain({ game, me, hostId, partnerName, act, restart }: Acti
                 autoFocus
                 onChange={(e) => setText(e.target.value)}
                 placeholder="What happens next?"
-                className="h-11 flex-1 rounded-xl border border-line-strong bg-surface px-3 focus:border-teal focus:outline-none"
+                className="h-11 flex-1 rounded-2xl border border-transparent bg-paper-deep px-4 focus:border-teal focus:outline-none"
               />
               <Button type="submit" loading={busy} disabled={text.trim().length < 2}>Add line <Icon name="arrowRight" size={16} /></Button>
             </form>

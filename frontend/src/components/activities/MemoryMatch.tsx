@@ -32,7 +32,7 @@ export function MemoryMatch({ game, me, partnerName, act, restart }: ActivityPro
                       ? "border-teal bg-teal-soft text-teal-dark"
                       : faceUp
                         ? "animate-pop border-ink bg-surface text-ink"
-                        : "border-violet bg-violet text-on-primary enabled:hover:-translate-y-0.5"
+                        : "border-transparent bg-brand text-white enabled:hover:-translate-y-0.5"
                   }`}
                 >
                   {faceUp ? <Icon name={card.symbol!} size={30} /> : <span className="h-3 w-3 rounded-full border-2 border-white/60" aria-hidden="true" />}

@@ -13,7 +13,7 @@ interface Action { id: number; action: string; note: string; created_at: string;
 function ActionTable({ actions }: { actions: Action[] }) {
   if (actions.length === 0) return <EmptyState title="No actions yet" body="Every warning, pause, removal and report decision is recorded here." />;
   return (
-    <div className="overflow-x-auto rounded-3xl border border-line bg-surface">
+    <div className="overflow-x-auto rounded-[24px] border border-line bg-surface">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead className="border-b border-line text-muted"><tr><th className="px-4 py-3">When</th><th>Admin</th><th>Action</th><th>Member</th><th className="px-4">Note</th></tr></thead>
         <tbody>
@@ -57,10 +57,10 @@ export function AdminProfile() {
   return (
     <div className="mx-auto max-w-5xl">
       <PageHeader title="My admin profile" icon="user" />
-      <section className="flex flex-wrap items-center gap-5 rounded-3xl border border-line bg-surface p-6">
+      <section className="flex flex-wrap items-center gap-5 rounded-[24px] border border-line bg-surface p-6">
         <Avatar name={data.admin.displayName} config={user.avatar} size={88} />
         <div>
-          <p className="font-display text-3xl font-semibold">{data.admin.displayName}</p>
+          <p className="font-display text-3xl font-bold">{data.admin.displayName}</p>
           <p className="text-muted">{data.admin.email} · Admin since {new Date(data.admin.createdAt.replace(" ", "T") + "Z").toLocaleDateString(undefined, { month: "long", year: "numeric" })}</p>
         </div>
       </section>
@@ -70,10 +70,10 @@ export function AdminProfile() {
         <StatTile label="Pauses and removals" value={count("suspend") + count("ban")} icon="shield" tone="rose" />
         <StatTile label="Reports closed" value={count("report:resolved") + count("report:dismissed")} icon="checkCircle" tone="mint" />
       </div>
-      <h2 className="mt-8 mb-3 font-display text-2xl font-semibold">Your recent actions</h2>
+      <h2 className="mt-8 mb-3 font-display text-2xl font-bold">Your recent actions</h2>
       <ActionTable actions={data.actions} />
-      <section className="mt-8 rounded-3xl border border-line bg-surface p-5 text-sm">
-        <h2 className="font-display text-xl font-semibold">How we moderate</h2>
+      <section className="mt-8 rounded-[24px] border border-line bg-surface p-5 text-sm">
+        <h2 className="font-display text-xl font-bold">How we moderate</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-muted">
           <li>Admins never read private chats. Only messages a reporter chose to attach are visible, inside that report.</li>
           <li>Emails are partly hidden in the member list. Profiles are not shown here.</li>

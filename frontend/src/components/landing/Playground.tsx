@@ -18,7 +18,7 @@ export function AvatarPlayground() {
     ["Mood", "face", AVATAR_FACES],
   ];
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow)]">
+    <div className="rounded-[24px] border border-line bg-surface p-6 shadow-[var(--shadow)]">
       <div className="flex justify-center">
         <div key={JSON.stringify(a)} className="animate-pop">
           <div className="animate-float"><Avatar name="Your planet" config={a} size={150} /></div>
@@ -52,7 +52,7 @@ export function VibeDemo() {
   const score = Math.round((interestFit * 30 + (sameIntent ? 1 : 0.3) * 20 + 0.75 * 20 + 0.8 * 15) / 85 * 100);
   const reasons = [shared.length ? `You both love ${shared.join(" and ")}` : null, sameIntent ? "You want the same kind of connection" : null, "Similar answers on the Vibe Quiz"].filter(Boolean);
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow)]">
+    <div className="rounded-[24px] border border-line bg-surface p-6 shadow-[var(--shadow)]">
       <div className="flex items-center gap-5">
         <div className="relative h-28 w-28 shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -60,7 +60,7 @@ export function VibeDemo() {
             <circle cx="50" cy="50" r="42" fill="none" stroke="var(--violet)" strokeWidth="9" strokeLinecap="round" strokeDasharray={`${(score / 100) * 264} 264`} style={{ transition: "stroke-dasharray 0.6s ease" }} />
           </svg>
           <span className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-display text-3xl font-semibold" aria-live="polite">{score}</span>
+            <span className="font-display text-3xl font-bold" aria-live="polite">{score}</span>
             <span className="text-xs font-semibold text-muted">Vibe</span>
           </span>
         </div>
@@ -75,7 +75,7 @@ export function VibeDemo() {
         {INTERESTS.map((i) => {
           const on = mine.includes(i);
           return (
-            <button key={i} aria-pressed={on} onClick={() => setMine((m) => (on ? m.filter((x) => x !== i) : [...m, i]))} className={`rounded-lg border px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${on ? "border-violet bg-violet text-on-primary" : "border-line-strong hover:border-violet"}`}>
+            <button key={i} aria-pressed={on} onClick={() => setMine((m) => (on ? m.filter((x) => x !== i) : [...m, i]))} className={`rounded-full border px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${on ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
               {i}
             </button>
           );
@@ -125,14 +125,14 @@ export function BondExplorer() {
       <div>
         <div role="tablist" aria-label="Bond levels" className="flex flex-wrap gap-2">
           {LEVELS.map((l, i) => (
-            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => setLevel(i)} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-violet bg-violet text-on-primary" : "border-line-strong bg-surface hover:border-violet"}`}>
+            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => setLevel(i)} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-transparent bg-brand text-white" : "border-line-strong bg-surface hover:border-violet"}`}>
               {i + 1}. {l.name}
             </button>
           ))}
         </div>
         <div key={level} role="tabpanel" className="mt-5 animate-rise rounded-2xl border border-line bg-surface p-5">
           <p className="text-sm font-semibold text-rose">Level {level + 1}, from {LEVELS[level].min} bond points</p>
-          <h3 className="mt-1 font-display text-3xl font-semibold">{LEVELS[level].name}</h3>
+          <h3 className="mt-1 font-display text-3xl font-bold">{LEVELS[level].name}</h3>
           <p className="mt-1 text-muted">{LEVELS[level].hint}</p>
           <p className="mt-4 flex items-center gap-2 font-semibold"><Icon name="unlock" size={18} className="text-violet" /> {LEVELS[level].unlock}</p>
         </div>
@@ -155,7 +155,7 @@ export function RevealDemo() {
   const [step, setStep] = useState(1);
   const labels = ["Strangers", "Connected", "Spark", "Orbit"];
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow)]">
+    <div className="rounded-[24px] border border-line bg-surface p-6 shadow-[var(--shadow)]">
       <label htmlFor="reveal-range" className="text-sm font-semibold">How close are you? <span className="text-violet">{labels[step]}</span></label>
       <input id="reveal-range" type="range" min={0} max={3} value={step} onChange={(e) => setStep(Number(e.target.value))} className="mt-3 w-full accent-[var(--violet)]" />
       <ul className="mt-4 space-y-2">
@@ -187,7 +187,7 @@ export function WyrDemo() {
   const [agreed, setAgreed] = useState(0);
   const q = QUESTIONS[round % QUESTIONS.length];
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow)]">
+    <div className="rounded-[24px] border border-line bg-surface p-6 shadow-[var(--shadow)]">
       <div className="flex items-center justify-between text-sm">
         <span className="font-bold text-violet">Would You Rather</span>
         <span className="text-muted">Agreed {agreed} of {round + (pick ? 1 : 0)}</span>
@@ -208,7 +208,7 @@ export function WyrDemo() {
             >
               {side === "a" ? q.a : q.b}
               <span className="mt-2 flex gap-1.5 text-xs font-bold">
-                {mine && <span className="rounded-md bg-violet px-1.5 py-0.5 text-on-primary">You</span>}
+                {mine && <span className="rounded-md bg-brand px-1.5 py-0.5 text-on-primary">You</span>}
                 {theirs && <span className="animate-pop rounded-md bg-rose px-1.5 py-0.5 text-on-primary">Mira</span>}
               </span>
             </button>
@@ -220,7 +220,7 @@ export function WyrDemo() {
           {!pick ? "Mira has picked. Her answer stays hidden until you choose." : pick === q.partner ? "Same pick. That is a conversation starter." : "Different picks. Ask what wins it for her."}
         </p>
         {pick && (
-          <button onClick={() => { setRound((r) => r + 1); setPick(null); }} className="shrink-0 rounded-xl bg-violet px-3 py-2 text-sm font-semibold text-on-primary">Next</button>
+          <button onClick={() => { setRound((r) => r + 1); setPick(null); }} className="shrink-0 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-on-primary">Next</button>
         )}
       </div>
       <p className="mt-2 text-xs text-muted">Sample partner. In the app both picks come from real people, live.</p>

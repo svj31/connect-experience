@@ -31,7 +31,7 @@ function Writer({ onSubmit, busy }: { onSubmit: (statements: string[], lie: numb
             onChange={(e) => setStatements((prev) => prev.map((p, j) => (j === i ? e.target.value : p)))}
             className="h-10 flex-1 bg-transparent px-2 focus:outline-none"
           />
-          <label className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-semibold ${lie === i ? "bg-coral-soft text-coral-dark" : "text-muted hover:bg-paper-deep"}`}>
+          <label className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold ${lie === i ? "bg-coral-soft text-coral-dark" : "text-muted hover:bg-paper-deep"}`}>
             <input type="radio" name="lie" className="accent-coral" checked={lie === i} onChange={() => setLie(i)} />
             The lie
           </label>

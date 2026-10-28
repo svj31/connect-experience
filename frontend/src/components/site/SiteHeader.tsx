@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/session";
 import { Logo } from "../brand/Logo";
@@ -10,9 +11,9 @@ import { SignInMenu } from "./SignInMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
-  { href: "/#problem", label: "Why" },
   { href: "/#how", label: "How it works" },
-  { href: "/#activities", label: "Activities" },
+  { href: "/#features", label: "Vibe Match" },
+  { href: "/#activities", label: "Together" },
   { href: "/#bond", label: "Bonds" },
   { href: "/#safety", label: "Safety" },
 ];
@@ -27,15 +28,17 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  // Over the dark landing hero the header starts transparent with light text.
+  const overHero = usePathname() === "/" && !scrolled && !open;
   const home = user ? (user.role === "admin" ? "/admin" : "/app") : null;
 
   return (
-    <header className={`sticky top-0 z-40 transition-all ${scrolled ? "border-b border-line bg-paper/85 backdrop-blur-md" : "bg-transparent"}`}>
+    <header className={`sticky top-0 z-40 transition-all ${overHero ? "dark-hero bg-transparent text-white" : "glass border-b border-line"}`}>
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Logo />
+        <Logo size={34} className={overHero ? "[&_span.text-ink]:text-white" : ""} />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="rounded-lg px-3 py-2 text-sm font-semibold text-muted hover:bg-violet-soft hover:text-violet">
+            <Link key={n.href} href={n.href} className={`rounded-full px-3.5 py-2 text-sm font-bold transition-colors ${overHero ? "text-white/75 hover:bg-white/10 hover:text-white" : "text-muted hover:bg-paper-deep hover:text-ink"}`}>
               {n.label}
             </Link>
           ))}
@@ -49,10 +52,10 @@ export function SiteHeader() {
           ) : (
             <>
               <div className="hidden sm:block"><SignInMenu /></div>
-              <ButtonLink href="/signup" size="sm" className="hidden sm:inline-flex">Join free</ButtonLink>
+              <span className="hidden sm:block"><ButtonLink href="/signup" size="sm">Join free</ButtonLink></span>
             </>
           )}
-          <button className="flex h-10 w-10 items-center justify-center rounded-xl lg:hidden" aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen((o) => !o)}>
+          <button className="flex h-10 w-10 items-center justify-center rounded-full lg:hidden" aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen((o) => !o)}>
             <Icon name={open ? "close" : "menu"} label={open ? "Close menu" : "Open menu"} />
           </button>
         </div>
@@ -60,7 +63,7 @@ export function SiteHeader() {
       {open && (
         <nav id="mobile-nav" aria-label="Mobile" className="animate-rise border-t border-line bg-surface px-4 py-3 lg:hidden">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-3 font-semibold hover:bg-violet-soft">
+            <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 font-bold hover:bg-paper-deep">
               {n.label}
             </Link>
           ))}

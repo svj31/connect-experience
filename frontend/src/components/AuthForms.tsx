@@ -23,7 +23,7 @@ type Role = "user" | "admin";
 
 function RoleTabs({ role, base }: { role: Role; base: "/login" | "/signup" }) {
   return (
-    <div role="tablist" aria-label="Account type" className="grid grid-cols-2 gap-1 rounded-2xl bg-paper-deep p-1">
+    <div role="tablist" aria-label="Account type" className="grid grid-cols-2 gap-1 rounded-full bg-paper-deep p-1">
       {(["user", "admin"] as Role[]).map((r) => (
         <Link
           key={r}
@@ -31,7 +31,7 @@ function RoleTabs({ role, base }: { role: Role; base: "/login" | "/signup" }) {
           aria-selected={role === r}
           href={r === "admin" ? `${base}?as=admin` : base}
           replace
-          className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-colors ${role === r ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-muted hover:text-ink"}`}
+          className={`flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-bold transition-colors ${role === r ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-muted hover:text-ink"}`}
         >
           <Icon name={r === "admin" ? "shield" : "heart"} size={16} className={r === "admin" ? "text-rose" : "text-violet"} />
           {r === "admin" ? "Admin" : "Member"}
@@ -41,17 +41,38 @@ function RoleTabs({ role, base }: { role: Role; base: "/login" | "/signup" }) {
   );
 }
 
+const COLLAGE = [
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=700&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=700&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=700&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=700&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&h=700&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=500&h=700&fit=crop&q=80",
+];
+
+/** Split screen: a photo collage with the promise on the left, a clean form on the right. */
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <div className="mx-auto grid max-w-5xl items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_440px] lg:py-16">
-      <div className="hidden lg:block">
-        <div className="animate-float"><LogoMark size={320} live title="" /></div>
-        <p className="mt-6 max-w-sm font-display text-3xl font-semibold">Somewhere in the verse, someone is about to pick the same answer as you.</p>
+    <div className="mx-auto grid w-full max-w-6xl items-stretch gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_460px] lg:py-12">
+      <div className="relative hidden overflow-hidden rounded-[36px] bg-[#09090c] lg:block" aria-hidden="true">
+        <div className="grid h-full grid-cols-3 gap-2 p-2 opacity-90">
+          {COLLAGE.map((src, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={src} src={src} alt="" className={`h-full min-h-40 w-full rounded-[22px] object-cover ${i % 2 ? "translate-y-8" : ""}`} />
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09090c] via-[#09090c]/50 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-10 text-white">
+          <LogoMark size={52} title="" />
+          <p className="mt-5 max-w-md font-display text-4xl leading-[1.05] font-extrabold tracking-tight">Someone is about to pick the same answer as you.</p>
+          <p className="mt-3 text-white/70">Swipe, match, then meet over a game instead of a &ldquo;hey&rdquo;.</p>
+        </div>
       </div>
-      <div className="animate-rise rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow)] sm:p-8">
-        <h1 className="font-display text-3xl font-semibold">{title}</h1>
-        <p className="mt-1 text-muted">{subtitle}</p>
-        <div className="mt-6">{children}</div>
+      <div className="animate-rise flex flex-col justify-center rounded-[32px] border border-line bg-surface p-6 shadow-[var(--shadow)] sm:p-10">
+        <LogoMark size={48} title="" className="mb-6 lg:hidden" />
+        <h1 className="font-display text-4xl font-extrabold tracking-tight">{title}</h1>
+        <p className="mt-2 text-muted">{subtitle}</p>
+        <div className="mt-8">{children}</div>
       </div>
     </div>
   );

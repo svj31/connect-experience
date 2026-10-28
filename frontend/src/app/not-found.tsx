@@ -15,7 +15,7 @@ export default function NotFound() {
         <LogoMark size={180} live title="A SaathVerse orbit with nobody in it" />
       </div>
       <p className="mt-6 text-sm font-bold tracking-widest text-rose uppercase">Error 404</p>
-      <h1 className="mt-2 font-display text-4xl font-semibold">Lost in the verse</h1>
+      <h1 className="mt-2 font-display text-4xl font-bold">Lost in the verse</h1>
       <p className="mt-3 text-lg text-muted">This page drifted out of orbit. It may have moved, or the link was mistyped.</p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href="/" className={buttonClass("primary")}>Back to home</Link>

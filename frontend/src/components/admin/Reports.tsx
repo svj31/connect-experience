@@ -54,7 +54,7 @@ export function AdminReports() {
       ) : (
         <ul className="space-y-3">
           {reports.map((r) => (
-            <li key={r.id} className="animate-rise rounded-3xl border border-line bg-surface p-5">
+            <li key={r.id} className="animate-rise rounded-[24px] border border-line bg-surface p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">

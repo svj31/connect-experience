@@ -58,7 +58,7 @@ export function Constellation({ game, me, hostId, act }: ActivityProps) {
                 onChange={(e) => setName(e.target.value)}
                 placeholder={stars.length < 3 ? "Place three stars to name it" : "Name it together"}
                 disabled={stars.length < 3}
-                className="h-11 min-w-0 flex-1 rounded-xl border border-line-strong bg-surface px-3 focus:border-teal focus:outline-none disabled:bg-paper"
+                className="h-11 min-w-0 flex-1 rounded-2xl border border-transparent bg-paper-deep px-4 focus:border-teal focus:outline-none disabled:bg-paper"
               />
               <Button type="submit" loading={busy} disabled={stars.length < 3 || name.trim().length < 2}>Name it</Button>
             </form>

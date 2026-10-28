@@ -41,7 +41,7 @@ export function ActionDialog({ action, user, reportId, onClose, onDone }: { acti
       <p className="text-muted">{c.body}</p>
       {action === "suspend" && (
         <label className="mt-4 block text-sm font-semibold">Length
-          <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="mt-1 block h-10 rounded-xl border border-line-strong bg-surface px-3">
+          <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="mt-1 block h-10 rounded-2xl border border-transparent bg-paper-deep px-4">
             {[1, 3, 7, 14, 30].map((d) => <option key={d} value={d}>{d} day{d > 1 ? "s" : ""}</option>)}
           </select>
         </label>

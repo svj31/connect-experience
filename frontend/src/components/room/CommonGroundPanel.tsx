@@ -33,7 +33,7 @@ export function CommonGroundPanel({ code, partnerName, onUseSpark }: { code: str
           <p className="mt-1">Play a round of Would You Rather to compare answers.</p>
         ) : (
           <>
-            <p className="mt-1 font-display text-3xl font-semibold">
+            <p className="mt-1 font-display text-3xl font-bold">
               {data.questionsAgreed} of {data.questionsCompared} <span className="text-lg font-normal text-muted">same picks</span>
             </p>
             <div className="mt-2 flex h-2 overflow-hidden rounded-lg bg-coral-soft" role="img" aria-label={`${pct} percent of picks matched`}>
@@ -64,7 +64,7 @@ export function CommonGroundPanel({ code, partnerName, onUseSpark }: { code: str
           {data.sparks.map((s) => (
             <li key={s} className="flex items-start justify-between gap-3 rounded-xl border border-line bg-paper p-3">
               <span className="text-[0.95rem]">{s}</span>
-              <button onClick={() => onUseSpark(s)} className="flex shrink-0 items-center gap-1 rounded-xl px-2 py-1 text-sm font-semibold text-teal hover:bg-teal-soft">
+              <button onClick={() => onUseSpark(s)} className="flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold text-teal hover:bg-teal-soft">
                 <Icon name="chat" size={16} /> Use
               </button>
             </li>

@@ -24,7 +24,7 @@ export function Panel({ title, subtitle, children, aside }: { title: string; sub
     <section className="animate-rise" aria-label={title}>
       <header className="mb-4 flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="font-display text-2xl font-semibold">{title}</h2>
+          <h2 className="font-display text-2xl font-bold">{title}</h2>
           {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
         </div>
         {aside}
@@ -52,7 +52,7 @@ export function Progress({ value, total, label }: { value: number; total: number
       <span>{label}</span>
       <span className="flex gap-1" aria-hidden="true">
         {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={`h-1.5 w-5 rounded-lg ${i < value ? "bg-violet" : i === value ? "bg-coral" : "bg-line"}`} />
+          <span key={i} className={`h-1.5 w-5 rounded-lg ${i < value ? "bg-brand" : i === value ? "bg-coral" : "bg-line"}`} />
         ))}
       </span>
     </div>
@@ -81,8 +81,8 @@ export function ActionError({ message }: { message: string | null }) {
 
 export function Finished({ title, children, onAgain }: { title: string; children?: ReactNode; onAgain: () => void }) {
   return (
-    <div className="animate-pop rounded-3xl border border-line bg-paper p-6 text-center">
-      <p className="font-display text-2xl font-semibold">{title}</p>
+    <div className="animate-pop rounded-[24px] border border-line bg-paper p-6 text-center">
+      <p className="font-display text-2xl font-bold">{title}</p>
       {children && <div className="mt-2 text-muted">{children}</div>}
       <p className="mt-2 text-sm text-muted">Saved to your moments.</p>
       <Button className="mt-4" onClick={onAgain}>Play again</Button>

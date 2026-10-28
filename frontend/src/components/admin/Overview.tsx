@@ -23,8 +23,8 @@ interface OverviewData {
 
 function Panel({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-3xl border border-line bg-surface p-5" aria-label={title}>
-      <h2 className="font-display text-xl font-semibold">{title}</h2>
+    <section className="rounded-[24px] border border-line bg-surface p-5" aria-label={title}>
+      <h2 className="font-display text-xl font-bold">{title}</h2>
       {sub && <p className="mb-4 text-sm text-muted">{sub}</p>}
       {children}
     </section>
