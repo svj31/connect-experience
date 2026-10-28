@@ -8,7 +8,7 @@ interface DemoFile {
   password: string;
   domain: string;
   admin: { key: string; displayName: string };
-  people: (Record<string, unknown> & { key: string; displayName: string })[];
+  people: (Record<string, unknown> & { key: string; displayName: string; crowd?: boolean })[];
 }
 
 export const DEMO = JSON.parse(readFileSync(new URL("../../demo_data/people.json", import.meta.url), "utf8")) as DemoFile;
@@ -26,16 +26,16 @@ export async function seedDemo(repo: Repo) {
   const admin = repo.userByEmail(demoEmail(DEMO.admin.key)) ?? repo.createUser({ email: demoEmail(DEMO.admin.key), passwordHash: hash, displayName: DEMO.admin.displayName, role: "admin" });
   ids.admin = admin.id;
 
-  let fresh = false;
-  for (const person of DEMO.people) {
-    let user = repo.userByEmail(demoEmail(person.key));
-    if (!user) {
-      user = repo.createUser({ email: demoEmail(person.key), passwordHash: hash, displayName: person.displayName });
-      fresh = true;
-    }
+  // History belongs to the core cast; it is added once, on the first run only. Crowd members
+  // (added later to make Discover feel busy) can join an existing database safely.
+  const fresh = !repo.userByEmail(demoEmail(DEMO.people[0].key));
+  for (const [i, person] of DEMO.people.entries()) {
+    const user = repo.userByEmail(demoEmail(person.key)) ?? repo.createUser({ email: demoEmail(person.key), passwordHash: hash, displayName: person.displayName });
     const parsed = profileSchema.parse(person);
     saveProfile(repo, user.id, parsed);
     repo.touch(user.id);
+    // Spread crowd activity over the last two days, so not everyone is "active now".
+    if (person.crowd) repo.db.prepare(`UPDATE users SET last_active_at = datetime('now', '-${(i * 7) % 48} hours') WHERE id = ?`).run(user.id);
     ids[person.key] = user.id;
   }
   if (!fresh) return ids;

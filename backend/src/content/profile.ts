@@ -99,4 +99,6 @@ export const DEFAULT_SETTINGS = {
   motion: "full" as "full" | "reduced",
   ageMin: 18,
   ageMax: 45,
+  /** Discover distance limit in km; 0 means anywhere. */
+  maxDistanceKm: 0,
 };

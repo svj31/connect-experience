@@ -1,6 +1,6 @@
 # Demo data
 
-`people.json` holds the 14 demo members and the demo admin that the backend loads on first start
+`people.json` holds 40 demo members (14 core members with history, plus 26 "crowd" members marked `"crowd": true` so Discover feels busy) and the demo admin that the backend loads on first start
 (or with `npm run seed`). Every account uses the password in the file (`saathverse123`) and the reserved
 `saathverse.test` email domain, so no real inbox is ever involved.
 
