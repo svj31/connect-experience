@@ -4,7 +4,7 @@ import {
   setSessionCookie, signSocketTicket, verifyToken, type AuthedRequest,
 } from "../auth.js";
 import { config } from "../config.js";
-import { DEMO, demoEmail } from "../demo.js";
+import { DEMO, DEMO_PERSONAS, demoEmail } from "../demo.js";
 import { effectiveStatus, selfProfile } from "../people.js";
 import type { Repo } from "../repo.js";
 import { adminSignupSchema, fieldErrors, loginSchema, signupSchema } from "../validation.js";
@@ -85,7 +85,9 @@ export function authRoutes(repo: Repo) {
   /** One click sign in to a seeded demo account, for judges and live demos. */
   r.post("/demo", (req, res) => {
     const as = req.body?.as === "admin" ? "admin" : "user";
-    const user = config.demoLogin ? repo.userByEmail(demoEmail(as === "admin" ? DEMO.admin.key : "ava")) : undefined;
+    // Members can pick any core demo persona; anything else falls back to Ava.
+    const key = typeof req.body?.key === "string" && DEMO_PERSONAS.some((p) => p.key === req.body.key) ? req.body.key : "ava";
+    const user = config.demoLogin ? repo.userByEmail(demoEmail(as === "admin" ? DEMO.admin.key : key)) : undefined;
     if (!user) {
       res.status(404).json({ error: "Demo accounts are not available here. Run npm run seed first." });
       return;
@@ -95,7 +97,13 @@ export function authRoutes(repo: Repo) {
   });
 
   r.get("/demo", (_req, res) => {
-    res.json({ enabled: config.demoLogin, password: config.demoLogin ? DEMO.password : null, user: demoEmail("ava"), admin: demoEmail(DEMO.admin.key) });
+    res.json({
+      enabled: config.demoLogin,
+      password: config.demoLogin ? DEMO.password : null,
+      user: demoEmail("ava"),
+      admin: demoEmail(DEMO.admin.key),
+      personas: config.demoLogin ? DEMO_PERSONAS.map((p) => ({ ...p, email: demoEmail(p.key) })) : [],
+    });
   });
 
   r.post("/logout", (_req, res) => {

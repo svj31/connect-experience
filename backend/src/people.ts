@@ -12,6 +12,7 @@ export interface AvatarConfig {
   ring: string;
   pattern: string;
   face: string;
+  spin: string;
 }
 
 export type Privacy = typeof DEFAULT_PRIVACY;
@@ -53,6 +54,7 @@ export function avatarOf(row: UserRow): AvatarConfig {
     ring: extra.ring ?? "single",
     pattern: extra.pattern ?? "plain",
     face: extra.face ?? "smile",
+    spin: extra.spin ?? "steady",
   };
 }
 

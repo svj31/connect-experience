@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {
-  AVATAR_COLORS, AVATAR_FACES, AVATAR_PATTERNS, AVATAR_RINGS, AVATAR_SHAPES, GENDERS, INTENTS, INTERESTS,
+  AVATAR_COLORS, AVATAR_FACES, AVATAR_SPINS, AVATAR_PATTERNS, AVATAR_RINGS, AVATAR_SHAPES, GENDERS, INTENTS, INTERESTS,
   LANGUAGES, LIFESTYLE, LOOKING_FOR, LOVE_LANGUAGES, PERSONALITIES, PROMPTS, QUIZ, STAR_SIGNS, VISIBILITY,
 } from "./content/profile.js";
 import { ACTIVITY_IDS } from "./games/index.js";
@@ -47,7 +47,7 @@ export const profileSchema = z.object({
   avatarColor: z.enum(AVATAR_COLORS),
   // Everything below is optional so older clients and quick edits still work.
   avatar: z
-    .object({ ring: z.enum(AVATAR_RINGS), pattern: z.enum(AVATAR_PATTERNS), face: z.enum(AVATAR_FACES) })
+    .object({ ring: z.enum(AVATAR_RINGS), pattern: z.enum(AVATAR_PATTERNS), face: z.enum(AVATAR_FACES), spin: z.enum(AVATAR_SPINS).optional() })
     .optional(),
   birthYear: z
     .number()

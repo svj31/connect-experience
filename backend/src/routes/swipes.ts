@@ -56,7 +56,15 @@ export function swipeRoutes(repo: Repo, hub: RoomHub, cache = new FeedCache()) {
   r.get("/feed", (req: AuthedRequest, res) => {
     const me = repo.userById(req.userId!)!;
     const limit = Math.min(20, Math.max(1, Number(req.query.limit ?? 10) || 10));
-    const ids = stackFor(me, req.query.refresh === "1");
+    let ids = stackFor(me, req.query.refresh === "1");
+    // Endless Discover: once everyone has been seen, people you passed on come round again.
+    // Likes are never recycled, since the other person may already have seen them.
+    let recycled = false;
+    if (ids.length === 0 && repo.clearPasses(me.id) > 0) {
+      repo.db.prepare("DELETE FROM swipes WHERE swiper_id = ? AND decision = 'pass'").run(me.id);
+      ids = stackFor(me, true);
+      recycled = true;
+    }
     const people = [];
     for (const id of ids) {
       if (people.length >= limit) break;
@@ -65,7 +73,22 @@ export function swipeRoutes(repo: Repo, hub: RoomHub, cache = new FeedCache()) {
       if (!row || effectiveStatus(row) !== "active" || repo.isBlocked(me.id, id) || repo.swipeBetween(me.id, id)) continue;
       people.push(rel.card(me, row));
     }
-    res.json({ people, remaining: ids.length, quota: quota(me.id) });
+    res.json({ people, remaining: ids.length, recycled, quota: quota(me.id) });
+  });
+
+  /**
+   * Hinge style Standouts: the single most compatible person today, then the next best by Vibe
+   * Match. Drawn from the same candidate pool as the feed, so blocks, swipes and limits apply.
+   */
+  r.get("/standouts", (req: AuthedRequest, res) => {
+    const me = repo.userById(req.userId!)!;
+    const cards = stackFor(me, false)
+      .map((id) => repo.userById(id))
+      .filter((row): row is UserRow => Boolean(row) && effectiveStatus(row!) === "active" && !repo.swipeBetween(me.id, row!.id))
+      .map((row) => rel.card(me, row))
+      .sort((x, y) => (y.vibe.score ?? -1) - (x.vibe.score ?? -1))
+      .slice(0, 9);
+    res.json({ mostCompatible: cards[0] ?? null, standouts: cards.slice(1), quota: quota(me.id) });
   });
 
   r.get("/swipes/quota", (req: AuthedRequest, res) => {

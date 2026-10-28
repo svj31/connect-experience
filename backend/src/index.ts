@@ -6,10 +6,12 @@ import { buildServer } from "./server.js";
 const db = openDb(config.databasePath);
 const { httpServer, repo } = buildServer(db, { rateLimits: config.rateLimits });
 
-// A fresh install gets demo people so every screen has something to show.
-if (config.seedDemo && repo.countUsers() === 0) {
+// Demo people are kept in sync with demo_data on every start (new members, photos, profiles), so an
+// older database picks up changes too. History is only added the first time. SEED_DEMO=off skips it.
+if (config.seedDemo) {
+  const fresh = repo.countUsers() === 0;
   await seedDemo(repo);
-  console.log("Empty database: added demo people. Run with SEED_DEMO=off to skip this.");
+  console.log(fresh ? "Empty database: added demo people." : "Demo people synced with demo_data.", "Run with SEED_DEMO=off to skip this.");
 }
 
 httpServer.listen(config.port, () => {

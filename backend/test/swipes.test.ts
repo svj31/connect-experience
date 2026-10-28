@@ -109,4 +109,37 @@ describe("swipe deck and matching", () => {
     expect((await b.agent.put("/api/profile").send({ ...profile("Photob"), photos: ["javascript:alert(1)"] })).status).toBe(400);
     expect((await b.agent.put("/api/profile").send({ ...profile("Photob"), photos: Array(7).fill(photo) })).status).toBe(400);
   });
+
+  it("returns standouts ordered by vibe, without people you already swiped", async () => {
+    const a = await member("Standa");
+    const b = await member("Standb");
+    await a.agent.post("/api/discover/swipes").send({ targetId: b.user.id, decision: "pass" });
+    const res = await a.agent.get("/api/discover/standouts");
+    expect(res.status).toBe(200);
+    const all = [res.body.mostCompatible, ...res.body.standouts].filter(Boolean);
+    expect(all.map((p: { id: number }) => p.id)).not.toContain(b.user.id);
+    const scores = all.map((p: { vibe: { score: number | null } }) => p.vibe.score ?? -1);
+    expect([...scores].sort((x, y) => y - x)).toEqual(scores);
+  });
+
+  it("recycles passed people once the stack is empty, so Discover never runs dry", async () => {
+    const a = await member("Recyclea");
+    let feed = await a.agent.get("/api/discover/feed?refresh=1&limit=20");
+    // Pass on everyone currently available (a few pages), then ask again.
+    for (let page = 0; page < 10 && feed.body.people.length; page++) {
+      for (const p of feed.body.people) await a.agent.post("/api/discover/swipes").send({ targetId: p.id, decision: "pass" });
+      feed = await a.agent.get("/api/discover/feed?limit=20");
+    }
+    expect(feed.body.recycled).toBe(true);
+    expect(feed.body.people.length).toBeGreaterThan(0);
+  });
+
+  it("signs in as any demo persona", async () => {
+    const { seedDemo } = await import("../src/demo.js");
+    await seedDemo(server.repo);
+    const list = await (await import("supertest")).default(app).get("/api/auth/demo");
+    expect(list.body.personas.map((p: { key: string }) => p.key)).toContain("rohan");
+    const res = await (await import("supertest")).default(app).post("/api/auth/demo").send({ as: "user", key: "rohan" });
+    expect(res.body.user.displayName).toBe("Rohan");
+  });
 });
