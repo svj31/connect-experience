@@ -69,6 +69,7 @@ export const AVATAR_SHAPES = ["circle", "square", "triangle", "diamond", "hexago
 export const AVATAR_COLORS = ["violet", "lilac", "rose", "plum", "peach", "mint", "sky", "sun", "coral", "teal", "leaf", "ink"] as const;
 export const AVATAR_RINGS = ["none", "single", "double", "tilted"] as const;
 export const AVATAR_PATTERNS = ["plain", "bands", "spots", "swirl", "craters"] as const;
+export const AVATAR_SPINS = ["steady", "wobble", "float", "turn", "breathe"] as const;
 export const AVATAR_FACES = ["smile", "grin", "wink", "calm", "shy", "none"] as const;
 
 /** What each part of a profile can be shared with. Bond levels are 1 to 5. */
@@ -94,7 +95,7 @@ export const DEFAULT_PRIVACY: Record<PrivacySection, Visibility> & {
 };
 
 export const DEFAULT_SETTINGS = {
-  theme: "system" as "light" | "dark" | "system",
+  theme: "light" as "light" | "dark" | "system",
   cursor: true,
   motion: "full" as "full" | "reduced",
   ageMin: 18,

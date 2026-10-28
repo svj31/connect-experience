@@ -14,6 +14,13 @@ interface DemoFile {
 export const DEMO = JSON.parse(readFileSync(new URL("../../demo_data/people.json", import.meta.url), "utf8")) as DemoFile;
 export const demoEmail = (key: string) => `${key}@${DEMO.domain}`;
 
+/** Core demo members anyone can sign in as, each with seeded matches, likes or history. */
+export const DEMO_PERSONAS = ["ava", "rohan", "mira", "kabir", "zoya", "arjun"].map((key) => {
+  const p = DEMO.people.find((x) => x.key === key)!;
+  const photos = (p.photos as string[] | undefined) ?? [];
+  return { key, name: p.displayName, city: String(p.city ?? ""), age: new Date().getUTCFullYear() - Number(p.birthYear), photo: photos[0] ?? null, bio: String(p.bio ?? "") };
+});
+
 /**
  * Fills the database with demo people, connections and history so every screen has
  * something real to show. Safe to run again: existing demo accounts are updated, and
