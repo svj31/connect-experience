@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PhotoPlanet } from "../ui/PhotoPlanet";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ACTIVITIES } from "@/lib/activities";
@@ -77,7 +78,7 @@ export function Connections() {
   const { celebrate } = useLive();
   const [data, setData] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const tab = (params.get("tab") as "all" | "requests" | "sent") ?? "all";
+  const tab = (params.get("tab") as "all" | "requests" | "sent") ?? "requests";
   const [view, setView] = useView<"list" | "cards" | "ladder">("connections", "list");
   const [removing, setRemoving] = useState<Connection | null>(null);
 
@@ -97,17 +98,17 @@ export function Connections() {
   }
 
   const tabs = [
-    { id: "all", label: "Connections", n: data?.connections.length },
     { id: "requests", label: "Likes you", n: data?.incoming.length },
+    { id: "all", label: "Matches", n: data?.connections.length },
     { id: "sent", label: "Sent", n: data?.outgoing.length },
   ];
 
   return (
     <div className="mx-auto max-w-6xl">
       <PageHeader
-        title="Connections"
+        title="Likes"
         icon="users"
-        subtitle="Everyone you are connected with, how close your bond is, and what to do next."
+        subtitle="Who liked you, who you liked, and everyone you have matched with."
         actions={tab === "all" && <ViewToggle value={view} onChange={setView} options={[{ id: "list", label: "List", icon: "list" }, { id: "cards", label: "Cards", icon: "grid" }, { id: "ladder", label: "Bond ladder", icon: "layers" }]} />}
       />
       <div role="tablist" className="no-scrollbar mb-5 flex gap-1 overflow-x-auto pb-1">
@@ -116,11 +117,11 @@ export function Connections() {
             key={t.id}
             role="tab"
             aria-selected={tab === t.id}
-            onClick={() => router.replace(t.id === "all" ? "/app/connections" : `/app/connections?tab=${t.id}`)}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-bold whitespace-nowrap transition-colors ${tab === t.id ? "bg-brand text-white shadow-brand" : "text-muted hover:bg-paper-deep hover:text-ink"}`}
+            onClick={() => router.replace(t.id === "requests" ? "/app/connections" : `/app/connections?tab=${t.id}`)}
+            className={`flex items-center gap-2 rounded-full px-4 py-2 font-bold whitespace-nowrap transition-colors ${tab === t.id ? "bg-brand shadow-brand" : "text-muted hover:bg-paper-deep hover:text-ink"}`}
           >
             {t.label}
-            {t.n ? <span className={`rounded-full px-2 py-0.5 text-xs ${tab === t.id ? "bg-white/25" : t.id === "requests" ? "bg-brand text-white" : "bg-paper-deep"}`}>{t.n}</span> : null}
+            {t.n ? <span className={`rounded-full px-2 py-0.5 text-xs ${tab === t.id ? "bg-white/25" : t.id === "requests" ? "bg-saffron" : "bg-paper-deep"}`}>{t.n}</span> : null}
           </button>
         ))}
       </div>
@@ -133,33 +134,35 @@ export function Connections() {
         (tab === "requests" ? data.incoming : data.outgoing).length === 0 ? (
           <EmptyState title={tab === "requests" ? "No new likes yet" : "Nothing pending"} body={tab === "requests" ? "When someone likes you, they show up here. Like them back to match." : "Likes you send wait here until they like you back."} action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
         ) : (
-          <ul className="grid gap-4 md:grid-cols-2">
-            {[...(tab === "requests" ? data.incoming : data.outgoing)].sort((a, b) => Number(Boolean(b.superLike)) - Number(Boolean(a.superLike))).map((c) => (
-              <li key={c.id} className={`animate-rise rounded-[24px] border bg-surface p-5 ${c.superLike ? "border-sky" : "border-line"}`}>
-                {c.superLike && <p className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wide text-sky uppercase"><Icon name="star" size={14} />{c.outgoing ? "You super liked" : "Super liked you"}</p>}
-                <div className="flex items-center gap-3">
-                  <Avatar name={c.person.displayName} config={c.person.avatar} size={60} online={c.person.online} />
-                  <div className="min-w-0 flex-1">
-                    <Link href={`/app/people/${c.person.id}`} className="font-display text-xl font-bold hover:text-violet">{c.person.displayName}{c.person.age ? `, ${c.person.age}` : ""}</Link>
-                    <p className="text-sm text-muted">{c.outgoing ? "You liked" : "Liked you"} {timeAgo(c.since)}</p>
+          <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+            {[...(tab === "requests" ? data.incoming : data.outgoing)].sort((a, b) => Number(Boolean(b.superLike)) - Number(Boolean(a.superLike))).map((c) => {
+              const photo = c.person.photos?.[0] ?? c.person.avatar.photo;
+              return (
+                <li key={c.id} className={`animate-rise flex flex-col overflow-hidden rounded-[24px] border bg-surface ${c.superLike ? "border-[#f2a900]" : "border-line"}`}>
+                  <Link href={`/app/people/${c.person.id}`} className="relative block" aria-label={`${c.person.displayName}${c.person.age ? `, ${c.person.age}` : ""}`}>
+                    <PhotoPlanet photo={photo} planet={c.person.avatar} alt="" className="aspect-[4/5] w-full" />
+                    {c.superLike && <span className="bg-saffron absolute top-3 left-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold"><Icon name="star" size={13} />{c.outgoing ? "You super liked" : "Super like"}</span>}
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-14 text-white sm:p-4">
+                      <span className="block font-display text-xl leading-none sm:text-[1.7rem]">{c.person.displayName}{c.person.age ? `, ${c.person.age}` : ""}</span>
+                      <span className="mt-1 block text-xs text-white/80">{c.outgoing ? "You liked" : "Liked you"} {timeAgo(c.since)}{c.person.vibe.score !== null ? ` · ${c.person.vibe.score}% vibe` : ""}</span>
+                    </span>
+                  </Link>
+                  <div className="flex flex-1 flex-col p-3 sm:p-4">
+                    {c.note ? <p className="rounded-2xl bg-paper-deep p-3 text-sm">&ldquo;{c.note}&rdquo;</p> : c.person.vibe.reasons[0] ? <p className="flex gap-1.5 text-sm text-violet"><Icon name="sparkle" size={15} className="mt-0.5 shrink-0" />{c.person.vibe.reasons[0]}</p> : null}
+                    <div className="mt-auto flex flex-wrap gap-2 pt-4">
+                      {c.outgoing ? (
+                        <Button size="sm" variant="secondary" onClick={() => decline(c)}>Cancel like</Button>
+                      ) : (
+                        <>
+                          <Button size="sm" onClick={() => accept(c)}><Icon name="heart" size={15} /> Like back</Button>
+                          <Button size="sm" variant="secondary" onClick={() => decline(c)}>Not now</Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <VibeRing score={c.person.vibe.score} />
-                </div>
-                {c.note && <p className="mt-3 rounded-2xl bg-violet-soft p-3 text-sm">&ldquo;{c.note}&rdquo;</p>}
-                {c.person.vibe.reasons[0] && <p className="mt-2 flex gap-1.5 text-sm font-semibold text-rose"><Icon name="sparkle" size={15} className="mt-0.5" />{c.person.vibe.reasons[0]}</p>}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {c.outgoing ? (
-                    <Button size="sm" variant="secondary" onClick={() => decline(c)}>Cancel request</Button>
-                  ) : (
-                    <>
-                      <Button size="sm" onClick={() => accept(c)}><Icon name="heart" size={15} /> Like back</Button>
-                      <Button size="sm" variant="secondary" onClick={() => decline(c)}>Not now</Button>
-                      <ButtonLink size="sm" variant="ghost" href={`/app/people/${c.person.id}`}>View profile</ButtonLink>
-                    </>
-                  )}
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )
       ) : data.connections.length === 0 ? (

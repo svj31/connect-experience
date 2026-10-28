@@ -7,8 +7,9 @@ import { activityById } from "@/lib/activities";
 import { api, errorMessage } from "@/lib/api";
 import { timeAgo } from "@/lib/labels";
 import { useSession } from "@/lib/session";
-import type { Bond, BondLevel, PersonCard, Suggestion, WatchPick } from "@/lib/types";
+import type { AvatarConfig, Bond, BondLevel, PersonCard, Suggestion, WatchPick } from "@/lib/types";
 import { Avatar } from "../ui/Avatar";
+import { Planet } from "../ui/Planet";
 import { ButtonLink } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { PageLoader } from "../ui/Loader";
@@ -34,7 +35,7 @@ function greeting() {
 }
 
 /** Your universe: connections orbit you, closer bonds on inner rings. */
-function UniverseView({ people, me }: { people: DashboardData["people"]; me: { name: string; avatar: object } }) {
+function UniverseView({ people, me }: { people: DashboardData["people"]; me: { name: string; avatar: Partial<AvatarConfig> } }) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[520px]">
       {[5, 4, 3, 2, 1].map((level) => (
@@ -43,7 +44,7 @@ function UniverseView({ people, me }: { people: DashboardData["people"]; me: { n
         </div>
       ))}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-        <div className="animate-float"><Avatar name={me.name} config={me.avatar} size={88} decorative /></div>
+        <div className="animate-float"><Planet config={me.avatar} size={104} title="Your planet" /></div>
         <p className="mt-1 text-sm font-bold">You</p>
       </div>
       <ul className="absolute inset-0 animate-spin-slow [animation-duration:90s] hover:[animation-play-state:paused]">
@@ -55,8 +56,8 @@ function UniverseView({ people, me }: { people: DashboardData["people"]; me: { n
           return (
             <li key={p.connectionId} className="absolute" style={{ left: `${50 + radius * Math.cos(angle)}%`, top: `${50 + radius * Math.sin(angle)}%` }}>
               <Link href={`/app/people/${p.person.id}`} className="group block -translate-x-1/2 -translate-y-1/2 animate-spin-slow text-center [animation-direction:reverse] [animation-duration:90s]">
-                <Avatar name={p.person.displayName} config={p.person.avatar} size={54} online={p.person.online} />
-                <span className="mt-0.5 block rounded-md bg-surface/90 px-1 text-xs font-bold group-hover:text-violet">{p.person.displayName}</span>
+                <span className="block transition-transform duration-300 group-hover:scale-110"><Planet config={p.person.avatar} size={64} title={`${p.person.displayName}'s planet`} /></span>
+                <span className="-mt-1 block rounded-md bg-surface/90 px-1 text-xs font-bold group-hover:text-violet">{p.person.displayName}</span>
               </Link>
             </li>
           );
@@ -88,7 +89,6 @@ export function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
         <section className="relative overflow-hidden rounded-[24px] border border-line bg-surface p-6" aria-labelledby="qotd">
-          <span className="absolute -right-8 -bottom-10 text-violet-soft" aria-hidden="true"><Icon name="deeptalk" size={120} strokeWidth={1.2} /></span>
           <p id="qotd" className="flex items-center gap-2 text-sm font-bold text-rose"><Icon name="sparkle" size={16} /> Question of the day</p>
           <p className="relative mt-2 max-w-lg font-display text-2xl font-bold text-balance">{data.suggestions.question}</p>
           <p className="relative mt-2 text-sm text-muted">Everyone gets the same one today. Ask it in a chat, or start Deep Talk to go further.</p>
@@ -116,8 +116,8 @@ export function Dashboard() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatTile label="Connections" value={stats.connections} icon="users" />
-        <StatTile label="Requests waiting" value={stats.requests} icon="bell" tone="rose" hint={stats.requests ? "Open Connections to reply" : undefined} />
+        <StatTile label="Matches" value={stats.connections} icon="users" />
+        <StatTile label="Likes waiting" value={stats.requests} icon="heart" tone="rose" hint={stats.requests ? "Open Likes to reply" : undefined} />
         <StatTile label="Moments shared" value={stats.moments} icon="star" tone="sun" />
         <StatTile label="Best streak" value={<span className="flex items-center gap-1">{stats.bestStreak}<Icon name="fire" size={22} className="text-rose" /></span>} icon="zap" tone="mint" hint={stats.topBond ? `Closest bond: ${stats.topBond}` : undefined} />
       </div>
@@ -155,7 +155,7 @@ export function Dashboard() {
               {data.moments.length === 0 && <li className="text-muted">No moments yet. Finish an activity together and it lands here.</li>}
               {data.moments.map((m) => (
                 <li key={m.id} className="relative animate-rise rounded-2xl border border-line bg-surface p-3">
-                  <span className="absolute top-4 -left-[2.05rem] flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white"><Icon name={m.activity} size={13} /></span>
+                  <span className="absolute top-4 -left-[2.05rem] flex h-6 w-6 items-center justify-center rounded-full bg-brand"><Icon name={m.activity} size={13} /></span>
                   <p className="font-semibold">{m.title}</p>
                   <p className="text-sm text-muted">{activityById(m.activity).name}{m.partnerName ? ` with ${m.partnerName}` : ""} · {timeAgo(m.createdAt)}</p>
                 </li>

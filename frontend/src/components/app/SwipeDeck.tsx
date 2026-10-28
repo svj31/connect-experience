@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PhotoPlanet } from "../ui/PhotoPlanet";
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { track } from "@/lib/consent";
@@ -36,8 +37,8 @@ function SwipeCard({ person, onReply, interactive = true }: { person: PersonCard
   return (
     <article className="relative h-full overflow-hidden rounded-[28px] bg-black text-white shadow-[0_24px_60px_-24px_rgb(0_0_0/0.6)]" aria-label={`${person.displayName}'s card`}>
       {photos.length ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={photos[index]} alt={`${person.displayName}, photo ${index + 1} of ${photos.length}`} draggable={false} className="absolute inset-0 h-full w-full object-cover" />
+         
+        <PhotoPlanet photo={photos[index]} planet={person.avatar} alt={`${person.displayName}, photo ${index + 1} of ${photos.length}`} trigger={interactive ? "both" : "none"} className="absolute inset-0 h-full w-full" />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center" style={{ background: body }}>
           <div className="bg-brand absolute inset-0 opacity-60" />
@@ -158,6 +159,11 @@ function ActionButton({ label, icon, onClick, disabled, tone, big = false, hint 
  */
 export function SwipeDeck() {
   const { celebrate, toast } = useLive();
+  // The live context recreates toast on each render; a ref keeps load stable.
+  const toastRef = useRef(toast);
+  useEffect(() => {
+    toastRef.current = toast;
+  }, [toast]);
   const [stack, setStack] = useState<PersonCard[] | null>(null);
   const [quota, setQuota] = useState<Quota | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -174,7 +180,8 @@ export function SwipeDeck() {
     if (fetching.current) return;
     fetching.current = true;
     try {
-      const res = await api<{ people: PersonCard[]; quota: Quota }>(`/discover/feed?limit=10${refresh ? "&refresh=1" : ""}`);
+      const res = await api<{ people: PersonCard[]; quota: Quota; recycled?: boolean }>(`/discover/feed?limit=10${refresh ? "&refresh=1" : ""}`);
+      if (res.recycled) toastRef.current("You've seen everyone nearby", "Here are people you passed on, in case you want a second look.");
       setStack((s) => {
         const have = new Set((refresh ? [] : s ?? []).map((p) => p.id));
         return [...(refresh ? [] : s ?? []), ...res.people.filter((p) => !have.has(p.id))];
@@ -290,14 +297,14 @@ export function SwipeDeck() {
   const rotate = fly?.r ?? drag.x / 18;
 
   return (
-    <div className="mx-auto flex w-full max-w-[420px] flex-col">
+    <div className="mx-auto flex h-full w-full max-w-[420px] flex-col">
       {quota && (
-        <p className="mb-3 flex items-center justify-center gap-4 text-xs font-bold text-muted" aria-live="polite">
+        <p className="mb-3 flex shrink-0 items-center justify-center gap-4 text-xs font-bold text-muted" aria-live="polite">
           <span className="flex items-center gap-1"><Icon name="heart" size={13} className="text-violet" />{quota.likesLeft} likes left today</span>
           <span className="flex items-center gap-1"><Icon name="star" size={13} className="text-sky" />{quota.superlikesLeft} super likes</span>
         </p>
       )}
-      <div className="relative h-[clamp(380px,calc(100dvh-340px),620px)] lg:h-[clamp(440px,calc(100dvh-290px),680px)]">
+      <div className="relative min-h-0 flex-1">
         {!top ? (
           <EmptyState
             title="You have seen everyone nearby"
@@ -325,21 +332,21 @@ export function SwipeDeck() {
               onPointerUp={onPointerUp}
               onPointerCancel={onPointerUp}
             >
-              <Stamp label="LIKE" tone="border-[#3ee6a0] text-[#3ee6a0]" className="top-8 left-6" rotate={-14} opacity={leaving === "like" ? 1 : Math.max(0, drag.x / THRESHOLD)} />
-              <Stamp label="NOPE" tone="border-[#ff4458] text-[#ff4458]" className="top-8 right-6" rotate={14} opacity={leaving === "pass" ? 1 : Math.max(0, -drag.x / THRESHOLD)} />
-              <Stamp label="SUPER" tone="border-[#2b9bff] text-[#2b9bff]" className="bottom-1/3 left-1/2 -translate-x-1/2" rotate={0} opacity={leaving === "superlike" ? 1 : Math.max(0, -drag.y / (THRESHOLD * 1.2)) * (Math.abs(drag.x) < THRESHOLD ? 1 : 0)} />
+              <Stamp label="LIKE" tone="border-[#6fd3a6] text-[#6fd3a6]" className="top-8 left-6" rotate={-14} opacity={leaving === "like" ? 1 : Math.max(0, drag.x / THRESHOLD)} />
+              <Stamp label="NOPE" tone="border-[#ff8a80] text-[#ff8a80]" className="top-8 right-6" rotate={14} opacity={leaving === "pass" ? 1 : Math.max(0, -drag.x / THRESHOLD)} />
+              <Stamp label="SUPER" tone="border-[#f2a900] text-[#f2a900]" className="bottom-1/3 left-1/2 -translate-x-1/2" rotate={0} opacity={leaving === "superlike" ? 1 : Math.max(0, -drag.y / (THRESHOLD * 1.2)) * (Math.abs(drag.x) < THRESHOLD ? 1 : 0)} />
               <SwipeCard person={top} onReply={() => setNoteOpen(true)} />
             </div>
           </>
         )}
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-4" role="group" aria-label="Decide on this person">
-        <ActionButton label="Undo last pass" hint="Undo last pass (Z)" icon="undo" tone="text-[#f5a524]" onClick={undo} disabled={!canUndo} />
-        <ActionButton label={top ? `Pass on ${top.displayName}` : "Pass"} hint="Pass (left arrow)" icon="close" tone="text-[#ff4458]" big onClick={() => decide("pass")} disabled={!top} />
-        <ActionButton label={top ? `Super like ${top.displayName}` : "Super like"} hint="Super like (up arrow)" icon="star" tone="text-[#2b9bff]" onClick={() => decide("superlike")} disabled={!top || quota?.superlikesLeft === 0} />
+      <div className="mt-4 flex shrink-0 items-center justify-center gap-4" role="group" aria-label="Decide on this person">
+        <ActionButton label="Undo last pass" hint="Undo last pass (Z)" icon="undo" tone="text-muted" onClick={undo} disabled={!canUndo} />
+        <ActionButton label={top ? `Pass on ${top.displayName}` : "Pass"} hint="Pass (left arrow)" icon="close" tone="text-ink" big onClick={() => decide("pass")} disabled={!top} />
+        <ActionButton label={top ? `Super like ${top.displayName}` : "Super like"} hint="Super like (up arrow)" icon="star" tone="text-[#d99a00]" onClick={() => decide("superlike")} disabled={!top || quota?.superlikesLeft === 0} />
         <ActionButton label={top ? `Like ${top.displayName}` : "Like"} hint="Like (right arrow)" icon="heart" tone="bg-brand shadow-brand" big onClick={() => decide("like")} disabled={!top || quota?.likesLeft === 0} />
-        <ActionButton label="Like with a note" icon="chat" tone="text-[#a855f7]" onClick={() => setNoteOpen(true)} disabled={!top} />
+        <ActionButton label="Like with a note" icon="chat" tone="text-violet" onClick={() => setNoteOpen(true)} disabled={!top} />
       </div>
 
       {top && (

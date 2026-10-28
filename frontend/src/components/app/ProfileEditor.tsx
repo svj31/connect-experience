@@ -8,11 +8,12 @@ import {
 } from "@/lib/labels";
 import { useSession } from "@/lib/session";
 import {
-  AVATAR_COLORS, AVATAR_FACES, AVATAR_PATTERNS, AVATAR_RINGS, AVATAR_SHAPES, INTERESTS, type AvatarConfig, type Me, type PrivacySection, type Profile,
+  AVATAR_COLORS, AVATAR_FACES, AVATAR_SPINS, AVATAR_PATTERNS, AVATAR_RINGS, AVATAR_SHAPES, INTERESTS, type AvatarConfig, type Me, type PrivacySection, type Profile,
 } from "@/lib/types";
 import { Burst } from "../fx/Burst";
 import { Avatar } from "../ui/Avatar";
 import { PhotoManager } from "./PhotoManager";
+import { PLANET_LABELS, Planet } from "../ui/Planet";
 import { Button } from "../ui/Button";
 import { Field, TextArea } from "../ui/Field";
 import { Icon } from "../ui/Icon";
@@ -40,7 +41,7 @@ function Pills<T extends string>({ value, options, onChange, label }: { value: T
       <legend className="mb-1.5 text-sm font-semibold">{label}</legend>
       <div className="flex flex-wrap gap-1.5">
         {Object.entries(options).map(([k, v]) => (
-          <button key={k} type="button" aria-pressed={value === k} onClick={() => onChange(value === k ? "" : (k as T))} className={`rounded-full border px-2.5 py-1.5 text-sm font-semibold transition-colors ${value === k ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
+          <button key={k} type="button" aria-pressed={value === k} onClick={() => onChange(value === k ? "" : (k as T))} className={`rounded-full border px-2.5 py-1.5 text-sm font-semibold transition-colors ${value === k ? "border-transparent bg-brand" : "border-line-strong hover:border-violet"}`}>
             {v}
           </button>
         ))}
@@ -92,7 +93,7 @@ export function ProfileEditor() {
     setForm({
       displayName: user.displayName, pronouns: user.pronouns, bio: user.bio ?? "", handle: user.handle ?? "",
       interests: user.interests, avatarShape: user.avatar.shape, avatarColor: user.avatar.color,
-      avatar: { ring: user.avatar.ring, pattern: user.avatar.pattern, face: user.avatar.face },
+      avatar: { ring: user.avatar.ring, pattern: user.avatar.pattern, face: user.avatar.face, spin: user.avatar.spin ?? "steady" },
       birthYear: user.birthYear, gender: user.gender ?? "", lookingFor: user.lookingFor, intent: user.intent, city: user.city ?? "",
       job: user.job ?? "", education: user.education ?? "", heightCm: user.heightCm, starSign: user.starSign ?? "",
       languages: user.languages ?? [], lifestyle: user.lifestyle ?? {}, loveLanguage: user.loveLanguage ?? "", personality: user.personality ?? "",
@@ -167,7 +168,7 @@ export function ProfileEditor() {
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <span className="text-sm font-bold">See it as:</span>
             {["A stranger", "A connection", "Spark bond", "Orbit bond"].map((label, i) => (
-              <button key={label} aria-pressed={seenAs === i} onClick={() => setSeenAs(i)} className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${seenAs === i ? "border-transparent bg-brand text-white" : "border-line-strong bg-surface"}`}>{label}</button>
+              <button key={label} aria-pressed={seenAs === i} onClick={() => setSeenAs(i)} className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${seenAs === i ? "border-transparent bg-brand" : "border-line-strong bg-surface"}`}>{label}</button>
             ))}
           </div>
           <ProfileView profile={asSeenBy(user, seenAs)} />
@@ -178,31 +179,39 @@ export function ProfileEditor() {
             <Card title="Photos" icon="eye" hint="Up to six. The first one is what people see on your card.">
               <PhotoManager photos={form.photos as string[]} onChange={(photos) => set({ photos })} error={Object.entries(errors).find(([k]) => k.startsWith("photos"))?.[1]} />
             </Card>
-            <Card title="Your planet" icon="sparkle" hint="Shown when you have no photo, and in games. Tap anything to change it.">
-              <div className="grid gap-5 sm:grid-cols-[180px_1fr]">
-                <div className="flex items-center justify-center rounded-[24px] bg-paper-deep p-4">
-                  <div key={JSON.stringify(avatar)} className="animate-pop"><div className="animate-float"><Avatar name={String(form.displayName)} config={avatar} size={150} /></div></div>
+            <Card title="Your planet" icon="sparkle" hint="Your other side: it appears on your photos now and then, in games, and whenever you have no photo.">
+              <div className="grid gap-6 xl:grid-cols-[220px_1fr]">
+                <div className="mx-auto flex aspect-square w-full max-w-[260px] items-center justify-center self-start rounded-[24px] bg-paper-deep p-2 xl:sticky xl:top-24">
+                  <Planet key={JSON.stringify(avatar)} config={avatar} title={`Your planet: ${PLANET_LABELS.shape[avatar.shape as keyof typeof PLANET_LABELS.shape] ?? ""}, ${avatar.color}`} className="animate-pop h-full w-full" />
                 </div>
-                <div className="space-y-3">
-                  {([["Shape", "shape", AVATAR_SHAPES], ["Rings", "ring", AVATAR_RINGS], ["Surface", "pattern", AVATAR_PATTERNS], ["Mood", "face", AVATAR_FACES]] as const).map(([label, key, list]) => (
+                <div className="space-y-5">
+                  {(
+                    [
+                      ["Shape", "shape", AVATAR_SHAPES, PLANET_LABELS.shape],
+                      ["Design", "pattern", AVATAR_PATTERNS, PLANET_LABELS.pattern],
+                      ["Face", "face", AVATAR_FACES, PLANET_LABELS.face],
+                      ["Ring", "ring", AVATAR_RINGS, PLANET_LABELS.ring],
+                      ["Spin", "spin", AVATAR_SPINS, PLANET_LABELS.spin],
+                    ] as const
+                  ).map(([label, key, list, names]) => (
                     <fieldset key={key}>
-                      <legend className="mb-1 text-sm font-semibold">{label}</legend>
-                      <div className="flex flex-wrap gap-1.5">
+                      <legend className="mb-2 text-sm font-semibold">{label}</legend>
+                      <div className="grid grid-cols-[repeat(auto-fill,minmax(84px,1fr))] gap-2">
                         {list.map((v) => (
-                          <button key={v} type="button" aria-pressed={avatar[key] === v} onClick={() => setAvatar({ [key]: v })} className={`rounded-xl border-2 p-0.5 transition-transform hover:scale-110 ${avatar[key] === v ? "border-violet" : "border-transparent"}`} title={cap(v)}>
-                            <Avatar name={cap(v)} config={{ ...avatar, [key]: v }} size={38} decorative />
-                            <span className="sr-only">{cap(v)}</span>
+                          <button key={v} type="button" aria-pressed={avatar[key] === v} onClick={() => setAvatar({ [key]: v })} className={`flex flex-col items-center gap-1 rounded-2xl border-2 bg-paper-deep p-1.5 pb-2 text-[11px] font-medium transition-all hover:-translate-y-0.5 ${avatar[key] === v ? "border-ink" : "border-transparent"}`}>
+                            <Planet config={{ ...avatar, [key]: v }} className="aspect-square w-full" />
+                            {(names as Record<string, string>)[v] ?? cap(v)}
                           </button>
                         ))}
                       </div>
                     </fieldset>
                   ))}
                   <fieldset>
-                    <legend className="mb-1 text-sm font-semibold">Color</legend>
-                    <div className="flex flex-wrap gap-1.5">
+                    <legend className="mb-2 text-sm font-semibold">Colour</legend>
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(64px,1fr))] gap-2">
                       {AVATAR_COLORS.map((c) => (
-                        <button key={c} type="button" aria-pressed={avatar.color === c} onClick={() => setAvatar({ color: c })} className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${avatar.color === c ? "border-ink" : "border-transparent"}`} title={cap(c)}>
-                          <Avatar name={c} config={{ ...avatar, color: c, ring: "none", face: "none", pattern: "plain", shape: "circle" }} size={28} decorative />
+                        <button key={c} type="button" aria-pressed={avatar.color === c} onClick={() => setAvatar({ color: c })} title={cap(c)} className={`aspect-square rounded-2xl border-2 bg-paper-deep p-1 transition-all hover:-translate-y-0.5 ${avatar.color === c ? "border-ink" : "border-transparent"}`}>
+                          <Planet config={{ ...avatar, color: c }} className="h-full w-full" />
                           <span className="sr-only">{cap(c)}</span>
                         </button>
                       ))}
@@ -257,7 +266,7 @@ export function ProfileEditor() {
                   <div className="flex flex-wrap gap-1.5">
                     {LANGUAGES.map((l) => {
                       const on = languages.includes(l);
-                      return <button key={l} type="button" aria-pressed={on} disabled={!on && languages.length >= 6} onClick={() => set({ languages: on ? languages.filter((x) => x !== l) : [...languages, l] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-transparent bg-brand text-white" : "border-line-strong"}`}>{l}</button>;
+                      return <button key={l} type="button" aria-pressed={on} disabled={!on && languages.length >= 6} onClick={() => set({ languages: on ? languages.filter((x) => x !== l) : [...languages, l] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-transparent bg-brand" : "border-line-strong"}`}>{l}</button>;
                     })}
                   </div>
                 </fieldset>
@@ -275,7 +284,7 @@ export function ProfileEditor() {
                 <div className="flex flex-wrap gap-1.5">
                   {INTERESTS.map((i) => {
                     const on = interests.includes(i);
-                    return <button key={i} type="button" aria-pressed={on} disabled={!on && interests.length >= 10} onClick={() => set({ interests: on ? interests.filter((x) => x !== i) : [...interests, i] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-rose bg-brand text-white" : "border-line-strong hover:border-rose"}`}>{cap(i)}</button>;
+                    return <button key={i} type="button" aria-pressed={on} disabled={!on && interests.length >= 10} onClick={() => set({ interests: on ? interests.filter((x) => x !== i) : [...interests, i] })} className={`rounded-full border px-2.5 py-1 text-sm font-semibold disabled:opacity-40 ${on ? "border-rose bg-brand" : "border-line-strong hover:border-rose"}`}>{cap(i)}</button>;
                   })}
                 </div>
               </fieldset>
@@ -342,7 +351,7 @@ export function ProfileEditor() {
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <div className="relative overflow-hidden rounded-[24px] border border-line bg-surface p-5 text-center">
               {saved > 0 && <Burst key={saved} count={14} distance={90} />}
-              <Avatar name={String(form.displayName)} config={avatar} size={96} />
+              <Avatar name={String(form.displayName)} config={{ ...avatar, photo: (form.photos as string[])[0] ?? null }} size={96} />
               <p className="mt-2 font-display text-2xl font-bold">{String(form.displayName)}</p>
               <p className="text-sm text-muted">{INTENT_LABELS[String(form.intent)]}</p>
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-line"><div className="h-full rounded-full bg-rose" style={{ width: `${user.completeness.percent}%` }} /></div>

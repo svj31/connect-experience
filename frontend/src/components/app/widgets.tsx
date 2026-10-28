@@ -1,22 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { PhotoPlanet } from "../ui/PhotoPlanet";
 import { useEffect, useState, type ReactNode } from "react";
 import { INTENT_SHORT, cap } from "@/lib/labels";
 import type { AvatarConfig, Bond, PersonCard, Vibe } from "@/lib/types";
 import { LogoMark } from "../brand/Logo";
-import { Avatar } from "../ui/Avatar";
+import { Planet } from "../ui/Planet";
 import { Icon } from "../ui/Icon";
 
-export function PageHeader({ title, subtitle, icon, actions }: { title: string; subtitle?: ReactNode; icon?: string; actions?: ReactNode }) {
+export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; icon?: string; actions?: ReactNode }) {
   return (
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="animate-rise">
-        <h1 className="flex items-center gap-3 font-display text-3xl font-extrabold tracking-tight sm:text-[2.6rem]">
-          {icon && <span className="bg-brand shadow-brand flex h-11 w-11 items-center justify-center rounded-2xl"><Icon name={icon} size={22} /></span>}
+        <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl">
           {title}
         </h1>
-        {subtitle && <p className="mt-1.5 text-muted">{subtitle}</p>}
+        {subtitle && <p className="mt-3 max-w-2xl text-muted">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </header>
@@ -125,21 +125,40 @@ export function VibeBreakdown({ vibe }: { vibe: Vibe }) {
 }
 
 /**
- * The Bond orbit: two planets on rings that light up level by level, with the progress to
- * the next level drawn as an arc and the streak beside it.
+ * The Bond orbit: two planets travel the bond's rings around a beating heart, opposite each other,
+ * and the rings light up level by level. SVG animation only, slow and even, so it stays calm.
  */
 export function BondOrbit({ bond, me, them, size = 220 }: { bond: Bond; me: { name: string; avatar?: Partial<AvatarConfig> }; them: { name: string; avatar?: Partial<AvatarConfig> }; size?: number }) {
+  const ring = Math.max(0, Math.min(4, bond.level - 1));
+  const rx = 40 + ring * 15;
+  const ry = 22 + ring * 9;
+  const tilt = -20 + ring * 9;
+  const path = `M${110 - rx} 79 a${rx} ${ry} 0 1 0 ${rx * 2} 0 a${rx} ${ry} 0 1 0 ${-rx * 2} 0`;
+  const P = 56;
   return (
     <div className="relative mx-auto" style={{ width: size, height: size * 0.72 }}>
-      <svg viewBox="0 0 220 158" className="absolute inset-0 h-full w-full" aria-hidden="true">
+      <svg viewBox="0 0 220 158" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
         {[0, 1, 2, 3, 4].map((i) => (
-          <ellipse key={i} cx="110" cy="79" rx={40 + i * 15} ry={22 + i * 9} fill="none" stroke={i < bond.level ? (i % 2 ? "var(--rose)" : "var(--violet)") : "var(--line)"} strokeWidth={i < bond.level ? 2.2 : 1.2} strokeDasharray={i < bond.level ? undefined : "3 5"} transform={`rotate(${-20 + i * 9} 110 79)`} />
+          <ellipse key={i} cx="110" cy="79" rx={40 + i * 15} ry={22 + i * 9} fill="none" stroke={i < bond.level ? (i % 2 ? "var(--rose)" : "var(--violet)") : "var(--line)"} strokeWidth={i < bond.level ? 2.2 : 1.2} strokeDasharray={i < bond.level ? undefined : "3 5"} transform={`rotate(${-20 + i * 9} 110 79)`} opacity={i === ring ? 1 : 0.55} />
         ))}
-        <path d="M110 92c-6-5-12-9-12-15a6 6 0 0 1 12-2.5 6 6 0 0 1 12 2.5c0 6-6 10-12 15z" fill="var(--violet)" className="animate-heartbeat" style={{ transformOrigin: "110px 84px" }} />
+        <g transform="translate(110 84)">
+          <g>
+            <animateTransform attributeName="transform" type="scale" values="1;1.14;1;1.08;1" keyTimes="0;0.15;0.3;0.45;1" dur="1.6s" repeatCount="indefinite" />
+            <path d="M0 8c-6-5-12-9-12-15a6 6 0 0 1 12-2.5 6 6 0 0 1 12 2.5c0 6-6 10-12 15z" fill="var(--violet)" />
+          </g>
+        </g>
+        <g transform={`rotate(${tilt} 110 79)`}>
+          {[me, them].map((who, i) => (
+            <g key={i}>
+              <animateMotion path={path} dur="16s" begin={i ? "-8s" : "0s"} repeatCount="indefinite" />
+              <g transform={`rotate(${-tilt}) translate(${-P / 2} ${-P / 2})`}>
+                <Planet config={who.avatar} size={P} />
+              </g>
+            </g>
+          ))}
+        </g>
       </svg>
-      <span className="absolute top-1/2 left-[6%] -translate-y-1/2 animate-float"><Avatar name={me.name} config={me.avatar} size={size * 0.22} decorative /></span>
-      <span className="absolute top-1/2 right-[6%] -translate-y-1/2 animate-float [animation-delay:1.2s]"><Avatar name={them.name} config={them.avatar} size={size * 0.22} decorative /></span>
-      <span className="sr-only">Bond level {bond.level}, {bond.name}, {bond.points} points</span>
+      <span className="sr-only">Bond level {bond.level}, {bond.name}, {bond.points} points, between {me.name} and {them.name}</span>
     </div>
   );
 }
@@ -166,12 +185,7 @@ export function PersonTile({ person, href, actions, footer, className = "" }: { 
   const photo = person.photos?.[0] ?? person.avatar.photo;
   const media = (
     <div className="relative aspect-[4/5] overflow-hidden bg-paper-deep">
-      {photo ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-      ) : (
-        <div className="bg-brand flex h-full items-center justify-center"><Avatar name={person.displayName} config={person.avatar} size={120} decorative /></div>
-      )}
+      <PhotoPlanet photo={photo} planet={person.avatar} alt="" loading="lazy" className="h-full w-full" />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 pt-16 text-white">
         <h3 className="font-display text-2xl leading-none font-extrabold">{person.displayName}{person.age ? <span className="ml-1.5 font-semibold text-white/90">{person.age}</span> : null}</h3>
         <p className="mt-1.5 flex items-center gap-2 text-sm font-semibold text-white/85">

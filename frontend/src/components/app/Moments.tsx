@@ -145,7 +145,7 @@ export function Moments() {
         <ol className="relative mx-auto max-w-2xl border-l-2 border-dashed border-line-strong pl-8">
           {shown.map((m) => (
             <li key={m.id} className="relative mb-6">
-              <span className="absolute top-3 -left-[2.65rem] flex h-8 w-8 items-center justify-center rounded-full border-2 border-surface bg-brand text-white"><Icon name={m.activity} size={15} /></span>
+              <span className="absolute top-3 -left-[2.65rem] flex h-8 w-8 items-center justify-center rounded-full border-2 border-surface bg-brand"><Icon name={m.activity} size={15} /></span>
               <p className="mb-1 text-xs font-bold text-muted">{new Date(m.createdAt.replace(" ", "T") + "Z").toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}</p>
               <MomentCard m={m} onFavorite={favorite} />
             </li>

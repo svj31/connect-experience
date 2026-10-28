@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PhotoPlanet } from "../ui/PhotoPlanet";
 import type { ReactNode } from "react";
 import { GENDER_LABELS, INTENT_LABELS, LIFESTYLE_OPTIONS, LOVE_LABELS, PERSONALITY_LABELS, cap } from "@/lib/labels";
 import type { PrivacySection, Profile } from "@/lib/types";
@@ -50,8 +51,8 @@ export function ProfileView({ profile, shared = [], hero, aside }: { profile: Pr
               <ul className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-label={`${profile.displayName}'s photos`}>
                 {profile.photos.map((src, i) => (
                   <li key={i} className="relative aspect-[4/5] w-full shrink-0 snap-center sm:aspect-[16/11]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={`${profile.displayName}, photo ${i + 1} of ${profile.photos!.length}`} className="h-full w-full object-cover" />
+                    { }
+                    <PhotoPlanet photo={src} planet={profile.avatar} alt={`${profile.displayName}, photo ${i + 1} of ${profile.photos!.length}`} className="h-full w-full" />
                   </li>
                 ))}
               </ul>
@@ -65,11 +66,11 @@ export function ProfileView({ profile, shared = [], hero, aside }: { profile: Pr
               </div>
             </div>
           ) : (
-            <div className="bg-brand relative flex flex-wrap items-center gap-5 p-6 text-white">
-              <div className="animate-float rounded-full ring-4 ring-white/70"><Avatar name={profile.displayName} config={profile.avatar} size={112} online={profile.online} /></div>
+            <div className="relative flex flex-wrap items-center gap-5 bg-paper-deep p-6">
+              <div className="animate-float rounded-full ring-4 ring-surface"><Avatar name={profile.displayName} config={profile.avatar} size={112} online={profile.online} /></div>
               <div className="min-w-0 flex-1">
-                <h1 className="font-display text-4xl font-extrabold tracking-tight">{profile.displayName}{profile.age ? <span className="font-semibold text-white/90">, {profile.age}</span> : null}</h1>
-                <p className="mt-1 text-white/85">{[profile.pronouns, profile.city].filter(Boolean).join(" · ") || "Basics are private"}</p>
+                <h1 className="font-display text-4xl font-extrabold tracking-tight">{profile.displayName}{profile.age ? <span className="font-semibold text-muted">, {profile.age}</span> : null}</h1>
+                <p className="mt-1 text-muted">{[profile.pronouns, profile.city].filter(Boolean).join(" · ") || "Basics are private"}</p>
               </div>
             </div>
           )}
@@ -105,7 +106,7 @@ export function ProfileView({ profile, shared = [], hero, aside }: { profile: Pr
           <div className="flex flex-wrap gap-2">
             {profile.interests.length === 0 && <p className="text-sm text-muted">No interests added yet.</p>}
             {profile.interests.map((i) => (
-              <span key={i} className={`rounded-full px-3 py-1.5 text-sm font-bold ${shared.includes(i) ? "bg-brand text-white" : "bg-paper-deep"}`}>
+              <span key={i} className={`rounded-full px-3 py-1.5 text-sm font-bold ${shared.includes(i) ? "bg-brand" : "bg-paper-deep"}`}>
                 {cap(i)}{shared.includes(i) && <span className="sr-only"> (shared)</span>}
               </span>
             ))}

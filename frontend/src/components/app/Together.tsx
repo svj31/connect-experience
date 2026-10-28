@@ -155,7 +155,7 @@ export function Together() {
               onClick={() => { setCategory(c.id); setActivity(null); }}
               className={`group rounded-[24px] border-2 p-4 text-left transition-all ${category === c.id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:-translate-y-0.5 hover:border-line-strong"}`}
             >
-              <span className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:rotate-6 ${i % 2 ? "bg-brand text-white" : "bg-brand text-white"}`}><Icon name={c.icon} /></span>
+              <span className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:rotate-6 ${i % 2 ? "bg-brand" : "bg-brand"}`}><Icon name={c.icon} /></span>
               <span className="mt-2 block font-display text-xl font-bold">{c.name}</span>
               <span className="block text-sm text-muted">{c.blurb}</span>
             </button>

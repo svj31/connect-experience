@@ -17,7 +17,7 @@ import { ButtonLink } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
 import { Modal } from "../ui/Modal";
-import { BondMeter, EmptyState, PageHeader } from "./widgets";
+import { EmptyState } from "./widgets";
 
 function Conversation({ c, me, onBack }: { c: Connection; me: number; onBack: () => void }) {
   const router = useRouter();
@@ -34,28 +34,31 @@ function Conversation({ c, me, onBack }: { c: Connection; me: number; onBack: ()
     if (res) router.push(`/app/room/${res.roomCode}`);
   }
 
+  // One slim header: who, bond level and streak, quick activities, then the messages get the room.
+  const bond = room.detail?.bond;
   const header = (
-    <header className="border-b border-line px-4 py-3">
+    <header className="shrink-0 border-b border-line px-3 py-2.5 sm:px-4">
       <div className="flex items-center gap-3">
         <button onClick={onBack} className="rounded-lg p-1 text-muted hover:text-ink lg:hidden" aria-label="Back to conversations"><Icon name="arrowLeft" /></button>
-        <Avatar name={c.person.displayName} config={c.person.avatar} size={44} online={online} />
+        <Avatar name={c.person.displayName} config={c.person.avatar} size={38} online={online} />
         <div className="min-w-0 flex-1">
-          <Link href={`/app/people/${c.person.id}`} className="font-display text-lg font-bold hover:text-violet">{c.person.displayName}</Link>
-          <p className="text-xs text-muted">{online ? "Online now" : "Away"}</p>
+          <Link href={`/app/people/${c.person.id}`} className="block truncate font-display text-lg leading-tight hover:text-violet">{c.person.displayName}</Link>
+          <p className="flex items-center gap-2 truncate text-xs text-muted">
+            {online ? "Online now" : "Away"}
+            {bond && <span className="flex items-center gap-1 font-semibold text-violet"><Icon name="orbit" size={12} />{bond.name}</span>}
+            {bond && bond.streak > 0 && <span className="flex items-center gap-0.5 font-semibold text-rose"><Icon name="fire" size={12} />{bond.streak}</span>}
+          </p>
         </div>
-        <ButtonLink href={`/app/room/${c.roomCode}`} size="sm" variant="accent"><Icon name="orbit" size={15} /> <span className="hidden sm:inline">Together</span></ButtonLink>
-        <button onClick={() => setSafety(true)} className="rounded-xl p-2 text-muted hover:bg-rose-soft hover:text-danger"><Icon name="shield" size={18} label="Safety options" /></button>
-      </div>
-      {room.detail?.bond && <div className="mt-2"><BondMeter bond={room.detail.bond} compact /></div>}
-      {ideas.length > 0 && (
-        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1">
+        <div className="no-scrollbar hidden max-w-[45%] gap-1.5 overflow-x-auto md:flex">
           {ideas.map((s) => (
-            <button key={s.id} onClick={() => play(s.id)} title={s.reason} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-line-strong px-2 py-1 text-xs font-bold hover:border-violet hover:text-violet">
-              <Icon name={s.id} size={14} /> {activityById(s.id).name}
+            <button key={s.id} onClick={() => play(s.id)} title={s.reason} className="flex shrink-0 items-center gap-1.5 rounded-full border border-line-strong px-2.5 py-1 text-xs font-semibold hover:border-ink">
+              <Icon name={s.id} size={13} /> {activityById(s.id).name}
             </button>
           ))}
         </div>
-      )}
+        <ButtonLink href={`/app/room/${c.roomCode}`} size="sm" variant="accent"><Icon name="orbit" size={15} /> <span className="hidden sm:inline">Together</span></ButtonLink>
+        <button onClick={() => setSafety(true)} className="rounded-full p-2 text-muted hover:bg-rose-soft hover:text-danger"><Icon name="shield" size={18} label="Safety options" /></button>
+      </div>
     </header>
   );
 
@@ -100,13 +103,18 @@ export function Chats() {
   const shown = list.filter((c) => c.person.displayName.toLowerCase().includes(q.toLowerCase()));
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <PageHeader title="Chats" icon="chat" subtitle="Private conversations with your connections. Jump into an activity any time." />
-      <StoryRow />
+    // Exactly the viewport minus the app chrome (top bar, page padding, phone tab bar), so the chat
+    // never makes the page scroll; only the message list and conversation list scroll inside.
+    <div className="mx-auto flex h-[calc(100dvh-12.5rem)] min-h-[360px] max-w-6xl flex-col lg:h-[calc(100dvh-9.5rem)]">
+      <div className={`${selected ? "hidden lg:block" : ""} mb-4 shrink-0`}>
+        <h1 className="font-display text-[2.2rem] leading-none">Matches</h1>
+        {/* The desktop sidebar already lists matches; phones get the stories row here. */}
+        <div className="mt-4 lg:hidden [&>nav]:mb-0"><StoryRow /></div>
+      </div>
       {list.length === 0 ? (
         <EmptyState title="No chats yet" body="Chats open when someone accepts your connection request." action={<ButtonLink href="/app/discover">Discover people</ButtonLink>} />
       ) : (
-        <div className="grid h-[calc(100dvh-15rem)] min-h-[480px] gap-4 lg:grid-cols-[320px_1fr]">
+        <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[320px_1fr]">
           <aside className={`${selected ? "hidden lg:flex" : "flex"} min-h-0 flex-col rounded-[24px] border border-line bg-surface`} aria-label="Conversations">
             <div className="border-b border-line p-3">
               <label htmlFor="chat-search" className="sr-only">Search conversations</label>

@@ -1,17 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { GENDER_LABELS, INTENT_LABELS, cap } from "@/lib/labels";
 import { INTERESTS, type PersonCard } from "@/lib/types";
-import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
 import { ConnectButton } from "./ConnectButton";
+import { ProfileFeed } from "./ProfileFeed";
 import { SwipeDeck } from "./SwipeDeck";
-import { EmptyState, PageHeader, PersonTile, ViewToggle, useView } from "./widgets";
+import { EmptyState, PersonTile, ViewToggle, useView } from "./widgets";
 
 interface Filters {
   minAge: number;
@@ -79,7 +78,7 @@ function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial
           {INTERESTS.map((i) => {
             const on = f.interests.includes(i);
             return (
-              <button key={i} type="button" aria-pressed={on} onClick={() => set({ interests: on ? f.interests.filter((x) => x !== i) : [...f.interests, i] })} className={`rounded-full border px-2 py-1 text-xs font-bold ${on ? "border-transparent bg-brand text-white" : "border-line-strong hover:border-violet"}`}>
+              <button key={i} type="button" aria-pressed={on} onClick={() => set({ interests: on ? f.interests.filter((x) => x !== i) : [...f.interests, i] })} className={`rounded-full border px-2 py-1 text-xs font-bold ${on ? "border-transparent bg-brand" : "border-line-strong hover:border-violet"}`}>
                 {cap(i)}
               </button>
             );
@@ -94,41 +93,12 @@ function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial
   );
 }
 
-/** A galaxy map: the closer to the centre, the higher the Vibe Match. */
-function GalaxyView({ people }: { people: PersonCard[] }) {
-  const placed = useMemo(
-    () =>
-      people.slice(0, 30).map((p, i) => {
-        const distance = 12 + (1 - (p.vibe.score ?? 20) / 100) * 34;
-        const angle = i * 2.399963; // golden angle spreads people evenly
-        return { p, x: 50 + distance * Math.cos(angle), y: 50 + distance * Math.sin(angle) };
-      }),
-    [people],
-  );
-  return (
-    <div className="relative mx-auto aspect-square w-full max-w-[640px] rounded-full border border-line bg-surface/60">
-      {[15, 30, 45].map((r) => <div key={r} className="absolute rounded-full border border-dashed border-line-strong" style={{ inset: `${50 - r}%` }} aria-hidden="true" />)}
-      <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-brand px-2 py-1 text-xs font-bold text-on-primary">You</span>
-      <ul>
-        {placed.map(({ p, x, y }, i) => (
-          <li key={p.id} className="absolute animate-pop" style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${i * 40}ms` }}>
-            <Link href={`/app/people/${p.id}`} className="group block -translate-x-1/2 -translate-y-1/2 text-center" title={`${p.displayName}, Vibe ${p.vibe.score ?? "?"}`}>
-              <span className="block transition-transform group-hover:scale-125"><Avatar name={p.displayName} config={p.avatar} size={46} online={p.online} /></span>
-              <span className="mt-0.5 block rounded-md bg-surface/90 px-1 text-[11px] font-bold group-hover:text-violet">{p.displayName} {p.vibe.score ?? ""}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export function Discover() {
   const [filters, setFilters] = useState<Filters>(DEFAULTS);
   const [people, setPeople] = useState<PersonCard[] | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useView<"swipe" | "grid" | "galaxy">("discover-v2", "swipe");
+  const [view, setView] = useView<"profiles" | "swipe" | "grid">("discover-v3", "profiles");
   const [showFilters, setShowFilters] = useState(false);
   const set = (p: Partial<Filters>) => setFilters((f) => ({ ...f, ...p }));
 
@@ -155,7 +125,7 @@ export function Discover() {
   }, [query]);
 
   useEffect(() => {
-    if (view === "swipe") return;
+    if (view !== "grid") return;
     const t = setTimeout(load, 250);
     return () => clearTimeout(t);
   }, [load, view]);
@@ -168,51 +138,42 @@ export function Discover() {
   const activeCount = [filters.intent, filters.gender, filters.city, filters.minVibe, filters.online, filters.q, filters.interests.length, filters.minAge !== 18 || filters.maxAge !== 60].filter(Boolean).length;
 
   return (
-    <div className="mx-auto max-w-7xl">
-      {view === "swipe" ? (
-        <div className="mb-4 flex items-center justify-center">
-          <h1 className="sr-only">Discover</h1>
-          <ViewToggle value={view} onChange={setView} options={[{ id: "swipe", label: "Swipe", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }, { id: "galaxy", label: "Galaxy", icon: "orbit" }]} />
-        </div>
-      ) : (
-      <PageHeader
-        title="Discover"
-        icon="fire"
-        subtitle="Browse with filters. Every Vibe Match shows its reasons."
-        actions={
-          <>
-            <>
+    // Exactly one screen tall: the bar stays put and each view scrolls inside itself, never the page.
+    <div className="mx-auto flex h-[calc(100dvh-12.5rem)] min-h-[420px] max-w-7xl flex-col lg:h-[calc(100dvh-9.5rem)]">
+      <div className={`mb-4 flex shrink-0 flex-wrap items-center gap-2 ${view === "grid" ? "justify-between" : "justify-center"}`}>
+        <h1 className={view === "grid" ? "font-display text-3xl leading-none" : "sr-only"}>Discover</h1>
+        {view === "grid" ? (
+          <div className="flex flex-wrap items-center gap-2">
             <label className="sr-only" htmlFor="sort">Sort by</label>
-            <select id="sort" value={filters.sort} onChange={(e) => set({ sort: e.target.value as Filters["sort"] })} className="h-11 rounded-full border border-line-strong bg-surface px-4 text-sm font-semibold">
+            <select id="sort" value={filters.sort} onChange={(e) => set({ sort: e.target.value as Filters["sort"] })} className="h-10 rounded-full border border-line-strong bg-surface px-4 text-sm font-semibold">
               <option value="vibe">Best vibe first</option>
               <option value="active">Recently active</option>
               <option value="recent">Newest</option>
             </select>
-            <Button variant="secondary" className="lg:hidden" onClick={() => setShowFilters((s) => !s)} aria-expanded={showFilters}>
+            <Button variant="secondary" size="sm" className="lg:hidden" onClick={() => setShowFilters((x) => !x)} aria-expanded={showFilters}>
               <Icon name="filter" size={16} /> Filters{activeCount ? ` (${activeCount})` : ""}
             </Button>
-            </>
-            <ViewToggle value={view} onChange={setView} options={[{ id: "swipe", label: "Swipe", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }, { id: "galaxy", label: "Galaxy", icon: "orbit" }]} />
-          </>
-        }
-      />
-      )}
-      {view === "swipe" ? <SwipeDeck /> : (
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <aside className={`${showFilters ? "block" : "hidden"} h-fit rounded-[24px] border border-line bg-surface p-5 lg:sticky lg:top-24 lg:block`} aria-label="Filters">
+            <ViewToggle value={view} onChange={setView} options={[{ id: "profiles", label: "Profiles", icon: "user" }, { id: "swipe", label: "Cards", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }]} />
+          </div>
+        ) : (
+          <ViewToggle value={view} onChange={setView} options={[{ id: "profiles", label: "Profiles", icon: "user" }, { id: "swipe", label: "Cards", icon: "cards" }, { id: "grid", label: "Browse", icon: "grid" }]} />
+        )}
+      </div>
+      <div className="min-h-0 flex-1">
+      {view === "profiles" ? <ProfileFeed /> : view === "swipe" ? <SwipeDeck /> : (
+      <div className="grid h-full gap-6 lg:grid-cols-[260px_1fr]">
+        <aside className={`${showFilters ? "block" : "hidden"} no-scrollbar max-h-full overflow-y-auto rounded-[24px] border border-line bg-surface p-5 lg:block`} aria-label="Filters">
           <FilterPanel f={filters} set={set} cities={cities} onReset={async () => {
             setFilters(DEFAULTS);
             await api("/people/passes", { method: "DELETE" }).catch(() => undefined);
             load();
           }} />
         </aside>
-        <section aria-live="polite" aria-busy={!people}>
+        <section aria-live="polite" aria-busy={!people} className={`${showFilters ? "hidden lg:block" : ""} no-scrollbar min-h-0 overflow-y-auto pb-2`}>
           {error ? (
             <EmptyState title="Discover is resting" body={error} />
           ) : !people ? (
             <Loader variant="compass" caption="Scanning the verse for your people" />
-          ) : view === "galaxy" ? (
-            people.length ? <GalaxyView people={people} /> : <EmptyState title="Nobody in range" body="Try widening the age range or removing a filter." />
           ) : people.length === 0 ? (
             <EmptyState title="Nobody matches these filters" body="Try widening the age range or removing a filter." />
           ) : (
@@ -236,6 +197,7 @@ export function Discover() {
         </section>
       </div>
       )}
+      </div>
     </div>
   );
 }
