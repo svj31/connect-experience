@@ -113,3 +113,23 @@ buttons over content, layout audit clean at 360 to 1440 px.
 - **Orbits use planets**: Bond orbits (Likes, Matches cards, profiles) show both people's planets travelling the bond ring around a beating heart; Activity "Your universe" shows everyone as planets.
 - **Sidebar match tiles** flip to the planet on hover only.
 - **Light theme by default** for the site and the app (dark and "match my device" remain in Settings).
+
+# Version 5.6: landing page scroll motion (landing only, nothing removed)
+Following the scroll-craft approach (one rAF loop, one scroll value, transforms only, one peak, an ending that resolves,
+reduced motion respected), `frontend/src/components/landing/ScrollMotion.tsx` adds:
+- Hero: the collage separates into depth planes (photos, prompt card, match chip) and the copy lifts away as you leave.
+- Activity marquee and "Near you" faces drift sideways with the scroll, on top of their own loops.
+- Section headings reveal word by word (same text; static without JavaScript or with reduced motion).
+- How it works: step photos settle from a slight zoom.
+- The peak: the dark "Earn the reveal" panel opens from a rounded inset card to full bleed as you arrive.
+- The ending: the final call to action settles into place; a thin plum reading line tracks progress.
+
+# Version 5.7: pinned scroll acts inspired by gracefashion.ai (added, nothing removed)
+`frontend/src/components/landing/PinnedActs.tsx` adds two sticky, scroll-driven acts to the landing page:
+- **Word sandwich** (after the hero, 360vh): "Meet people the way you'd want to be met." gives way to three beats where the
+  line splits and an image grows between the words: "Real [portrait] people.", "Honest [prompt grid] prompts.",
+  "Shared [moment] moments."; the last image opens to fill the screen.
+- **Fan out** (before Activities, 300vh, dark ink): an "It's a Saath!" match in the centre; activity cards fly out around
+  it and land, then "One match. Ten ways to meet." On screens under 1024 px the match rises and the cards fill a two
+  column grid. Checked at 360x640 to 1440x900 for overlaps with each other, the caption, the match card and the header.
+Both render as still sections with reduced motion, and the page never scrolls sideways.

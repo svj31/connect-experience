@@ -6,6 +6,8 @@ import { BondExplorer, VibeDemo, WyrDemo } from "@/components/landing/Playground
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
+import { FanOut, WordSandwich } from "@/components/landing/PinnedActs";
+import { ScrollMotion, Words } from "@/components/landing/ScrollMotion";
 import { ACTIVITIES, CATEGORIES } from "@/lib/activities";
 
 export const metadata: Metadata = {
@@ -34,10 +36,11 @@ const eyebrow = "text-sm font-semibold tracking-[0.18em] text-violet uppercase";
 export default function Home() {
   return (
     <>
+      <ScrollMotion />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-10 pb-20 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-16 lg:pb-28">
-          <div className="animate-rise">
+          <div className="animate-rise"><div data-sm="exit">
             <p className={eyebrow}>The dating app for people who hate small talk</p>
             <h1 className="mt-5 font-display text-[3.3rem] leading-[0.98] text-balance sm:text-7xl lg:text-[5.6rem]">
               Don&apos;t just match. <span className="italic text-violet">Do something</span> together.
@@ -56,18 +59,18 @@ export default function Home() {
               </span>
               <p className="text-sm text-muted">Free to join. Ten things to do together.<br />No paid tiers, no hidden likes.</p>
             </div>
-          </div>
+          </div></div>
 
           {/* Editorial photo collage with a prompt, like a real profile */}
           <div className="animate-rise relative mx-auto h-[520px] w-full max-w-[460px] [animation-delay:150ms] sm:h-[580px]" aria-hidden="true">
-            <img src={DEMO_FACES.a} alt="" className="absolute top-0 left-0 h-[64%] w-[62%] rounded-[28px] object-cover shadow-[var(--shadow)]" />
-            <img src={DEMO_FACES.b} alt="" className="absolute right-0 bottom-0 h-[62%] w-[58%] rounded-[28px] object-cover shadow-[var(--shadow)]" />
-            <div className="absolute top-[14%] right-0 w-[52%] rounded-[22px] border border-line bg-surface p-5 shadow-[var(--shadow)]">
+            <img data-sm="parallax" data-speed="0.10" src={DEMO_FACES.a} alt="" className="absolute top-0 left-0 h-[64%] w-[62%] rounded-[28px] object-cover shadow-[var(--shadow)]" />
+            <img data-sm="parallax" data-speed="-0.06" src={DEMO_FACES.b} alt="" className="absolute right-0 bottom-0 h-[62%] w-[58%] rounded-[28px] object-cover shadow-[var(--shadow)]" />
+            <div data-sm="parallax" data-speed="0.22" className="absolute top-[14%] right-0 w-[52%] rounded-[22px] border border-line bg-surface p-5 shadow-[var(--shadow)]">
               <p className="text-xs font-semibold">My ideal first date</p>
               <p className="mt-2 font-display text-[1.35rem] leading-snug">Street food crawl, then losing at Connect Four</p>
               <span className="mt-3 ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-line text-violet"><Icon name="heart" size={16} /></span>
             </div>
-            <div className="absolute bottom-[10%] left-0 flex items-center gap-3 rounded-full border border-line bg-surface py-2 pr-5 pl-2 shadow-[var(--shadow)]">
+            <div data-sm="parallax" data-speed="0.3" className="absolute bottom-[10%] left-0 flex items-center gap-3 rounded-full border border-line bg-surface py-2 pr-5 pl-2 shadow-[var(--shadow)]">
               <span className="flex -space-x-2">
                 <img src={DEMO_FACES.a} alt="" className="h-9 w-9 rounded-full border-2 border-surface object-cover" />
                 <img src={DEMO_FACES.b} alt="" className="h-9 w-9 rounded-full border-2 border-surface object-cover" />
@@ -78,25 +81,28 @@ export default function Home() {
           </div>
         </div>
         <div className="border-y border-line bg-surface py-4">
-          <div className="marquee flex w-max gap-10 whitespace-nowrap font-display text-xl text-muted">
+          <div data-sm="drift" data-x="-220"><div className="marquee flex w-max gap-10 whitespace-nowrap font-display text-xl text-muted">
             {[...ACTIVITIES, ...ACTIVITIES].map((a, i) => (
               <span key={`${a.id}-${i}`} className="flex items-center gap-3"><Icon name={a.id} size={18} className="text-violet" />{a.name}</span>
             ))}
-          </div>
+          </div></div>
         </div>
       </section>
+
+      {/* Act one (pinned): a line splits and an image grows between its words */}
+      <WordSandwich />
 
       {/* How it works */}
       <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-24 pb-16 sm:px-6">
         <Reveal>
           <p className={eyebrow}>How it works</p>
-          <h2 className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl">From a like to a first date, without the dead chat.</h2>
+          <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="From a like to a first date, without the dead chat." />
         </Reveal>
         <ol className="mt-14 grid gap-6 md:grid-cols-3">
           {STEPS.map((s, i) => (
             <Reveal key={s.n} delay={i * 120}>
               <li className="h-full overflow-hidden rounded-[24px] border border-line bg-surface">
-                <img src={s.face} alt="" className="aspect-[4/3] w-full object-cover" />
+                <div className="overflow-hidden"><img data-sm="zoom" src={s.face} alt="" className="aspect-[4/3] w-full object-cover" /></div>
                 <div className="p-6">
                   <p className="font-display text-lg text-muted italic">Step {s.n}</p>
                   <h3 className="mt-1 font-display text-2xl">{s.title}</h3>
@@ -113,10 +119,10 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <p className={eyebrow}>Near you</p>
-            <h2 id="crowd-title" className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-5xl">Real people, one like away.</h2>
+            <Words id="crowd-title" className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-5xl" text="Real people, one like away." />
           </Reveal>
         </div>
-        <div className="marquee mt-10 flex w-max gap-4 px-4">
+        <div data-sm="drift" data-x="-260"><div className="marquee mt-10 flex w-max gap-4 px-4">
           {[...CROWD, ...CROWD].map((c, i) => (
             <figure key={`${c.img}-${i}`} className="relative h-72 w-52 shrink-0 overflow-hidden rounded-[24px] bg-paper-deep">
               <img src={crowdPhoto(c.img, 500)} alt="" loading="lazy" className="h-full w-full object-cover" />
@@ -126,7 +132,7 @@ export default function Home() {
               </figcaption>
             </figure>
           ))}
-        </div>
+        </div></div>
         <p className="mt-6 text-center text-xs text-muted">Sample profiles shown for the demo.</p>
       </section>
 
@@ -135,7 +141,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2">
           <Reveal>
             <p className={eyebrow}>Vibe Match</p>
-            <h2 className="mt-3 font-display text-4xl text-balance sm:text-5xl">Matches that explain themselves.</h2>
+            <Words className="mt-3 font-display text-4xl text-balance sm:text-5xl" text="Matches that explain themselves." />
             <p className="mt-5 text-lg leading-relaxed text-muted">No mystery algorithm. Every score shows its reasons: shared interests, what you are both looking for, quiz answers and lifestyle. Each day, Standouts picks the people who fit you best.</p>
             <ul className="mt-6 space-y-3">
               {["Ranked by compatibility, distance and who is active", "People who liked you show up sooner", "Undo a pass, super like the one you really mean"].map((t) => (
@@ -147,11 +153,14 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Act two (pinned): one match fans out into the things you can do together */}
+      <FanOut />
+
       {/* Activities */}
       <section id="activities" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
         <Reveal>
           <p className={eyebrow}>Together</p>
-          <h2 className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl">Ten ways to break the ice. All live, all for two.</h2>
+          <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="Ten ways to break the ice. All live, all for two." />
         </Reveal>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORIES.map((c, i) => (
@@ -171,11 +180,11 @@ export default function Home() {
       </section>
 
       {/* Bond */}
-      <section id="bond" className="scroll-mt-20 bg-[#161412] text-[#f4f1ec]">
+      <section id="bond" data-sm="curtain" className="scroll-mt-20 bg-[#161412] text-[#f4f1ec]">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <Reveal>
             <p className="text-sm font-semibold tracking-[0.18em] text-[#c4a8f0] uppercase">Bond levels</p>
-            <h2 className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl">Earn the <span className="italic">reveal.</span></h2>
+            <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text={<>Earn the <span className="italic">reveal.</span></>} />
             <p className="mt-5 max-w-2xl text-lg text-[#f4f1ec]/70">From Stardust to Galaxy, your bond grows with every game, answer and conversation. Each level can unlock more of your profile: you choose what, and for whom.</p>
           </Reveal>
           <div className="mt-12 rounded-[28px] bg-surface p-4 text-ink sm:p-8"><Reveal><BondExplorer /></Reveal></div>
@@ -186,7 +195,7 @@ export default function Home() {
       <section id="safety" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
         <Reveal>
           <p className={eyebrow}>Safety</p>
-          <h2 className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl">Built to feel safe from the first like.</h2>
+          <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="Built to feel safe from the first like." />
         </Reveal>
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SAFETY.map((s, i) => (
@@ -205,7 +214,7 @@ export default function Home() {
 
       {/* Final CTA */}
       <section className="px-4 pb-24 sm:px-6">
-        <div className="relative mx-auto grid max-w-6xl overflow-hidden rounded-[32px] bg-[#161412] text-[#f4f1ec] md:grid-cols-[1.2fr_1fr]">
+        <div data-sm="grow" className="relative mx-auto grid max-w-6xl overflow-hidden rounded-[32px] bg-[#161412] text-[#f4f1ec] md:grid-cols-[1.2fr_1fr]">
           <div className="p-8 sm:p-14">
             <h2 className="max-w-xl font-display text-4xl text-balance sm:text-6xl">Your next first date starts with a <span className="italic text-[#f2a900]">game.</span></h2>
             <p className="mt-4 max-w-md text-lg text-[#f4f1ec]/75">Join free, or look around with a demo account in one click.</p>
@@ -215,7 +224,7 @@ export default function Home() {
               <DemoButton as="admin" size="lg" variant="ghost" className="[&_button]:text-[#f4f1ec]/80 [&_button:hover]:bg-white/10">Admin demo</DemoButton>
             </div>
           </div>
-          <img src={DEMO_FACES.f} alt="" className="hidden h-full w-full object-cover md:block" />
+          <div className="hidden h-full overflow-hidden md:block"><img data-sm="zoom" src={DEMO_FACES.f} alt="" className="h-full w-full object-cover" /></div>
         </div>
       </section>
     </>
