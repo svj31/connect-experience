@@ -76,6 +76,24 @@ test.describe("two people meet, connect, chat and play", () => {
     await expect(a.page.getByText("Finding a new song")).toBeVisible();
     await expect(b.page.getByText("Clear skies after rain")).toBeVisible();
 
+    // Together invites: both people see the plan in Live now. Bilal says not now, Anaya sees it and clears it.
+    await a.page.goto("/app/together");
+    await a.page.getByRole("tab", { name: /^Talk/ }).click();
+    await a.page.getByRole("button", { name: /Deep Talk/ }).click();
+    await a.page.getByRole("tab", { name: /Someone I am connected with/ }).click();
+    await a.page.locator("section[aria-labelledby=step2]").getByRole("button", { name: /Bilal/ }).click();
+    await expect(a.page).toHaveURL(/\/app\/room\//);
+    await b.page.goto("/app/together");
+    const invite = b.page.getByRole("listitem").filter({ hasText: "Anaya wants to play Deep Talk" });
+    await expect(invite).toBeVisible();
+    await invite.getByRole("button", { name: "Not now" }).click();
+    await expect(invite).toHaveCount(0);
+    await expect(a.page.getByText("Bilal can't do Deep Talk right now")).toBeVisible();
+    await a.page.goto("/app/together");
+    await expect(a.page.getByText("Bilal can't right now")).toBeVisible();
+    await a.page.getByRole("button", { name: "Clear" }).click();
+    await expect(a.page.getByText("Nothing live yet")).toBeVisible();
+
     // Bond and Vibe show on the profile.
     await a.page.goto("/app/connections?tab=all");
     await a.page.locator("#main").getByRole("link", { name: "Bilal" }).first().click();
@@ -140,6 +158,15 @@ test.describe("demo member", () => {
     await expect(page.getByRole("button", { name: /^Pass on / })).not.toHaveAttribute("aria-label", `Pass on ${name}`);
     const matched = page.getByRole("dialog", { name: "It's a Saath!" });
     if (await matched.isVisible()) await page.keyboard.press("Escape");
+    // The roll: drag the profile left to pass. It settles on the left, where the pass can be undone.
+    const next = (await page.getByRole("button", { name: /^Pass on / }).getAttribute("aria-label"))!.replace("Pass on ", "");
+    const box = (await page.getByRole("article", { name: `${next}'s profile` }).boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + 200);
+    await page.mouse.down();
+    for (let i = 1; i <= 8; i++) await page.mouse.move(box.x + box.width / 2 - i * 30, box.y + 200);
+    await page.mouse.up();
+    await expect(page.getByRole("button", { name: /^Pass on / })).not.toHaveAttribute("aria-label", `Pass on ${next}`);
+    await expect(page.getByRole("button", { name: `Previous: ${next}. Undo pass` })).toBeVisible();
     await page.getByRole("radio", { name: "Cards" }).click();
     await expect(page.getByText(/likes left today/)).toBeVisible();
     const pass = page.getByRole("button", { name: /^Pass on / });
@@ -165,8 +192,9 @@ test.describe("demo member", () => {
     await page.goto("/app/connections?tab=all");
     await page.getByRole("radio", { name: "Bond ladder" }).click();
     await expect(page.getByRole("region", { name: "Orbit bonds" })).toContainText("Rohan");
+    // Which seeded likes are still waiting depends on what the Discover test liked, so check the tab itself.
     await page.getByRole("tab", { name: /Likes you/ }).click();
-    await expect(page.getByText(/biryani opinions/)).toBeVisible();
+    await expect(page.getByRole("tab", { name: /Likes you/ })).toHaveAttribute("aria-selected", "true");
 
     await page.goto("/app/moments");
     await page.getByRole("button", { name: /favourites$/ }).first().click();
