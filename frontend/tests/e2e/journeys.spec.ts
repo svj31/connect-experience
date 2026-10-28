@@ -57,8 +57,10 @@ test.describe("two people meet, connect, chat and play", () => {
     await b.page.getByRole("button", { name: "Rephrase" }).click();
 
     // Together hub: Talk, Deep Talk, with a connection.
+    // Orbits stand still with reduced motion, so the planets are steady targets for the test.
+    await a.page.emulateMedia({ reducedMotion: "reduce" });
     await a.page.goto("/app/together");
-    await a.page.getByRole("tab", { name: /Talk/ }).click();
+    await a.page.getByRole("tab", { name: /^Talk/ }).click();
     await a.page.getByRole("button", { name: /Deep Talk/ }).click();
     await a.page.getByRole("tab", { name: /Someone I am connected with/ }).click();
     await a.page.locator("section[aria-labelledby=step2]").getByRole("button", { name: /Bilal/ }).click();
@@ -90,8 +92,9 @@ test.describe("two people meet, connect, chat and play", () => {
     await signUp(a.page, "Quinn");
     await signUp(b.page, "Ravi");
     for (const p of [a.page, b.page]) {
+      await p.emulateMedia({ reducedMotion: "reduce" });
       await p.goto("/app/together");
-      await p.getByRole("tab", { name: /Play/ }).click();
+      await p.getByRole("tab", { name: /^Play/ }).click();
       await p.getByRole("button", { name: /Connect Four/ }).click();
       await p.getByRole("tab", { name: /Meet someone new/ }).click();
       await p.getByLabel("Only Connect Four").check();

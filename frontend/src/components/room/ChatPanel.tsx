@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode, useId } from "react";
 import { timeAgo } from "@/lib/labels";
 import type { ChatMessage, Reaction } from "@/lib/types";
 import { REACTIONS } from "@/lib/types";
@@ -49,6 +49,8 @@ export function ChatPanel({
   header?: ReactNode;
   extraPrompts?: string[];
 }) {
+  // Unique per panel: a room can show the docked chat and the floating one at the same time.
+  const inputId = useId();
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [tip, setTip] = useState<string | null>(null);
@@ -160,9 +162,9 @@ export function ChatPanel({
         )}
         {error && <p role="alert" className="mb-2 text-sm font-medium text-danger">{error}</p>}
         <div className="flex gap-2">
-          <label htmlFor="chat-input" className="sr-only">Message</label>
+          <label htmlFor={inputId} className="sr-only">Message</label>
           <input
-            id="chat-input"
+            id={inputId}
             value={text}
             maxLength={500}
             disabled={disabled}

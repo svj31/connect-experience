@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ACTIVITIES, CATEGORIES, activityById, type Category } from "@/lib/activities";
+import { ACTIVITIES, CATEGORIES, activityById, type ActivityInfo, type Category } from "@/lib/activities";
 import { api, errorMessage } from "@/lib/api";
 import { track } from "@/lib/consent";
 import { cap } from "@/lib/labels";
@@ -17,18 +17,11 @@ import { Button } from "../ui/Button";
 import { Field } from "../ui/Field";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
-import { Chip, PageHeader } from "./widgets";
+import { Planet } from "../ui/Planet";
+import { TitleWords } from "../ui/TitleWords";
+import { TogetherSystem, WORLDS } from "./TogetherSystem";
 
 type Who = "connection" | "new" | "code";
-
-function StepTitle({ n, children }: { n: number; children: React.ReactNode }) {
-  return (
-    <h2 className="mb-3 flex items-center gap-3 font-display text-2xl font-bold">
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-on-primary">{n}</span>
-      {children}
-    </h2>
-  );
-}
 
 export function Together() {
   const params = useSearchParams();
@@ -37,7 +30,8 @@ export function Together() {
   const { socket } = useLive();
   const preset = params.get("pick");
   const presetActivity = preset && ACTIVITIES.some((a) => a.id === preset) ? (preset as ActivityId) : null;
-  const [category, setCategory] = useState<Category>(presetActivity ? activityById(presetActivity).category : "talk");
+  const [category, setCategory] = useState<Category | null>(presetActivity ? activityById(presetActivity).category : null);
+  const [preview, setPreview] = useState<ActivityInfo | null>(null);
   const [activity, setActivity] = useState<ActivityId | null>(presetActivity);
   const [who, setWho] = useState<Who>("connection");
   const [locked, setLocked] = useState(false);
@@ -129,79 +123,95 @@ export function Together() {
 
   const tablesForActivity = open.filter((r) => !activity || r.activity === activity);
 
+  const world = category ? CATEGORIES.find((c) => c.id === category)! : null;
+  const shown = preview ?? (chosen && chosen.category === category ? chosen : null);
+
   return (
-    <div className="mx-auto max-w-6xl">
-      <PageHeader title="Together" icon="orbit" subtitle="Pick what you feel like, then who with. Chat is always one tap away inside." actions={<Link href="/app/chats" className="flex items-center gap-1.5 rounded-xl border border-line-strong px-3 py-2 text-sm font-semibold hover:border-violet hover:text-violet"><Icon name="chat" size={16} /> Just chat</Link>} />
-
-      {mine.length > 0 && (
-        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-surface p-3">
-          <span className="text-sm font-bold">Your open tables:</span>
-          {mine.map((r) => (
-            <Link key={r.code} href={`/app/room/${r.code}`} className="flex items-center gap-1.5 rounded-lg bg-violet-soft px-2 py-1 text-sm font-semibold text-violet hover:underline">
-              <Icon name={r.activity} size={14} /> {r.title}
-            </Link>
-          ))}
+    // One screen: the solar system on the left, a panel that guides each step on the right.
+    <div className="mx-auto flex h-[calc(100dvh-13rem)] min-h-[560px] max-w-6xl flex-col lg:h-[calc(100dvh-10rem)]">
+      <div className="mb-4 flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2">
+        <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl"><TitleWords text="Together" /></h1>
+        <p className="hidden text-muted md:block">{world ? `${world.name}: ${world.blurb.toLowerCase()}.` : "Choose a world, then an activity, then who with."}</p>
+        <Link href="/app/chats" className="ml-auto flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink"><Icon name="chat" size={16} /> Just chat</Link>
+      </div>
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_380px]">
+        <div className="h-[46vh] min-h-[300px] lg:h-full">
+          <TogetherSystem
+            me={{ name: user?.displayName ?? "You", avatar: user?.avatar ?? {} }}
+            category={category}
+            activity={activity}
+            forYou={topIdeas}
+            onCategory={(c) => { setCategory(c); setActivity(null); setPreview(null); setError(null); }}
+            onActivity={(a) => { setActivity(a); setError(null); }}
+            onPreview={setPreview}
+          />
         </div>
-      )}
-
-      <section aria-labelledby="step1">
-        <StepTitle n={1}><span id="step1">What do you feel like?</span></StepTitle>
-        <div role="tablist" aria-label="Kinds of activity" className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {CATEGORIES.map((c, i) => (
-            <button
-              key={c.id}
-              role="tab"
-              aria-selected={category === c.id}
-              onClick={() => { setCategory(c.id); setActivity(null); }}
-              className={`group rounded-[24px] border-2 p-4 text-left transition-all ${category === c.id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:-translate-y-0.5 hover:border-line-strong"}`}
-            >
-              <span className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:rotate-6 ${i % 2 ? "bg-brand" : "bg-brand"}`}><Icon name={c.icon} /></span>
-              <span className="mt-2 block font-display text-xl font-bold">{c.name}</span>
-              <span className="block text-sm text-muted">{c.blurb}</span>
-            </button>
-          ))}
-        </div>
-        <div role="tabpanel" className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {ACTIVITIES.filter((a) => a.category === category).map((a) => {
-            const reason = reasonFor(a.id);
-            const selected = activity === a.id;
-            return (
-              <button
-                key={a.id}
-                onClick={() => setActivity(a.id)}
-                aria-pressed={selected}
-                className={`relative animate-rise rounded-2xl border-2 p-4 text-left transition-all ${selected ? "border-rose bg-rose-soft" : "border-line bg-surface hover:border-violet"}`}
-              >
-                {topIdeas.includes(a.id) && <Chip tone="rose" className="absolute top-3 right-3"><Icon name="sparkle" size={11} />For you</Chip>}
-                <Icon name={a.id} size={26} className="text-violet" />
-                <span className="mt-2 block font-bold">{a.name}</span>
-                <span className="block text-sm text-muted">{a.short}</span>
-                <span className="mt-2 block text-xs font-semibold text-muted">{a.minutes}{reason ? ` · ${reason}` : ""}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+        <aside aria-label="Your choice" className="no-scrollbar min-h-0 overflow-y-auto rounded-[28px] border border-line bg-surface p-5 lg:p-6">
+          {!world ? (
+            <div className="animate-rise">
+              <p className="text-sm font-semibold tracking-[0.18em] text-violet uppercase">Step 1</p>
+              <h2 className="mt-1 font-display text-3xl">What do you feel like?</h2>
+              <ul className="mt-5 space-y-2">
+                {CATEGORIES.map((c) => (
+                  <li key={c.id}>
+                    <button type="button" onClick={() => { setCategory(c.id); setActivity(null); }} className="flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-paper-deep">
+                      <Planet config={WORLDS[c.id]} size={44} />
+                      <span><span className="block font-semibold">{c.name}</span><span className="block text-sm text-muted">{c.blurb}</span></span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {mine.length > 0 && (
+                <div className="mt-6 border-t border-line pt-4">
+                  <p className="text-sm font-semibold">Your open tables</p>
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {mine.map((r) => (
+                      <li key={r.code}><Link href={`/app/room/${r.code}`} className="flex items-center gap-1.5 rounded-full bg-violet-soft px-3 py-1 text-sm font-semibold text-violet hover:underline"><Icon name={r.activity} size={14} /> {r.title}</Link></li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : !chosen || chosen.category !== category ? (
+            <div key={world.id} className="animate-rise">
+              <p className="text-sm font-semibold tracking-[0.18em] text-violet uppercase">Step 2</p>
+              <h2 className="mt-1 font-display text-3xl">Pick an activity in {world.name}</h2>
+              {shown ? (
+                <div key={shown.id} className="mt-5 animate-rise rounded-2xl bg-paper-deep p-4">
+                  <p className="flex items-center gap-2 font-semibold"><Icon name={shown.id} size={18} className="text-violet" />{shown.name} <span className="text-sm font-normal text-muted">· {shown.minutes}</span></p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{shown.long}</p>
+                  {reasonFor(shown.id) && <p className="mt-2 flex items-center gap-1.5 text-sm text-violet"><Icon name="sparkle" size={14} />{reasonFor(shown.id)}</p>}
+                </div>
+              ) : (
+                <p className="mt-3 text-muted">Its activities are the moons around it. Point at one to read about it, then choose it.</p>
+              )}
+              <ul className="mt-5 space-y-1.5 lg:hidden">
+                {ACTIVITIES.filter((a) => a.category === category).map((a) => (
+                  <li key={a.id}><button type="button" onClick={() => setActivity(a.id)} className="flex w-full items-center gap-2 rounded-xl p-2 text-left text-sm hover:bg-paper-deep"><Icon name={a.id} size={16} className="text-violet" />{a.short}</button></li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
       {chosen && (
-        <section aria-labelledby="step2" className="mt-10 animate-rise">
-          <StepTitle n={2}><span id="step2">Who with?</span></StepTitle>
-          <p className="-mt-2 mb-4 text-muted">{chosen.long}</p>
-          <div role="tablist" aria-label="Who with" className="grid gap-3 md:grid-cols-3">
+        <section key={chosen.id} aria-labelledby="step2" className="animate-rise">
+          <p className="text-sm font-semibold tracking-[0.18em] text-violet uppercase">Step 3</p>
+          <h2 id="step2" className="mt-1 font-display text-3xl">Who with?</h2>
+          <p className="mt-2 mb-4 flex items-start gap-2 text-sm text-muted"><Icon name={chosen.id} size={16} className="mt-0.5 shrink-0 text-violet" /><span><span className="font-semibold text-ink">{chosen.name}</span> · {chosen.minutes}. {chosen.short}</span></p>
+          <div role="tablist" aria-label="Who with" className="grid gap-2">
             {([
               ["connection", "users", "Someone I am connected with", "Opens in your shared space. Bond points add up."],
               ["new", "discover", "Meet someone new", "Quick Match or an open table."],
               ["code", "key", "Invite with a code", "A private table for a friend, or join theirs."],
             ] as const).map(([id, icon, label, hint]) => (
-              <button key={id} role="tab" aria-selected={who === id} onClick={() => { setWho(id); setError(null); }} className={`rounded-2xl border-2 p-4 text-left transition-colors ${who === id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:border-line-strong"}`}>
-                <Icon name={icon} className="text-violet" />
-                <span className="mt-1.5 block font-bold">{label}</span>
-                <span className="block text-sm text-muted">{hint}</span>
+              <button key={id} role="tab" aria-selected={who === id} onClick={() => { setWho(id); setError(null); }} className={`flex items-start gap-3 rounded-2xl border-2 p-3 text-left transition-colors ${who === id ? "border-violet bg-violet-soft" : "border-line bg-surface hover:border-line-strong"}`}>
+                <Icon name={icon} className="mt-0.5 shrink-0 text-violet" />
+                <span><span className="block font-semibold">{label}</span><span className="block text-xs text-muted">{hint}</span></span>
               </button>
             ))}
           </div>
 
-          <div className="mt-4 rounded-[24px] border border-line bg-surface p-5">
+          <div className="mt-4">
             {error && <p role="alert" className="mb-3 text-sm font-medium text-danger">{error}</p>}
             {who === "connection" ? (
               connections === null ? (
@@ -209,7 +219,7 @@ export function Together() {
               ) : connections.length === 0 ? (
                 <p className="text-muted">No connections yet. <Link href="/app/discover" className="font-semibold text-violet">Find someone in Discover</Link>, or meet someone new here.</p>
               ) : (
-                <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                <ul className="grid gap-2">
                   {connections.map((c) => (
                     <li key={c.id}>
                       <button disabled={busy} onClick={() => playWith(c)} className="flex w-full items-center gap-3 rounded-2xl border border-line p-3 text-left transition-colors hover:border-violet hover:bg-violet-soft disabled:opacity-60">
@@ -228,7 +238,7 @@ export function Together() {
               <>
                 <fieldset className="mb-5">
                   <legend className="mb-2 font-bold">Activity for this table</legend>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-2">
                     {[[false, "Free to switch", "Either of you can change the activity inside."], [true, `Only ${chosen.name}`, "The table stays on this activity."]].map(([value, label, hint]) => (
                       <label key={String(value)} className={`flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-3 ${locked === value ? "border-violet bg-violet-soft" : "border-line"}`}>
                         <input type="radio" name="locked" checked={locked === value} onChange={() => setLocked(value as boolean)} className="mt-1 accent-[var(--violet)]" />
@@ -238,7 +248,7 @@ export function Together() {
                   </div>
                 </fieldset>
                 {who === "new" ? (
-                  <div className="grid gap-5 lg:grid-cols-2">
+                  <div className="grid gap-4">
                     <div className="rounded-2xl bg-paper-deep p-4">
                       <p className="flex items-center gap-2 font-bold"><Icon name="zap" className="text-rose" /> Quick Match</p>
                       <p className="mt-1 text-sm text-muted">We pair you with someone waiting for {chosen.name}, favouring shared interests. Blocked people are never matched.</p>
@@ -256,12 +266,12 @@ export function Together() {
                       <Field label="Table title" className="mt-2" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`${chosen.name} with ${user?.displayName ?? "me"}`} maxLength={60} />
                       <Button className="mt-3" onClick={() => createTable(true)} loading={busy}>Open table</Button>
                     </div>
-                    <div className="lg:col-span-2">
+                    <div>
                       <p className="mb-2 font-bold">Open tables {activity ? `for ${chosen.name}` : ""}</p>
                       {tablesForActivity.length === 0 ? (
                         <p className="text-sm text-muted">None right now. Open one and it shows up for others.</p>
                       ) : (
-                        <ul className="grid gap-2 sm:grid-cols-2">
+                        <ul className="grid gap-2">
                           {tablesForActivity.map((r) => {
                             const shared = r.host.interests.filter((i) => user?.interests.includes(i));
                             return (
@@ -280,7 +290,7 @@ export function Together() {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid gap-4">
                     <div className="rounded-2xl bg-paper-deep p-4">
                       <p className="font-bold">Start a private table</p>
                       <p className="text-sm text-muted">You get a code to share. Only people with it can join.</p>
@@ -299,6 +309,8 @@ export function Together() {
           </div>
         </section>
       )}
+        </aside>
+      </div>
     </div>
   );
 }

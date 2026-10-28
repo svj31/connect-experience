@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TitleWords } from "../ui/TitleWords";
 import { PhotoPlanet } from "../ui/PhotoPlanet";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,7 +16,7 @@ import { Button, ButtonLink } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
 import { Modal } from "../ui/Modal";
-import { BondMeter, BondOrbit, EmptyState, PageHeader, VibeRing, ViewToggle, useView } from "./widgets";
+import { BondMeter, BondOrbit, EmptyState, VibeRing, ViewToggle, useView } from "./widgets";
 
 interface Data { connections: Connection[]; incoming: Connection[]; outgoing: Connection[]; levels: BondLevel[] }
 
@@ -104,28 +105,30 @@ export function Connections() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <PageHeader
-        title="Likes"
-        icon="users"
-        subtitle="Who liked you, who you liked, and everyone you have matched with."
-        actions={tab === "all" && <ViewToggle value={view} onChange={setView} options={[{ id: "list", label: "List", icon: "list" }, { id: "cards", label: "Cards", icon: "grid" }, { id: "ladder", label: "Bond ladder", icon: "layers" }]} />}
-      />
-      <div role="tablist" className="no-scrollbar mb-5 flex gap-1 overflow-x-auto pb-1">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-selected={tab === t.id}
-            onClick={() => router.replace(t.id === "requests" ? "/app/connections" : `/app/connections?tab=${t.id}`)}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 font-bold whitespace-nowrap transition-colors ${tab === t.id ? "bg-brand shadow-brand" : "text-muted hover:bg-paper-deep hover:text-ink"}`}
-          >
-            {t.label}
-            {t.n ? <span className={`rounded-full px-2 py-0.5 text-xs ${tab === t.id ? "bg-white/25" : t.id === "requests" ? "bg-saffron" : "bg-paper-deep"}`}>{t.n}</span> : null}
-          </button>
-        ))}
+    // One screen tall, like Discover and Matches.
+    <div className="mx-auto flex h-[calc(100dvh-13rem)] min-h-[420px] max-w-6xl flex-col lg:h-[calc(100dvh-10rem)]">
+      {/* One slim toolbar: title, tabs and (for Matches) the view switch, so the cards get the room. */}
+      <div className="mb-4 flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3">
+        <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl"><TitleWords text="Likes" /></h1>
+        <div role="tablist" aria-label="Likes" className={`no-scrollbar flex gap-1 overflow-x-auto ${tab === "all" ? "order-last w-full sm:order-none sm:w-auto" : ""}`}>
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={tab === t.id}
+              onClick={() => router.replace(t.id === "requests" ? "/app/connections" : `/app/connections?tab=${t.id}`)}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${tab === t.id ? "bg-brand shadow-brand" : "text-muted hover:bg-paper-deep hover:text-ink"}`}
+            >
+              {t.label}
+              {t.n ? <span className={`rounded-full px-2 py-0.5 text-xs ${tab === t.id ? "bg-white/25" : t.id === "requests" ? "bg-saffron" : "bg-paper-deep"}`}>{t.n}</span> : null}
+            </button>
+          ))}
+        </div>
+        {tab === "all" && <div className="ml-auto"><ViewToggle value={view} onChange={setView} options={[{ id: "list", label: "List", icon: "list" }, { id: "cards", label: "Cards", icon: "grid" }, { id: "ladder", label: "Bond ladder", icon: "layers" }]} /></div>}
       </div>
 
+      {/* Only the cards scroll; the title, tabs and filters stay in place. */}
+      <div className="no-scrollbar -mx-1 min-h-0 flex-1 overflow-y-auto overscroll-contain px-1 pb-4">
       {error ? (
         <EmptyState title="Could not load connections" body={error} />
       ) : !data || !user ? (
@@ -208,6 +211,7 @@ export function Connections() {
         </div>
       )}
 
+      </div>
       <Modal open={Boolean(removing)} onClose={() => setRemoving(null)} title="Remove connection?">
         <p className="text-muted">You and {removing?.person.displayName} will no longer be connected and your shared space will close. Your moments stay in your gallery.</p>
         <div className="mt-5 flex justify-end gap-2">

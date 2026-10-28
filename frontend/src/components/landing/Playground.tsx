@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AVATAR_COLORS, AVATAR_FACES, AVATAR_PATTERNS, AVATAR_RINGS, AVATAR_SHAPES, type AvatarConfig } from "@/lib/types";
 import { Avatar } from "../ui/Avatar";
 import { Icon } from "../ui/Icon";
@@ -99,10 +99,36 @@ export const LEVELS = [
 ];
 
 /** Click through the five bond levels and watch the orbit fill. */
-export function BondExplorer() {
+export function BondExplorer({ autoplay = false }: { autoplay?: boolean }) {
   const [level, setLevel] = useState(2);
+  const root = useRef<HTMLDivElement>(null);
+  const touched = useRef(false);
+  // Autoplay: the bond grows Stardust to Galaxy as the explorer scrolls through the screen. A click
+  // hands control to the reader. Reduced motion keeps the default level.
+  useEffect(() => {
+    if (!autoplay || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const el = root.current;
+      if (!el || touched.current) return;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const p = Math.max(0, Math.min(0.999, (vh * 0.85 - r.top) / (vh * 0.85 + r.height * 0.2)));
+      setLevel((l) => (Math.floor(p * LEVELS.length) === l ? l : Math.floor(p * LEVELS.length)));
+    };
+    const on = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+    window.addEventListener("scroll", on, { passive: true });
+    on();
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", on);
+    };
+  }, [autoplay]);
   return (
-    <div className="grid items-center gap-8 md:grid-cols-[1fr_1.1fr]">
+    <div ref={root} className="grid items-center gap-8 md:grid-cols-[1fr_1.1fr]">
       <div className="relative mx-auto aspect-square w-full max-w-sm">
         <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true">
           {LEVELS.map((_, i) => (
@@ -125,7 +151,7 @@ export function BondExplorer() {
       <div>
         <div role="tablist" aria-label="Bond levels" className="flex flex-wrap gap-2">
           {LEVELS.map((l, i) => (
-            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => setLevel(i)} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-transparent bg-brand" : "border-line-strong bg-surface hover:border-violet"}`}>
+            <button key={l.name} role="tab" aria-selected={i === level} onClick={() => { touched.current = true; setLevel(i); }} className={`rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${i === level ? "border-transparent bg-brand" : "border-line-strong bg-surface hover:border-violet"}`}>
               {i + 1}. {l.name}
             </button>
           ))}

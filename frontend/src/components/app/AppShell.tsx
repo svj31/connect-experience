@@ -254,15 +254,19 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="glass sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-line px-4 sm:px-6">
-          <Link href="/app/discover" className="flex items-center gap-2" aria-label="SaathVerse home">
-            <LogoMark size={30} title="" />
-            <Wordmark size="sm" />
-          </Link>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <Bell />
-            <AccountMenu />
+        {/* Same height as the sidebar header and the same column as the page below, so the logo,
+            titles and content share one left edge at every width. */}
+        <header className="glass sticky top-0 z-30 h-[72px] border-b border-line px-4 sm:px-6 lg:px-10">
+          <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between gap-3">
+            <Link href="/app/discover" className="flex items-center gap-2" aria-label="SaathVerse home">
+              <LogoMark size={30} title="" />
+              <Wordmark size="sm" />
+            </Link>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <Bell />
+              <AccountMenu />
+            </div>
           </div>
         </header>
         {user.status !== "active" && (

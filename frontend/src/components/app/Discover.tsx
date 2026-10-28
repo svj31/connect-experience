@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { TitleWords } from "../ui/TitleWords";
 import { api, errorMessage } from "@/lib/api";
 import { GENDER_LABELS, INTENT_LABELS, cap } from "@/lib/labels";
 import { INTERESTS, type PersonCard } from "@/lib/types";
@@ -27,7 +28,7 @@ interface Filters {
 
 const DEFAULTS: Filters = { minAge: 18, maxAge: 60, intent: "", gender: "", city: "", interests: [], minVibe: 0, online: false, sort: "vibe", q: "" };
 
-const select = "h-10 w-full rounded-2xl border border-transparent bg-paper-deep px-4 text-sm font-semibold focus:border-violet focus:outline-none";
+const select = "h-10 w-full rounded-full border border-transparent bg-paper-deep px-4 text-sm font-semibold";
 
 function FilterPanel({ f, set, cities, onReset }: { f: Filters; set: (p: Partial<Filters>) => void; cities: string[]; onReset: () => void }) {
   return (
@@ -139,9 +140,9 @@ export function Discover() {
 
   return (
     // Exactly one screen tall: the bar stays put and each view scrolls inside itself, never the page.
-    <div className="mx-auto flex h-[calc(100dvh-12.5rem)] min-h-[420px] max-w-7xl flex-col lg:h-[calc(100dvh-9.5rem)]">
+    <div className="mx-auto flex h-[calc(100dvh-13rem)] min-h-[420px] max-w-6xl flex-col lg:h-[calc(100dvh-10rem)]">
       <div className={`mb-4 flex shrink-0 flex-wrap items-center gap-2 ${view === "grid" ? "justify-between" : "justify-center"}`}>
-        <h1 className={view === "grid" ? "font-display text-3xl leading-none" : "sr-only"}>Discover</h1>
+        <h1 className={view === "grid" ? "font-display text-[2.4rem] leading-none sm:text-5xl" : "sr-only"}><TitleWords text="Discover" /></h1>
         {view === "grid" ? (
           <div className="flex flex-wrap items-center gap-2">
             <label className="sr-only" htmlFor="sort">Sort by</label>

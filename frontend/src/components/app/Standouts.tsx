@@ -31,7 +31,7 @@ export function Standouts() {
   const top = data.mostCompatible;
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-6xl">
       <PageHeader title="Standouts" subtitle="Hand picked each day from people who fit you best. Super like one to show up first." />
       {!top ? (
         <EmptyState title="No standouts right now" body="You have seen everyone who fits your filters. New people join every day." />

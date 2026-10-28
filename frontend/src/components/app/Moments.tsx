@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TitleWords } from "../ui/TitleWords";
 import { useEffect, useMemo, useState } from "react";
 import { ACTIVITIES, activityById } from "@/lib/activities";
 import { api, errorMessage } from "@/lib/api";
@@ -9,7 +10,7 @@ import type { Moment } from "@/lib/types";
 import { ButtonLink } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
-import { EmptyState, PageHeader, ViewToggle, useView } from "./widgets";
+import { EmptyState, ViewToggle, useView } from "./widgets";
 
 type Stroke = { uid: number; color: string; size: number; points: [number, number][] };
 type Star = { x: number; y: number; z: number };
@@ -112,25 +113,27 @@ export function Moments() {
   }, [shown]);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <PageHeader
-        title="Moments"
-        icon="star"
-        subtitle="Everything you have made and finished together: drawings, constellations, stories and game results."
-        actions={<ViewToggle value={view} onChange={setView} options={[{ id: "gallery", label: "Gallery", icon: "grid" }, { id: "timeline", label: "Timeline", icon: "timeline" }, { id: "people", label: "By person", icon: "users" }]} />}
-      />
-      <div className="mb-5 flex flex-wrap items-center gap-2">
-        <label htmlFor="m-activity" className="sr-only">Activity</label>
-        <select id="m-activity" value={activity} onChange={(e) => setActivity(e.target.value)} className="h-10 rounded-2xl border border-transparent bg-paper-deep px-4 text-sm font-semibold">
-          <option value="">All activities</option>
-          {ACTIVITIES.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-        </select>
-        <button aria-pressed={favOnly} onClick={() => setFavOnly((f) => !f)} className={`flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold ${favOnly ? "border-rose bg-rose-soft text-rose" : "border-line-strong bg-surface"}`}>
-          <Icon name="heart" size={16} fill={favOnly ? "currentColor" : "none"} /> Favourites
-        </button>
-        {moments && <span className="text-sm text-muted">{shown.length} of {moments.length}</span>}
+    // One screen tall: the title and filters stay, the moments scroll.
+    <div className="mx-auto flex h-[calc(100dvh-13rem)] min-h-[420px] max-w-6xl flex-col lg:h-[calc(100dvh-10rem)]">
+      {/* One slim toolbar: title, filters and the view switch, so the moments get the room. */}
+      <div className="mb-4 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-3">
+        <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl"><TitleWords text="Moments" /></h1>
+        <div className="order-last flex w-full flex-wrap items-center gap-2 sm:order-none sm:w-auto">
+          <label htmlFor="m-activity" className="sr-only">Activity</label>
+          <select id="m-activity" value={activity} onChange={(e) => setActivity(e.target.value)} className="h-10 rounded-full border border-transparent bg-paper-deep px-4 text-sm font-semibold">
+            <option value="">All activities</option>
+            {ACTIVITIES.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+          <button aria-pressed={favOnly} onClick={() => setFavOnly((f) => !f)} className={`flex h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-px hover:shadow-[var(--shadow)] active:scale-95 ${favOnly ? "border-rose bg-rose-soft text-rose" : "border-line-strong bg-surface hover:border-ink"}`}>
+            <Icon name="heart" size={16} fill={favOnly ? "currentColor" : "none"} /> Favourites
+          </button>
+          {moments && <span className="hidden text-sm text-muted sm:inline">{shown.length} of {moments.length}</span>}
+        </div>
+        <div className="ml-auto"><ViewToggle value={view} onChange={setView} options={[{ id: "gallery", label: "Gallery", icon: "grid" }, { id: "timeline", label: "Timeline", icon: "timeline" }, { id: "people", label: "By person", icon: "users" }]} /></div>
       </div>
 
+      {/* Only the cards scroll; the title, tabs and filters stay in place. */}
+      <div className="no-scrollbar -mx-1 min-h-0 flex-1 overflow-y-auto overscroll-contain px-1 pb-4">
       {error ? (
         <EmptyState title="Moments are not loading" body={error} />
       ) : !moments ? (
@@ -163,6 +166,7 @@ export function Moments() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

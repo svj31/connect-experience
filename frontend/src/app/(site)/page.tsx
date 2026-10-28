@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { FanOut, WordSandwich } from "@/components/landing/PinnedActs";
+import { CoverFlow, DeckSpread, DrawnUnderline, SafetyChecklist, Spotlight, StepsAct, VibeCounter } from "@/components/landing/SectionMotion";
 import { ScrollMotion, Words } from "@/components/landing/ScrollMotion";
 import { ACTIVITIES, CATEGORIES } from "@/lib/activities";
 
@@ -93,26 +94,15 @@ export default function Home() {
       <WordSandwich />
 
       {/* How it works */}
-      <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-24 pb-16 sm:px-6">
-        <Reveal>
-          <p className={eyebrow}>How it works</p>
-          <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="From a like to a first date, without the dead chat." />
-        </Reveal>
-        <ol className="mt-14 grid gap-6 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <Reveal key={s.n} delay={i * 120}>
-              <li className="h-full overflow-hidden rounded-[24px] border border-line bg-surface">
-                <div className="overflow-hidden"><img data-sm="zoom" src={s.face} alt="" className="aspect-[4/3] w-full object-cover" /></div>
-                <div className="p-6">
-                  <p className="font-display text-lg text-muted italic">Step {s.n}</p>
-                  <h3 className="mt-1 font-display text-2xl">{s.title}</h3>
-                  <p className="mt-2 leading-relaxed text-muted">{s.body}</p>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </section>
+      <StepsAct
+        steps={STEPS}
+        heading={
+          <Reveal>
+            <p className={eyebrow}>How it works</p>
+            <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="From a like to a first date, without the dead chat." />
+          </Reveal>
+        }
+      />
 
       {/* Crowd */}
       <section aria-labelledby="crowd-title" className="overflow-hidden pb-24">
@@ -122,17 +112,7 @@ export default function Home() {
             <Words id="crowd-title" className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-5xl" text="Real people, one like away." />
           </Reveal>
         </div>
-        <div data-sm="drift" data-x="-260"><div className="marquee mt-10 flex w-max gap-4 px-4">
-          {[...CROWD, ...CROWD].map((c, i) => (
-            <figure key={`${c.img}-${i}`} className="relative h-72 w-52 shrink-0 overflow-hidden rounded-[24px] bg-paper-deep">
-              <img src={crowdPhoto(c.img, 500)} alt="" loading="lazy" className="h-full w-full object-cover" />
-              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-14 text-white">
-                <span className="block font-display text-2xl">{c.name}, {c.age}</span>
-                <span className="flex items-center gap-1 text-xs text-white/85"><Icon name="pin" size={12} />{c.city}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div></div>
+        <CoverFlow people={CROWD.map((c) => ({ key: String(c.img), name: c.name, age: c.age, city: c.city, photo: crowdPhoto(c.img, 500) }))} />
         <p className="mt-6 text-center text-xs text-muted">Sample profiles shown for the demo.</p>
       </section>
 
@@ -148,6 +128,7 @@ export default function Home() {
                 <li key={t} className="flex items-center gap-3"><span className="bg-brand flex h-6 w-6 shrink-0 items-center justify-center rounded-full"><Icon name="check" size={14} /></span>{t}</li>
               ))}
             </ul>
+            <VibeCounter reasons={["You both love music and travel", "You both want something long-term", "Same answers on 4 of 6 Vibe Quiz questions"]} />
           </Reveal>
           <Reveal delay={150}><VibeDemo /></Reveal>
         </div>
@@ -162,7 +143,7 @@ export default function Home() {
           <p className={eyebrow}>Together</p>
           <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="Ten ways to break the ice. All live, all for two." />
         </Reveal>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <DeckSpread className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORIES.map((c, i) => (
             <Reveal key={c.id} delay={i * 80}>
               <div className="lift h-full rounded-[24px] border border-line bg-surface p-6">
@@ -170,12 +151,12 @@ export default function Home() {
                 <h3 className="mt-5 font-display text-2xl">{c.name}</h3>
                 <p className="mt-1 text-sm text-muted">{c.blurb}</p>
                 <ul className="mt-4 flex flex-wrap gap-1.5">
-                  {ACTIVITIES.filter((a) => a.category === c.id).map((a) => <li key={a.id} className="rounded-full border border-line px-3 py-1 text-xs font-medium">{a.name}</li>)}
+                  {ACTIVITIES.filter((a) => a.category === c.id).map((a) => <li key={a.id} data-pill className="rounded-full border border-line px-3 py-1 text-xs font-medium">{a.name}</li>)}
                 </ul>
               </div>
             </Reveal>
           ))}
-        </div>
+        </DeckSpread>
         <div className="mt-10"><Reveal><WyrDemo /></Reveal></div>
       </section>
 
@@ -187,7 +168,7 @@ export default function Home() {
             <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text={<>Earn the <span className="italic">reveal.</span></>} />
             <p className="mt-5 max-w-2xl text-lg text-[#f4f1ec]/70">From Stardust to Galaxy, your bond grows with every game, answer and conversation. Each level can unlock more of your profile: you choose what, and for whom.</p>
           </Reveal>
-          <div className="mt-12 rounded-[28px] bg-surface p-4 text-ink sm:p-8"><Reveal><BondExplorer /></Reveal></div>
+          <div className="mt-12 rounded-[28px] bg-surface p-4 text-ink sm:p-8"><Reveal><BondExplorer autoplay /></Reveal></div>
         </div>
       </section>
 
@@ -197,26 +178,15 @@ export default function Home() {
           <p className={eyebrow}>Safety</p>
           <Words className="mt-3 max-w-3xl font-display text-4xl text-balance sm:text-6xl" text="Built to feel safe from the first like." />
         </Reveal>
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SAFETY.map((s, i) => (
-            <Reveal key={s.title} delay={i * 60}>
-              <li className="flex h-full gap-4 rounded-[24px] border border-line bg-surface p-6">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-violet-soft text-violet"><Icon name={s.icon} size={20} /></span>
-                <span>
-                  <span className="block font-display text-xl">{s.title}</span>
-                  <span className="mt-1 block text-sm text-muted">{s.body}</span>
-                </span>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+        <SafetyChecklist items={SAFETY} />
       </section>
 
       {/* Final CTA */}
       <section className="px-4 pb-24 sm:px-6">
+        <Spotlight className="mx-auto max-w-6xl">
         <div data-sm="grow" className="relative mx-auto grid max-w-6xl overflow-hidden rounded-[32px] bg-[#161412] text-[#f4f1ec] md:grid-cols-[1.2fr_1fr]">
           <div className="p-8 sm:p-14">
-            <h2 className="max-w-xl font-display text-4xl text-balance sm:text-6xl">Your next first date starts with a <span className="italic text-[#f2a900]">game.</span></h2>
+            <h2 className="max-w-xl font-display text-4xl text-balance sm:text-6xl">Your next first date starts with a <DrawnUnderline><span className="italic text-[#f2a900]">game.</span></DrawnUnderline></h2>
             <p className="mt-4 max-w-md text-lg text-[#f4f1ec]/75">Join free, or look around with a demo account in one click.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/signup" size="lg" className="!bg-[#f4f1ec] !text-[#161412]">Create account</ButtonLink>
@@ -226,6 +196,7 @@ export default function Home() {
           </div>
           <div className="hidden h-full overflow-hidden md:block"><img data-sm="zoom" src={DEMO_FACES.f} alt="" className="h-full w-full object-cover" /></div>
         </div>
+        </Spotlight>
       </section>
     </>
   );

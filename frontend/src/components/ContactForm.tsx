@@ -69,7 +69,7 @@ export function ContactForm() {
       </div>
       <div>
         <label htmlFor="contact-topic" className="mb-1.5 block text-sm font-semibold">Topic</label>
-        <select id="contact-topic" value={values.topic} onChange={(e) => set("topic")(e.target.value)} className="h-11 w-full rounded-md border border-line-strong bg-surface px-3 focus:border-teal focus:outline-none">
+        <select id="contact-topic" value={values.topic} onChange={(e) => set("topic")(e.target.value)} className="h-12 w-full rounded-2xl border border-transparent bg-paper-deep px-4">
           {TOPICS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
         </select>
       </div>

@@ -36,7 +36,7 @@ export function SafetyCentre() {
   const message = `Hey! I'm meeting ${plan.who || "someone from SaathVerse"} at ${plan.where || "a public place"} ${plan.when ? `on ${plan.when}` : "soon"}. I'll text you when I get there and when I leave. If you don't hear from me, please call.`;
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-6xl">
       <PageHeader title="Safety centre" icon="shield" subtitle="Tools that are always here, and people who read every report." actions={<Button variant="accent" onClick={quickExit}><Icon name="exit" size={17} /> Quick exit</Button>} />
       <div className="grid gap-5 lg:grid-cols-2">
         <section className="rounded-[24px] border border-line bg-surface p-5" aria-label="Date check-in planner">

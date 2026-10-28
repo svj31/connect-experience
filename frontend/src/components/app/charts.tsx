@@ -35,10 +35,10 @@ export function BarChart({ data, label, height = 160, valueSuffix = "" }: { data
       <div className="mt-1.5 flex text-[10px] font-semibold text-muted">
         {data.map((d, i) => <span key={i} className="truncate text-center" style={{ width: `${w}%` }}>{data.length > 14 && i % 3 ? "" : d.label}</span>)}
       </div>
-      <table className="sr-only">
+      <div className="sr-only"><table>
         <caption>{label}</caption>
         <tbody>{data.map((d, i) => <tr key={i}><th>{d.long ?? d.label}</th><td>{d.value}</td></tr>)}</tbody>
-      </table>
+      </table></div>
     </figure>
   );
 }
@@ -76,7 +76,7 @@ export function PairBars({ data, a, b, label }: { data: { label: string; a: numb
             <span className="w-1/3 rounded-t-[4px] bg-[var(--chart-1)] transition-all duration-700" style={{ height: `${Math.max((d.a / max) * 100, d.a ? 3 : 0)}%` }} />
             <span className="w-1/3 rounded-t-[4px] bg-[var(--chart-2)] transition-all duration-700" style={{ height: `${Math.max((d.b / max) * 100, d.b ? 3 : 0)}%` }} />
             {hover === i && (
-              <span className="absolute -top-2 z-10 -translate-y-full rounded-lg border border-line-strong bg-surface px-2 py-1 text-xs font-bold whitespace-nowrap shadow-[var(--shadow)]">
+              <span className={`absolute -top-2 z-10 -translate-y-full rounded-lg border border-line-strong bg-surface px-2 py-1 text-xs font-bold whitespace-nowrap shadow-[var(--shadow)] ${i >= data.length - 2 ? "right-0" : i < 2 ? "left-0" : ""}`}>
                 {d.label}: {d.a} {a.toLowerCase()}, {d.b} {b.toLowerCase()}
               </span>
             )}
@@ -84,11 +84,11 @@ export function PairBars({ data, a, b, label }: { data: { label: string; a: numb
         ))}
       </div>
       <div className="mt-1.5 flex gap-2 text-[11px] font-semibold text-muted">{data.map((d, i) => <span key={i} className="flex-1 text-center">{d.label}</span>)}</div>
-      <table className="sr-only">
+      <div className="sr-only"><table>
         <caption>{label}</caption>
         <thead><tr><th>Day</th><th>{a}</th><th>{b}</th></tr></thead>
         <tbody>{data.map((d, i) => <tr key={i}><th>{d.label}</th><td>{d.a}</td><td>{d.b}</td></tr>)}</tbody>
-      </table>
+      </table></div>
     </figure>
   );
 }

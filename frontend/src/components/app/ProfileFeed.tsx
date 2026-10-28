@@ -55,7 +55,7 @@ function ProfileStory({ card, full, onLike }: { card: PersonCard; full: Full | n
   const photoBlock = (i: number) =>
     photos[i] ? (
       <figure key={`ph${i}`} className="relative overflow-hidden rounded-[20px] bg-paper-deep">
-        <PhotoPlanet photo={photos[i]} planet={card.avatar} alt={`${card.displayName}, photo ${i + 1}`} loading={i ? "lazy" : "eager"} className="aspect-[4/5] w-full" />
+        <PhotoPlanet photo={photos[i]} planet={card.avatar} trigger="both" alt={`${card.displayName}, photo ${i + 1}`} loading={i ? "lazy" : "eager"} className="aspect-[4/5] w-full" />
         <LikeButton label={`Like ${card.displayName}'s photo ${i + 1}`} onClick={() => onLike({ kind: "photo", src: photos[i], index: i })} />
       </figure>
     ) : null;

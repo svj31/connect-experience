@@ -79,9 +79,10 @@ export function Settings() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    // Same column as every page, so the title lines up; the settings themselves stay a readable width.
+    <div className="mx-auto max-w-6xl">
       <PageHeader title="Settings and privacy" icon="settings" subtitle="How SaathVerse looks, who can find you, and who sees each part of your profile." actions={status && <span role="status" className="rounded-lg bg-mint-soft px-2.5 py-1 text-sm font-semibold text-mint">{status}</span>} />
-      <div className="space-y-5">
+      <div className="max-w-4xl space-y-5">
         <Section title="Appearance" icon="sparkle">
           <fieldset>
             <legend className="mb-2 font-semibold">Theme</legend>

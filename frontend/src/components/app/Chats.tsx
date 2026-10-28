@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TitleWords } from "../ui/TitleWords";
 import { StoryRow } from "./StoryRow";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -105,9 +106,9 @@ export function Chats() {
   return (
     // Exactly the viewport minus the app chrome (top bar, page padding, phone tab bar), so the chat
     // never makes the page scroll; only the message list and conversation list scroll inside.
-    <div className="mx-auto flex h-[calc(100dvh-12.5rem)] min-h-[360px] max-w-6xl flex-col lg:h-[calc(100dvh-9.5rem)]">
+    <div className="mx-auto flex h-[calc(100dvh-13rem)] min-h-[360px] max-w-6xl flex-col lg:h-[calc(100dvh-10rem)]">
       <div className={`${selected ? "hidden lg:block" : ""} mb-4 shrink-0`}>
-        <h1 className="font-display text-[2.2rem] leading-none">Matches</h1>
+        <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl"><TitleWords text="Matches" /></h1>
         {/* The desktop sidebar already lists matches; phones get the stories row here. */}
         <div className="mt-4 lg:hidden [&>nav]:mb-0"><StoryRow /></div>
       </div>

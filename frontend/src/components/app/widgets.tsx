@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TitleWords } from "../ui/TitleWords";
 import { PhotoPlanet } from "../ui/PhotoPlanet";
 import { useEffect, useState, type ReactNode } from "react";
 import { INTENT_SHORT, cap } from "@/lib/labels";
@@ -9,14 +10,14 @@ import { LogoMark } from "../brand/Logo";
 import { Planet } from "../ui/Planet";
 import { Icon } from "../ui/Icon";
 
-export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; icon?: string; actions?: ReactNode }) {
+export function PageHeader({ title, subtitle, actions, compact = false }: { title: string; subtitle?: ReactNode; icon?: string; actions?: ReactNode; /** For one-screen pages: no subtitle on phones, tighter spacing. */ compact?: boolean }) {
   return (
-    <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <header className={`${compact ? "mb-4 items-start" : "mb-6 items-end"} flex flex-wrap justify-between gap-4`}>
       <div className="animate-rise">
         <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl">
-          {title}
+          <TitleWords text={title} />
         </h1>
-        {subtitle && <p className="mt-3 max-w-2xl text-muted">{subtitle}</p>}
+        {subtitle && <p className={`mt-3 max-w-2xl text-muted ${compact ? "hidden sm:block" : ""}`}>{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </header>

@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,6 +13,7 @@ import type { ActivityId, ChatMessage, Suggestion, WatchPick } from "@/lib/types
 import { useRoom } from "@/lib/useRoom";
 import { BondMeter, VibeRing } from "../app/widgets";
 import { LogoMark } from "../brand/Logo";
+import { TwoWorlds } from "./TwoWorlds";
 import { Burst } from "../fx/Burst";
 import { ThemeToggle } from "../site/ThemeToggle";
 import { Avatar } from "../ui/Avatar";
@@ -26,7 +26,6 @@ import { CommonGroundPanel } from "./CommonGroundPanel";
 import { RevealPanel } from "./RevealPanel";
 import { SafetyPanel } from "./SafetyPanel";
 
-const RoomScene = dynamic(() => import("../three/RoomScene"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 
 type PanelId = "common" | "reveal" | "safety" | "ideas" | null;
 interface Ideas { sharedInterests: string[]; activities: Suggestion[]; watch: WatchPick[]; draw: string[] }
@@ -39,6 +38,8 @@ export function RoomClient({ code }: { code: string }) {
   const router = useRouter();
   const { user, loading: sessionLoading } = useRequireUser();
   const { connected, celebrate } = useLive();
+  // The picker shows one kind of activity at a time; it follows whatever is being played.
+  const [shelfChoice, setShelf] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [unread, setUnread] = useState(0);
   const [panel, setPanel] = useState<PanelId>(null);
@@ -115,16 +116,16 @@ export function RoomClient({ code }: { code: string }) {
   const { room: info, partner } = detail;
   const online = snapshot?.online ?? [];
   const partnerOnline = partner ? online.includes(partner.id) : false;
-  const meOnline = room.joined && online.includes(user.id);
   const ActivityView = snapshot ? ACTIVITY_COMPONENTS[snapshot.activity] : null;
   const current = activityById(snapshot?.activity ?? info.activity);
   const partnerAvatar = partner ? { ...partner.avatar, shape: partner.avatarShape, color: partner.avatarColor } : undefined;
+  const shelf = shelfChoice ?? current.category;
   const topIdeas = ideas?.activities.filter((a) => a.score > 0).slice(0, 3) ?? [];
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex h-dvh flex-col overflow-hidden">
       <header className="sticky top-0 z-30 border-b border-line bg-paper/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-3 py-2 sm:gap-3 sm:px-5">
+        <div className="mx-auto flex max-w-6xl min-[1360px]:max-w-[1320px] items-center gap-2 px-3 py-2 sm:gap-3 sm:px-5">
           <Link href={info.kind === "connection" ? "/app/connections" : "/app/together"} className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-muted hover:bg-violet-soft hover:text-violet">
             <Icon name="arrowLeft" size={16} /> <span className="sr-only sm:not-sr-only">Back</span>
           </Link>
@@ -145,8 +146,9 @@ export function RoomClient({ code }: { code: string }) {
               <p className="text-xs text-muted">Waiting for someone to sit down</p>
             </div>
           )}
+          <Button variant="secondary" size="sm" className="sm:hidden" onClick={leave} aria-label="Leave"><Icon name="door" size={16} /></Button>
           <div className="hidden w-44 md:block">{detail.bond ? <BondMeter bond={detail.bond} compact /> : detail.vibe !== null && <span className="flex items-center gap-2 text-sm font-semibold"><VibeRing score={detail.vibe} size={36} /> Vibe Match</span>}</div>
-          <div className="flex items-center gap-0.5">
+          <div className="hidden items-center gap-0.5 sm:flex">
             <Button variant="ghost" size="sm" onClick={() => setPanel("ideas")} disabled={!partner}><Icon name="sparkle" size={16} /> <span className="sr-only lg:not-sr-only">Ideas</span></Button>
             <Button variant="ghost" size="sm" onClick={() => setPanel("common")} disabled={!partner}><Icon name="insync" size={16} /> <span className="sr-only lg:not-sr-only">Common Ground</span></Button>
             {info.kind !== "connection" && <Button variant="ghost" size="sm" onClick={() => setPanel("reveal")}><Icon name="eye" size={16} /> <span className="sr-only lg:not-sr-only">Reveal</span></Button>}
@@ -155,15 +157,27 @@ export function RoomClient({ code }: { code: string }) {
             <Button variant="secondary" size="sm" onClick={leave}><Icon name="door" size={16} /> <span className="sr-only sm:not-sr-only">Leave</span></Button>
           </div>
         </div>
+        <div className="no-scrollbar flex gap-1 overflow-x-auto border-t border-line px-3 py-1.5 sm:hidden">
+          <Button variant="ghost" size="sm" onClick={() => setPanel("ideas")} disabled={!partner}><Icon name="sparkle" size={15} /> Ideas</Button>
+          <Button variant="ghost" size="sm" onClick={() => setPanel("common")} disabled={!partner}><Icon name="insync" size={15} /> Common Ground</Button>
+          {info.kind !== "connection" && <Button variant="ghost" size="sm" onClick={() => setPanel("reveal")}><Icon name="eye" size={15} /> Reveal</Button>}
+          <Button variant="ghost" size="sm" onClick={() => setPanel("safety")} disabled={!partner}><Icon name="shield" size={15} /> Safety</Button>
+        </div>
       </header>
 
-      <div className="mx-auto w-full max-w-6xl flex-1 space-y-4 px-3 py-4 sm:px-5">
-        <section aria-label="The table" className="relative overflow-hidden rounded-[24px] border border-line bg-surface">
-          <div className="relative h-36 sm:h-40">
-            <RoomScene
-              me={{ shape: user.avatarShape, color: user.avatarColor, online: meOnline }}
-              partner={partner ? { shape: partner.avatarShape, color: partner.avatarColor, online: partnerOnline } : null}
+      {/* Wide screens: the chat sits beside the activity, always visible. Narrower: a floating chat. */}
+      <div className="mx-auto grid min-h-0 w-full max-w-6xl flex-1 gap-4 px-3 py-3 sm:px-5 sm:py-4 min-[1360px]:max-w-[1320px] min-[1360px]:grid-cols-[1fr_380px]">
+      {/* One screen: the hero and picker stay, only the activity scrolls. */}
+      <div className="flex min-h-0 min-w-0 flex-col gap-3">
+        <section aria-label="The space between you" className="relative shrink-0 overflow-hidden rounded-[28px]">
+          <div className="relative h-36 sm:h-44">
+            <TwoWorlds
+              me={{ name: user.displayName, avatar: user.avatar }}
+              them={partner ? { name: partner.displayName, avatar: partnerAvatar ?? {} } : null}
+              bond={detail.bond ?? null}
               moments={detail.momentCount}
+              partnerOnline={partnerOnline}
+              partnerTyping={room.partnerTyping}
               pulseMe={room.pulse.me}
               pulsePartner={room.pulse.partner}
             />
@@ -176,13 +190,11 @@ export function RoomClient({ code }: { code: string }) {
               ))}
             </div>
           </div>
-          <p className="border-t border-line px-4 py-2 text-center text-xs text-muted">
-            {detail.momentCount === 0 ? "Each activity you finish together adds a bead to the thread between you." : `${detail.momentCount} ${detail.momentCount === 1 ? "moment" : "moments"} shared here.`}
-          </p>
+
         </section>
 
         {!partner ? (
-          <section className="animate-rise rounded-[24px] border border-line bg-surface p-6 text-center sm:p-10">
+          <section className="min-h-0 flex-1 animate-rise overflow-y-auto rounded-[24px] border border-line bg-surface p-6 text-center sm:p-10">
             <Loader variant="orbit" caption={info.isPublic ? "Your table is listed in Together. Waiting for someone to sit down." : "Waiting for your guest."} />
             <p className="text-sm text-muted">Or invite someone directly with this code</p>
             <p className="mt-2 font-mono text-4xl font-bold tracking-[0.25em]">{info.code}</p>
@@ -193,37 +205,35 @@ export function RoomClient({ code }: { code: string }) {
             {info.locked ? (
               <p className="flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2.5 text-sm"><Icon name="lock" size={16} className="text-violet" /> This table is set to <strong>{current.name}</strong>.</p>
             ) : (
-              <nav aria-label="Activities" className="rounded-[24px] border border-line bg-surface p-3">
-                <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-1">
+              <nav aria-label="Activities" className="flex shrink-0 flex-wrap items-center gap-2 rounded-[22px] border border-line bg-surface p-2">
+                <div role="tablist" aria-label="Kinds of activity" className="flex rounded-full bg-paper-deep p-1">
                   {CATEGORIES.map((c) => (
-                    <div key={c.id} className="shrink-0">
-                      <p className="mb-1 px-1 text-[11px] font-bold tracking-wider text-muted uppercase">{c.name}</p>
-                      <ul className="flex gap-1.5">
-                        {ACTIVITIES.filter((a) => a.category === c.id).map((a) => {
-                          const active = snapshot?.activity === a.id;
-                          const suggested = topIdeas.some((s) => s.id === a.id);
-                          return (
-                            <li key={a.id}>
-                              <button
-                                onClick={() => pick(a.id)}
-                                aria-current={active ? "true" : undefined}
-                                title={suggested ? topIdeas.find((s) => s.id === a.id)?.reason : a.short}
-                                className={`relative flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-transparent bg-brand" : "border-line bg-paper hover:border-violet hover:text-violet"}`}
-                              >
-                                <Icon name={a.id} size={16} /> {a.name}
-                                {suggested && !active && <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-rose" aria-label="Suggested for you two" />}
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                    <button key={c.id} role="tab" aria-selected={shelf === c.id} onClick={() => setShelf(c.id)} className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${shelf === c.id ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-muted hover:text-ink"}`}>{c.name}</button>
                   ))}
                 </div>
+                <ul className="no-scrollbar flex min-w-0 flex-1 basis-full gap-1.5 overflow-x-auto sm:basis-auto">
+                  {ACTIVITIES.filter((a) => a.category === shelf).map((a) => {
+                    const active = snapshot?.activity === a.id;
+                    const suggested = topIdeas.some((s) => s.id === a.id);
+                    return (
+                      <li key={a.id} className="shrink-0">
+                        <button
+                          onClick={() => pick(a.id)}
+                          aria-current={active ? "true" : undefined}
+                          title={suggested ? topIdeas.find((s) => s.id === a.id)?.reason : a.short}
+                          className={`relative flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold whitespace-nowrap transition-colors ${active ? "border-transparent bg-brand" : "border-line bg-paper hover:border-ink"}`}
+                        >
+                          <Icon name={a.id} size={15} /> {a.name}
+                          {suggested && !active && <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-saffron ring-2 ring-surface" aria-label="Suggested for you two" />}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </nav>
             )}
 
-            <div className="rounded-[24px] border border-line bg-surface p-4 sm:p-6">
+            <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-[24px] border border-line bg-surface p-4 sm:p-6">
               {!snapshot || !ActivityView ? (
                 <Loader variant={current.category === "watch" ? "reel" : current.id === "constellation" ? "stars" : current.category === "talk" ? "chat" : "cards"} caption={`Setting up ${current.name}`} />
               ) : !snapshot.game ? (
@@ -247,6 +257,25 @@ export function RoomClient({ code }: { code: string }) {
           </>
         )}
       </div>
+      <aside aria-label="Chat" className="hidden min-h-0 min-[1360px]:block">
+        <ChatPanel
+          messages={room.messages}
+          me={user.id}
+          partnerName={partner?.displayName ?? "your partner"}
+          partnerTyping={room.partnerTyping}
+          disabled={!partner || !room.joined}
+          onSend={room.send}
+          onTyping={room.typing}
+          onReact={room.react}
+          extraPrompts={ideas?.sharedInterests.slice(0, 2).map((i) => `We both like ${i}. What got you into it?`)}
+          header={
+            <header className="border-b border-line px-4 py-3">
+              <h2 className="font-display text-lg">Chat with {partner?.displayName ?? "your partner"}</h2>
+            </header>
+          }
+        />
+      </aside>
+      </div>
 
       {/* Floating chat: always one tap away, never in the way. */}
       <button
@@ -256,7 +285,7 @@ export function RoomClient({ code }: { code: string }) {
         }}
         aria-expanded={chatOpen}
         aria-controls="room-chat"
-        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
+        className="fixed right-4 bottom-4 z-40 flex h-14 w-14 min-[1360px]:hidden items-center justify-center rounded-2xl bg-brand shadow-[0_10px_30px_-8px_var(--violet)] transition-transform hover:scale-105 active:scale-95"
       >
         <Icon name={chatOpen ? "close" : "chat"} size={24} label={chatOpen ? "Close chat" : unread ? `Open chat, ${unread} unread` : "Open chat"} />
         {unread > 0 && !chatOpen && <span className="absolute -top-1.5 -right-1.5 flex h-6 min-w-6 animate-pop items-center justify-center rounded-full border-2 border-paper bg-rose px-1 text-xs font-bold text-on-primary">{unread}</span>}
@@ -264,7 +293,7 @@ export function RoomClient({ code }: { code: string }) {
       <div
         id="room-chat"
         hidden={!chatOpen}
-        className="fixed inset-x-2 bottom-20 z-40 h-[min(560px,calc(100dvh-7rem))] animate-pop shadow-[var(--shadow)] sm:inset-x-auto sm:right-4 sm:w-[380px]"
+        className="fixed inset-x-2 bottom-20 z-40 h-[min(560px,calc(100dvh-7rem))] animate-pop min-[1360px]:hidden shadow-[var(--shadow)] sm:inset-x-auto sm:right-4 sm:w-[380px]"
       >
         <ChatPanel
           messages={room.messages}

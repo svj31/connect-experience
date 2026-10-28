@@ -15,7 +15,8 @@ const FLIP = "transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)";
 /**
  * A member's photo with their planet on the back, like a card that turns over.
  * Hover: after a moment the card flips to the planet, then back to the photo; leaving flips back.
- * Idle: when the viewer has not touched anything for a few seconds, cards flip on their own, briefly.
+ * Idle (Discover only, opt in with trigger "both"): when the viewer has not touched anything for a
+ * few seconds, cards flip on their own, briefly. Everywhere else photos flip on hover only.
  * Without a photo the planet shows on its own. Styles are inline so the effect never depends on a
  * stylesheet being fresh; reduced motion swaps without the turn.
  */
@@ -23,7 +24,7 @@ export function PhotoPlanet({
   photo,
   planet: config,
   alt,
-  trigger = "both",
+  trigger = "hover",
   className = "",
   loading,
 }: {

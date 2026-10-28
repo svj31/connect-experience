@@ -133,3 +133,39 @@ reduced motion respected), `frontend/src/components/landing/ScrollMotion.tsx` ad
   it and land, then "One match. Ten ways to meet." On screens under 1024 px the match rises and the cards fill a two
   column grid. Checked at 360x640 to 1440x900 for overlaps with each other, the caption, the match card and the header.
 Both render as still sections with reduced motion, and the page never scrolls sideways.
+
+# Version 5.8: scroll motion for every remaining landing section (nothing removed)
+`frontend/src/components/landing/SectionMotion.tsx`, plus `BondExplorer autoplay`:
+1. **How it works** (the one new pinned act, 300vh): the three steps come to the front one at a time, the others dim and
+   lean aside; a bar fills under "Step 1, 2, 3". Cards scale to the room between heading and bar on any screen.
+2. **Near you**: a curved row tied to the scroll; the middle profile stands upright, the sides lean back.
+3. **Vibe Match**: a score ring that fills and counts to 92% with its reasons stepping in (added beside the existing demo).
+4. **Together**: the four category cards start as a deck in the middle and deal out into the row; their activity pills follow.
+5. **Bond levels**: the explorer steps from Stardust to Galaxy as it scrolls through the screen; a click hands control back.
+6. **Safety**: each card's icon turns in and a check lands, one after another.
+7. **Final call to action**: a soft saffron light follows the pointer on desktop and "game." underlines itself.
+Still with reduced motion, intact without JavaScript, no sideways scroll, layout audit clean.
+
+# Version 5.9: Likes and Moments fit the screen
+Likes (Likes you, Matches, Sent) and Moments are one screen tall like Discover and Matches: the title, tabs and filters stay
+in place and only the cards scroll. On phones the subtitle hides (`PageHeader compact`) to give the cards more room.
+
+# Version 5.10: one grid for the app shell
+Measured, then fixed: the top bar was 64 px against the sidebar's 72 px header (8 px step at the seam), the logo sat 16 px
+left of the page titles, pages used four different widths (4xl to 7xl) so titles moved between pages and drifted from the
+logo on wide screens, and Matches used a smaller title. Now the top bar is 72 px and shares the content column
+(`max-w-6xl`, same side padding); every page uses that column (narrow pages limit only their content); every title is the
+same size and position. Verified on 10 pages at 1440, 1920 and 390 px: seam 0, logo to title 0, right edges 0.
+
+# Version 6.0: Together as a small solar system; titles rise on every page
+- `frontend/src/components/app/TogetherSystem.tsx`: a night sky stage (the landing page's ink and plum) with you at the
+  centre and four worlds on a tilted orbit, drawn with the planet art: Talk (violet, floats), Play (coral, wobbles),
+  Create (mint, breathes), Watch (sky, moons). Front planets are larger and brighter; the system rests while the pointer
+  is over it, so nobody chases a moving target. Choosing a world brings it to the centre and its activities appear as
+  moons (saffron ring for "for you"); a panel on the right guides step 1 (world), 2 (activity, with a description of the
+  moon you point at) and 3 (who with: a match, someone new, or a code; same flows as before).
+- Layout is computed, not guessed: moons sit on an ellipse sized to the stage, the ring turns to whichever rotation
+  leaves the planet the most room, and the planet scales to clear every moon; under 560 px the planet rises and moons
+  form a two column grid. Checked all four worlds at 360x640 to 1920x1080: no clipping, no overlaps.
+- Reduced motion: still orbits (the end to end tests use it, which also covers that setting).
+- `TitleWords`: every app page title rises word by word on open (0.7 s), with a plain copy for screen readers.
