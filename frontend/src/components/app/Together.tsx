@@ -20,6 +20,7 @@ import { Icon } from "../ui/Icon";
 import { Loader } from "../ui/Loader";
 import { Planet } from "../ui/Planet";
 import { TitleWords } from "../ui/TitleWords";
+import { LivePlans } from "./LivePlans";
 import { TogetherSystem, WORLDS } from "./TogetherSystem";
 
 type Who = "connection" | "new" | "code";
@@ -28,7 +29,7 @@ export function Together() {
   const params = useSearchParams();
   const router = useRouter();
   const { user } = useSession();
-  const { socket } = useLive();
+  const { socket, toast } = useLive();
   const preset = params.get("pick");
   const presetActivity = preset && ACTIVITIES.some((a) => a.id === preset) ? (preset as ActivityId) : null;
   const [category, setCategory] = useState<Category | null>(presetActivity ? activityById(presetActivity).category : null);
@@ -39,7 +40,7 @@ export function Together() {
   const [ideas, setIdeas] = useState<Suggestion[]>([]);
   const [connections, setConnections] = useState<Connection[] | null>(null);
   const [open, setOpen] = useState<OpenRoom[]>([]);
-  const [mine, setMine] = useState<Room[]>([]);
+  const [liveCount, setLiveCount] = useState(0);
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +51,6 @@ export function Together() {
     api<{ activities: Suggestion[] }>("/me/suggestions").then((r) => setIdeas(r.activities)).catch(() => undefined);
     api<{ connections: Connection[] }>("/connections").then((r) => setConnections(r.connections)).catch(() => setConnections([]));
     api<{ rooms: OpenRoom[] }>("/rooms/open").then((r) => setOpen(r.rooms)).catch(() => undefined);
-    api<{ rooms: Room[] }>("/rooms/mine").then((r) => setMine(r.rooms)).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -76,6 +76,7 @@ export function Together() {
     try {
       const res = await api<{ roomCode: string }>(`/connections/${c.id}/play`, { body: { activity } });
       track(`together_${activity}`);
+      toast("Invite sent", `${c.person.displayName} can join or decline from Together. You can cancel it there too.`);
       router.push(`/app/room/${res.roomCode}`);
     } catch (e) {
       setError(errorMessage(e));
@@ -133,7 +134,12 @@ export function Together() {
       <div className="mb-4 flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2">
         <h1 className="font-display text-[2.4rem] leading-none sm:text-5xl"><TitleWords text="Together" /></h1>
         <p className="hidden text-muted md:block">{world ? `${world.name}: ${world.blurb.toLowerCase()}.` : "Choose a world, then an activity, then who with."}</p>
-        <Link href="/app/chats" className="ml-auto flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink"><Icon name="chat" size={16} /> Just chat</Link>
+        {category && liveCount > 0 && (
+          <button type="button" onClick={() => { setCategory(null); setActivity(null); setPreview(null); }} className="ml-auto flex items-center gap-2 rounded-full bg-violet-soft px-4 py-2 text-sm font-semibold text-violet">
+            <span className="sv-ping h-2 w-2 rounded-full bg-rose" /> Live now ({liveCount})
+          </button>
+        )}
+        <Link href="/app/chats" className={`${category && liveCount > 0 ? "" : "ml-auto "} flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink`}><Icon name="chat" size={16} /> Just chat</Link>
       </div>
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_380px]">
       {!category && <Coach id="together" kind="tap" text="Tap a world: Talk, Play, Create or Watch. Its activities appear as moons." />}
@@ -151,6 +157,10 @@ export function Together() {
         <aside aria-label="Your choice" className="no-scrollbar min-h-0 overflow-y-auto rounded-[28px] border border-line bg-surface p-5 lg:p-6">
           {!world ? (
             <div className="animate-rise">
+              <div className={liveCount ? "mb-6 border-b border-line pb-5" : "mb-5"}>
+                <p className="mb-3 text-sm font-semibold tracking-[0.18em] text-violet uppercase">Live now</p>
+                <LivePlans onCount={setLiveCount} />
+              </div>
               <p className="text-sm font-semibold tracking-[0.18em] text-violet uppercase">Step 1</p>
               <h2 className="mt-1 font-display text-3xl">What do you feel like?</h2>
               <ul className="mt-5 space-y-2">
@@ -163,16 +173,6 @@ export function Together() {
                   </li>
                 ))}
               </ul>
-              {mine.length > 0 && (
-                <div className="mt-6 border-t border-line pt-4">
-                  <p className="text-sm font-semibold">Your open tables</p>
-                  <ul className="mt-2 flex flex-wrap gap-2">
-                    {mine.map((r) => (
-                      <li key={r.code}><Link href={`/app/room/${r.code}`} className="flex items-center gap-1.5 rounded-full bg-violet-soft px-3 py-1 text-sm font-semibold text-violet hover:underline"><Icon name={r.activity} size={14} /> {r.title}</Link></li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           ) : !chosen || chosen.category !== category ? (
             <div key={world.id} className="animate-rise">

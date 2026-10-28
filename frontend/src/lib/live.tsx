@@ -73,8 +73,14 @@ export function LiveProvider({ children }: { children: ReactNode }) {
       setParty({ title: "It's a Saath!", message: `You and ${p.name} are connected. Your shared space is ready whenever you are.`, them: { name: p.name, avatar: p.avatar }, href: `/app/room/${p.roomCode}`, cta: "Say hello" });
     });
     s.on("room:invite", (p: { name: string; roomCode: string; activity: string }) =>
-      push({ kind: "invite", title: `${p.name} started ${activityById(p.activity).name}`, body: "Join them in your shared space.", href: `/app/room/${p.roomCode}` }),
+      push({ kind: "invite", title: `${p.name} invited you to ${activityById(p.activity).name}`, body: "Accept or decline it in Together.", href: "/app/together" }),
     );
+    s.on("together:update", (p: { name: string; status: string; activity: string; roomCode: string }) => {
+      const what = activityById(p.activity).name;
+      if (p.status === "accepted") push({ kind: "accepted", title: `${p.name} said yes to ${what}`, body: "They are on their way to your shared space.", href: `/app/room/${p.roomCode}` });
+      else if (p.status === "declined") push({ kind: "info", title: `${p.name} can't do ${what} right now`, body: "No pressure. Try another time or another activity.", href: "/app/together" });
+      else push({ kind: "info", title: `${p.name} called off ${what}`, body: "The plan is closed. Your shared space is still there.", href: "/app/together" });
+    });
     s.on("account:warning", (p: { note: string }) => push({ kind: "warning", title: "A note from the SaathVerse team", body: p.note }));
     s.on("account:status", () => void refresh());
     return () => {

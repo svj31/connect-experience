@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- member photos come from any https host or an upload */
 import Link from "next/link";
 import { PhotoPlanet } from "../ui/PhotoPlanet";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { track } from "@/lib/consent";
 import { GENDER_LABELS, INTENT_LABELS, cap } from "@/lib/labels";
@@ -20,6 +20,37 @@ interface Quota { likesLeft: number; superlikesLeft: number }
 interface Full { profile: Profile; vibe: Vibe }
 /** What the like is about: a photo or a prompt, so the comment has context (Hinge style). */
 type Target = { kind: "photo"; src: string; index: number } | { kind: "prompt"; text: string; answer: string } | { kind: "profile" };
+
+/** How far, in px, the profile must be dragged sideways before letting go counts as a decision. */
+const DRAG_THRESHOLD = 120;
+
+/** A small card in the roll beside the current profile: the one you just decided on, or who is next. */
+function RollCard({ card, label, note, tone, onClick, depth = 0 }: { card: PersonCard; label: string; note: string; tone: "past" | "next"; onClick?: () => void; depth?: number }) {
+  const photo = card.photos?.[0] ?? card.avatar.photo ?? undefined;
+  const Tag = onClick ? "button" : "div";
+  return (
+    <Tag
+      type={onClick ? "button" : undefined}
+      onClick={onClick}
+      aria-label={onClick ? `${label}: ${card.displayName}. ${note}` : undefined}
+      aria-hidden={onClick ? undefined : true}
+      className={`group block w-full text-center ${tone === "past" ? "sv-roll-past" : "sv-roll-next"} ${onClick ? "cursor-pointer" : ""}`}
+      style={{ transform: `scale(${1 - depth * 0.12})`, opacity: 1 - depth * 0.3 }}
+    >
+      <p className={`mb-2 text-xs font-semibold tracking-[0.18em] uppercase ${tone === "past" ? "text-muted" : "text-violet"}`}>{label}</p>
+      <div className={`relative overflow-hidden rounded-[22px] border border-line bg-paper-deep transition-transform duration-300 ${onClick ? "group-hover:-translate-y-1" : ""}`}>
+        <PhotoPlanet photo={photo} planet={card.avatar} trigger="none" alt="" className={`aspect-[4/5] w-full ${tone === "next" ? "saturate-[0.85]" : "grayscale-[0.35]"}`} />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-10 pb-3 text-left text-white">
+          <p className="font-display text-xl leading-none">{card.displayName}{card.age ? `, ${card.age}` : ""}</p>
+          {card.vibe.score !== null && <p className="mt-1 text-xs font-semibold text-white/85">{card.vibe.score}% vibe</p>}
+        </div>
+      </div>
+      <p className={`mt-2 flex items-center justify-center gap-1.5 text-sm ${onClick ? "font-semibold text-ink" : "text-muted"}`}>
+        {onClick && <Icon name="undo" size={14} />}{note}
+      </p>
+    </Tag>
+  );
+}
 
 function LikeButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
@@ -148,6 +179,10 @@ export function ProfileFeed() {
   const [asSuper, setAsSuper] = useState(false);
   const [busy, setBusy] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
+  /** The profile that just rolled out of view, shown small on the left. */
+  const [previous, setPrevious] = useState<{ card: PersonCard; decision: "like" | "pass" | "superlike" } | null>(null);
+  const [dx, setDx] = useState(0);
+  const drag = useRef<{ x: number; y: number; on: boolean } | null>(null);
   const top = useRef<HTMLDivElement>(null);
   const fetching = useRef(false);
 
@@ -206,6 +241,7 @@ export function ProfileFeed() {
       const res = await api<{ match: { roomCode: string } | null; quota: Quota }>("/discover/swipes", { body: { targetId: person.id, decision, note: comment } });
       setQuota(res.quota);
       setCanUndo(decision === "pass");
+      setPrevious({ card: person, decision });
       track(`swipe_${decision}`);
       if (res.match) {
         celebrate({ title: "It's a Saath!", message: `You and ${person.displayName} liked each other. Start with a game, or just say hi.`, them: { name: person.displayName, avatar: person.avatar }, href: `/app/room/${res.match.roomCode}`, cta: "Say hello" });
@@ -226,9 +262,39 @@ export function ProfileFeed() {
       setFull(null);
       setQueue((q) => [res.person, ...(q ?? []).filter((p) => p.id !== res.person.id)]);
       setCanUndo(false);
+      setPrevious(null);
     } catch (e) {
       toast("Nothing to undo", errorMessage(e));
     }
+  }
+
+  // Drag sideways anywhere on the profile: right likes, left passes. Vertical movement still scrolls.
+  function onDown(e: ReactPointerEvent<HTMLDivElement>) {
+    if (busy || (e.target as HTMLElement).closest("button, a, input, textarea, select")) return;
+    drag.current = { x: e.clientX, y: e.clientY, on: false };
+  }
+  function onMove(e: ReactPointerEvent<HTMLDivElement>) {
+    const d = drag.current;
+    if (!d) return;
+    const x = e.clientX - d.x;
+    if (!d.on) {
+      if (Math.abs(x) < 12 || Math.abs(x) < Math.abs(e.clientY - d.y)) {
+        if (Math.abs(e.clientY - d.y) > 12) drag.current = null;
+        return;
+      }
+      d.on = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    setDx(x);
+  }
+  function onUp() {
+    const d = drag.current;
+    drag.current = null;
+    if (!d?.on) return;
+    const x = dx;
+    setDx(0);
+    if (x > DRAG_THRESHOLD) void decide("like");
+    else if (x < -DRAG_THRESHOLD) void decide("pass");
   }
 
   function openLike(t: Target) {
@@ -240,8 +306,25 @@ export function ProfileFeed() {
   if (error && !queue) return <EmptyState title="Discover is resting" body={error} action={<Button onClick={() => load(true)}>Try again</Button>} />;
   if (!queue) return <Loader variant="compass" caption="Finding people for you" />;
 
+  const upNext = queue.slice(1, 3);
+  const pastNote = previous ? (canUndo ? "Undo pass" : previous.decision === "pass" ? "Passed" : previous.decision === "superlike" ? "Super liked" : "Liked") : "";
+
   return (
-    <div className="mx-auto flex h-full w-full max-w-[520px] flex-col">
+    // The roll: who you just decided on sits small on the left, who is next waits on the right.
+    <div className="mx-auto grid h-full w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_520px_minmax(0,1fr)]">
+      <aside aria-label="Previous profile" className="hidden min-h-0 flex-col items-end justify-center lg:flex">
+        <div className="w-full max-w-[230px]">
+          {previous ? (
+            <RollCard key={previous.card.id} card={previous.card} label="Previous" note={pastNote} tone="past" onClick={canUndo ? undo : undefined} />
+          ) : (
+            <div className="rounded-[22px] border border-dashed border-line-strong p-5 text-center text-sm text-muted">
+              <Icon name="undo" size={20} className="mx-auto mb-2" />
+              Profiles roll here after you decide. A pass can be undone.
+            </div>
+          )}
+        </div>
+      </aside>
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-[520px] flex-col">
       {!current ? (
         <EmptyState
           title="You're all caught up"
@@ -270,14 +353,28 @@ export function ProfileFeed() {
             </div>
           </header>
 
-          <div ref={top} className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-[20px]">
-          <ProfileStory key={current.id} card={current} full={full} onLike={openLike} />
+          <div className="relative min-h-0 flex-1">
+          <span className="pointer-events-none absolute top-6 left-5 z-10 -rotate-12 rounded-xl border-4 border-mint bg-surface/80 px-3 py-1 font-display text-3xl text-mint" style={{ opacity: Math.max(0, Math.min(1, dx / DRAG_THRESHOLD)) }} aria-hidden="true">Like</span>
+          <span className="pointer-events-none absolute top-6 right-5 z-10 rotate-12 rounded-xl border-4 border-danger bg-surface/80 px-3 py-1 font-display text-3xl text-danger" style={{ opacity: Math.max(0, Math.min(1, -dx / DRAG_THRESHOLD)) }} aria-hidden="true">Pass</span>
+          <div
+            ref={top}
+            onPointerDown={onDown}
+            onPointerMove={onMove}
+            onPointerUp={onUp}
+            onPointerCancel={onUp}
+            className="no-scrollbar h-full overflow-y-auto overscroll-contain rounded-[20px] select-none"
+            style={{ touchAction: "pan-y", transform: dx ? `translateX(${dx}px) rotate(${dx / 40}deg)` : undefined, transition: dx ? "none" : "transform 0.3s ease" }}
+          >
+          <div key={current.id} className="sv-roll-in">
+            <ProfileStory card={current} full={full} onLike={openLike} />
+          </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <Button variant="secondary" size="lg" onClick={() => decide("pass")} disabled={busy}><Icon name="close" size={18} /> Pass</Button>
             <Button size="lg" onClick={() => openLike({ kind: "profile" })} disabled={busy}><Icon name="heart" size={18} /> Like</Button>
           </div>
           {quota && <p className="mt-3 pb-2 text-center text-xs text-muted">{quota.likesLeft} likes and {quota.superlikesLeft} super likes left today</p>}
+          </div>
           </div>
 
           <Modal open={target !== null} onClose={() => setTarget(null)} title={`Like ${current.displayName}`}>
@@ -313,6 +410,19 @@ export function ProfileFeed() {
           </Modal>
         </>
       )}
+    </div>
+      <aside aria-label="Coming next" className="hidden min-h-0 flex-col items-start justify-center lg:flex">
+        <div className="w-full max-w-[230px] space-y-2">
+          {upNext.length ? (
+            upNext.map((p, i) => <RollCard key={p.id} card={p} label={i === 0 ? "Coming next" : "After that"} note={i === 0 ? "Preview only" : ""} tone="next" depth={i} />)
+          ) : (
+            <div className="rounded-[22px] border border-dashed border-line-strong p-5 text-center text-sm text-muted">
+              <Icon name="sparkle" size={20} className="mx-auto mb-2 text-violet" />
+              {current ? "This is the last profile for now." : "New people roll in every day."}
+            </div>
+          )}
+        </div>
+      </aside>
     </div>
   );
 }
