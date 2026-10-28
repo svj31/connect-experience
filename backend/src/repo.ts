@@ -35,6 +35,7 @@ export interface UserRow {
   privacy: string;
   settings: string;
   last_active_at: string | null;
+  photos: string;
 }
 
 export interface ConnectionRow {
@@ -43,6 +44,7 @@ export interface ConnectionRow {
   addressee_id: number;
   status: "pending" | "accepted" | "declined";
   note: string;
+  super?: number;
   room_code: string | null;
   created_at: string;
   accepted_at: string | null;
@@ -268,7 +270,7 @@ function baseRepo(db: DB) {
         .prepare<[number, number], { id: number; activity: string; title: string; data: string; created_at: string; code: string; host_id: number; guest_id: number | null }>(
           `SELECT m.id, m.activity, m.title, m.data, m.created_at, r.code, r.host_id, r.guest_id
            FROM moments m JOIN rooms r ON r.id = m.room_id
-           WHERE r.host_id = ? OR r.guest_id = ? ORDER BY m.id DESC LIMIT 100`,
+           WHERE r.host_id = ? OR r.guest_id = ? ORDER BY m.created_at DESC, m.id DESC LIMIT 100`,
         )
         .all(userId, userId);
     },
@@ -345,11 +347,47 @@ export function extendRepo(db: DB) {
           `SELECT u.* FROM users u
            WHERE u.id != ? AND u.role = 'user' AND u.status != 'banned'
              AND NOT EXISTS (SELECT 1 FROM blocks b WHERE (b.blocker_id = ? AND b.blocked_id = u.id) OR (b.blocker_id = u.id AND b.blocked_id = ?))
-             AND NOT EXISTS (SELECT 1 FROM connections c WHERE ((c.requester_id = ? AND c.addressee_id = u.id) OR (c.requester_id = u.id AND c.addressee_id = ?)) AND c.status != 'declined')
+             AND NOT EXISTS (SELECT 1 FROM connections c WHERE ((c.requester_id = ? AND c.addressee_id = u.id AND c.status != 'declined') OR (c.requester_id = u.id AND c.addressee_id = ? AND c.status = 'accepted')))
              AND NOT EXISTS (SELECT 1 FROM passes p WHERE p.user_id = ? AND p.target_id = u.id)
+             -- People who liked you stay visible, so liking them back is a match.
            ORDER BY u.id DESC LIMIT 500`,
         )
         .all(viewerId, viewerId, viewerId, viewerId, viewerId, viewerId);
+    },
+
+    /** Runs fn as one SQLite transaction. SQLite serialises writers, so this is atomic. */
+    transaction<T>(fn: () => T): T {
+      return db.transaction(fn)();
+    },
+
+    swipe(swiperId: number, targetId: number, decision: string, matched = false) {
+      db.prepare(
+        "INSERT INTO swipes (swiper_id, target_id, decision, matched) VALUES (?, ?, ?, ?) ON CONFLICT(swiper_id, target_id) DO UPDATE SET decision = excluded.decision, matched = excluded.matched, created_at = datetime('now')",
+      ).run(swiperId, targetId, decision, matched ? 1 : 0);
+    },
+    swipeBetween: (swiperId: number, targetId: number) =>
+      db.prepare<[number, number], { decision: string; matched: number; created_at: string }>("SELECT decision, matched, created_at FROM swipes WHERE swiper_id = ? AND target_id = ?").get(swiperId, targetId),
+    lastSwipe: (swiperId: number) =>
+      db.prepare<[number], { target_id: number; decision: string; matched: number }>("SELECT target_id, decision, matched FROM swipes WHERE swiper_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1").get(swiperId),
+    deleteSwipe(swiperId: number, targetId: number) {
+      db.prepare("DELETE FROM swipes WHERE swiper_id = ? AND target_id = ?").run(swiperId, targetId);
+      db.prepare("DELETE FROM passes WHERE user_id = ? AND target_id = ?").run(swiperId, targetId);
+    },
+    /** Swipes of each kind since midnight UTC, for daily quotas. */
+    swipesToday(swiperId: number) {
+      const rows = db
+        .prepare<[number], { decision: string; n: number }>("SELECT decision, COUNT(*) AS n FROM swipes WHERE swiper_id = ? AND created_at >= date('now') GROUP BY decision")
+        .all(swiperId);
+      const n = (d: string) => rows.find((r) => r.decision === d)?.n ?? 0;
+      return { like: n("like"), superlike: n("superlike"), pass: n("pass") };
+    },
+    markSuper(connectionId: number) {
+      db.prepare("UPDATE connections SET super = 1 WHERE id = ?").run(connectionId);
+    },
+    swipeStats() {
+      return db
+        .prepare<[], { decision: string; n: number; matched: number }>("SELECT decision, COUNT(*) AS n, SUM(matched) AS matched FROM swipes GROUP BY decision")
+        .all();
     },
 
     pass(userId: number, targetId: number) {

@@ -10,6 +10,7 @@ import { authRoutes } from "./routes/auth.js";
 import { profileRoutes, publicRoutes, safetyRoutes } from "./routes/misc.js";
 import { connectionRoutes, homeRoutes, peopleRoutes } from "./routes/people.js";
 import { roomRoutes, type RoomHub } from "./routes/rooms.js";
+import { swipeRoutes } from "./routes/swipes.js";
 
 export interface AppOptions {
   repo: Repo;
@@ -24,6 +25,8 @@ export function createApp({ repo, hub, rateLimits = true }: AppOptions) {
   app.set("trust proxy", 1);
   app.use(helmet());
   app.use(cors({ origin: config.webOrigin, credentials: true }));
+  // Profiles can carry a few resized photos; everything else stays small.
+  app.use("/api/profile", express.json({ limit: "3mb" }));
   app.use(express.json({ limit: "64kb" }));
   app.use(cookieParser());
 
@@ -40,6 +43,7 @@ export function createApp({ repo, hub, rateLimits = true }: AppOptions) {
   app.use("/api/auth/admin-signup", limiter(15 * 60_000, 5));
   app.use("/api/contact", limiter(60 * 60_000, 5));
   app.use("/api/analytics", limiter(60_000, 120));
+  app.use("/api/discover/swipes", limiter(60_000, 120));
   app.use("/api", limiter(60_000, 600));
 
   app.use("/api/auth", authRoutes(repo));
@@ -50,6 +54,7 @@ export function createApp({ repo, hub, rateLimits = true }: AppOptions) {
   app.use("/api/connections", connectionRoutes(repo, hub));
   app.use("/api/admin", adminRoutes(repo, hub));
   app.use("/api/me", homeRoutes(repo, hub));
+  app.use("/api/discover", swipeRoutes(repo, hub));
   app.use("/api", publicRoutes(repo));
 
   app.use("/api", (_req, res) => {

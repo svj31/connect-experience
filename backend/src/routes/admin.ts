@@ -37,6 +37,7 @@ export function adminRoutes(repo: Repo, hub: RoomHub) {
       bonds: BOND_LEVELS.map((l) => ({ level: l.level, name: l.name, n: bonds.filter((b) => b === l.level).length })),
       hours,
       events: repo.eventSummary().slice(0, 12),
+      swipes: repo.swipeStats().map((r) => ({ decision: r.decision, n: r.n, matched: r.matched ?? 0 })),
       recentActions: repo.adminLog(8),
     });
   });

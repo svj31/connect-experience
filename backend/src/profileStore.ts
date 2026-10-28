@@ -23,6 +23,7 @@ export function saveProfile(repo: Repo, id: number, p: ProfileInput) {
   if (p.loveLanguage !== undefined) fields.love_language = p.loveLanguage;
   if (p.personality !== undefined) fields.personality = p.personality;
   if (p.prompts !== undefined) fields.prompts = JSON.stringify(p.prompts);
+  if (p.photos !== undefined) fields.photos = JSON.stringify(p.photos);
   if (p.quiz !== undefined) fields.quiz = JSON.stringify(p.quiz);
   repo.setProfileFields(id, fields);
   return repo.userById(id)!;

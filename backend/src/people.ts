@@ -5,6 +5,8 @@ import type { UserRow } from "./repo.js";
 import type { VibeProfile } from "./vibe.js";
 
 export interface AvatarConfig {
+  /** Main photo, when the member added one. Planets are the fallback. */
+  photo: string | null;
   shape: string;
   color: string;
   ring: string;
@@ -33,6 +35,7 @@ const parseList = <T>(json: string | null | undefined): T[] => {
 
 export const privacyOf = (row: UserRow): Privacy => parse(row.privacy, DEFAULT_PRIVACY);
 export const settingsOf = (row: UserRow): Settings => parse(row.settings, DEFAULT_SETTINGS);
+export const photosOf = (row: UserRow) => parseList<string>(row.photos).filter((p) => typeof p === "string");
 export const interestsOf = (row: UserRow) => parseList<string>(row.interests);
 export const lifestyleOf = (row: UserRow) => parse<Partial<Record<LifestyleKey, string>>>(row.lifestyle, {});
 export const quizOf = (row: UserRow) => parse<Record<string, number>>(row.quiz, {});
@@ -44,6 +47,7 @@ export const promptsOf = (row: UserRow) =>
 export function avatarOf(row: UserRow): AvatarConfig {
   const extra = parse<Partial<AvatarConfig>>(row.avatar, {});
   return {
+    photo: photosOf(row)[0] ?? null,
     shape: row.avatar_shape,
     color: row.avatar_color,
     ring: extra.ring ?? "single",
@@ -120,6 +124,7 @@ export function profileFor(row: UserRow, access: Access) {
     displayName: row.display_name,
     pronouns: row.pronouns,
     avatar: avatarOf(row),
+    photos: photosOf(row),
     avatarShape: row.avatar_shape,
     avatarColor: row.avatar_color,
     interests: interestsOf(row),
@@ -146,6 +151,7 @@ export function profileFor(row: UserRow, access: Access) {
 /** What a profile is missing, so the app can nudge people to finish it. */
 export function completeness(row: UserRow) {
   const checks: [string, boolean][] = [
+    ["A profile photo", photosOf(row).length > 0],
     ["A short bio", row.bio.length >= 10],
     ["At least 3 interests", interestsOf(row).length >= 3],
     ["Your birth year", Boolean(row.birth_year)],
@@ -187,6 +193,7 @@ export function cardFor(row: UserRow, access: Access, online: boolean) {
     displayName: p.displayName,
     pronouns: p.pronouns,
     avatar: p.avatar,
+    photos: p.photos,
     avatarShape: p.avatarShape,
     avatarColor: p.avatarColor,
     age: p.age,

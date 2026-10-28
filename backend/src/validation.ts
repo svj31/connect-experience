@@ -75,6 +75,13 @@ export const profileSchema = z.object({
     .max(3)
     .refine((list) => new Set(list.map((p) => p.id)).size === list.length, "Pick each prompt once")
     .optional(),
+  // Photo URLs (https) or small uploaded JPEG/PNG/WebP data URLs, first one is the main photo.
+  photos: z
+    .array(
+      z.string().max(400_000).refine((s) => /^https:\/\/[^\s]+$/.test(s) || /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s), "Use an image upload or an https link"),
+    )
+    .max(6, "Up to 6 photos")
+    .optional(),
   quiz: z
     .partialRecord(z.enum(QUIZ.map((q) => q.id) as [string, ...string[]]), z.number().int().min(0).max(3))
     .optional(),
@@ -100,6 +107,7 @@ export const settingsSchema = z
     motion: z.enum(["full", "reduced"]),
     ageMin: z.number().int().min(18).max(99),
     ageMax: z.number().int().min(18).max(99),
+    maxDistanceKm: z.number().int().min(0).max(5000).default(0),
   })
   .refine((s) => s.ageMin <= s.ageMax, { message: "Minimum age must be below the maximum", path: ["ageMin"] });
 
@@ -199,3 +207,9 @@ export function fieldErrors(error: z.ZodError): Record<string, string> {
   }
   return out;
 }
+
+export const swipeSchema = z.object({
+  targetId: z.number().int().positive(),
+  decision: z.enum(["like", "pass", "superlike"]),
+  note: z.string().trim().max(200).default(""),
+});

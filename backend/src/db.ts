@@ -138,6 +138,18 @@ CREATE TABLE IF NOT EXISTS admin_actions (
   note           TEXT NOT NULL DEFAULT '',
   created_at     TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Every Discover decision, one row per pair. It drives "already seen", daily quotas,
+-- undo and match analytics. Likes also create a pending connection; passes a pass row.
+CREATE TABLE IF NOT EXISTS swipes (
+  swiper_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  target_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  decision   TEXT NOT NULL,
+  matched    INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (swiper_id, target_id)
+);
+CREATE INDEX IF NOT EXISTS swipes_day ON swipes(swiper_id, created_at);
 `;
 
 /**
@@ -168,12 +180,14 @@ const ADDED_COLUMNS: Record<string, [string, string][]> = {
     ["privacy", "TEXT NOT NULL DEFAULT '{}'"],
     ["settings", "TEXT NOT NULL DEFAULT '{}'"],
     ["last_active_at", "TEXT"],
+    ["photos", "TEXT NOT NULL DEFAULT '[]'"],
   ],
   rooms: [
     ["kind", "TEXT NOT NULL DEFAULT 'table'"],
     ["locked", "INTEGER NOT NULL DEFAULT 0"],
   ],
   messages: [["flagged", "INTEGER NOT NULL DEFAULT 0"]],
+  connections: [["super", "INTEGER NOT NULL DEFAULT 0"]],
   reports: [
     ["status", "TEXT NOT NULL DEFAULT 'open'"],
     ["evidence", "TEXT NOT NULL DEFAULT '[]'"],

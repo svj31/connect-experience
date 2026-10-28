@@ -7,11 +7,29 @@ import {
 } from "../people.js";
 import { drawPrompts, questionOfTheDay, suggestActivities, watchPicks } from "../personalize.js";
 import type { ConnectionRow, Repo, UserRow } from "../repo.js";
+import { distanceKm } from "../geo.js";
 import { computeVibe, mutualFit } from "../vibe.js";
 import { connectSchema, peopleQuerySchema, playSchema } from "../validation.js";
 import type { RoomHub } from "./rooms.js";
 
 const ONLINE_WINDOW_MS = 5 * 60_000;
+
+/** Accepts a connection and opens the pair's private space. Returns the room code. */
+export function openSharedSpace(repo: Repo, conn: ConnectionRow) {
+  const a = repo.userById(conn.requester_id)!;
+  const b = repo.userById(conn.addressee_id)!;
+  const room = repo.createRoom({ title: `${a.display_name} and ${b.display_name}`, topic: "", activity: "deeptalk", isPublic: false, hostId: a.id, guestId: b.id, kind: "connection" });
+  repo.acceptConnection(conn.id, room.code);
+  return room.code;
+}
+
+/** People this viewer could meet, after privacy, blocks, swipes and mutual preference. */
+export function discoverable(repo: Repo, me: UserRow) {
+  const meFit = { gender: me.gender, lookingFor: me.looking_for };
+  return repo
+    .discoverPool(me.id)
+    .filter((u) => effectiveStatus(u) === "active" && privacyOf(u).discoverable && mutualFit(meFit, { gender: u.gender, lookingFor: u.looking_for }));
+}
 
 /** Shared helpers for anything that shows one person to another. */
 export function relations(repo: Repo, hub: RoomHub) {
@@ -37,7 +55,11 @@ export function relations(repo: Repo, hub: RoomHub) {
   function card(viewer: UserRow, row: UserRow) {
     const { access: a } = access(viewer.id, row);
     const vibe = vibeFor(viewer, row);
-    return { ...cardFor(row, a, isOnline(row)), vibe: { score: vibe.score, reasons: vibe.reasons, sharedInterests: vibe.sharedInterests } };
+    return {
+      ...cardFor(row, a, isOnline(row)),
+      distanceKm: distanceKm(viewer.city, row.city),
+      vibe: { score: vibe.score, reasons: vibe.reasons, sharedInterests: vibe.sharedInterests },
+    };
   }
 
   return { access, bondOf, isOnline, vibeFor, card };
@@ -48,13 +70,7 @@ export function peopleRoutes(repo: Repo, hub: RoomHub) {
   r.use(requireAuth, requireActive(repo));
   const rel = relations(repo, hub);
 
-  /** People this viewer could meet, after privacy, blocks and mutual preference. */
-  function pool(me: UserRow) {
-    const meFit = { gender: me.gender, lookingFor: me.looking_for };
-    return repo
-      .discoverPool(me.id)
-      .filter((u) => effectiveStatus(u) === "active" && privacyOf(u).discoverable && mutualFit(meFit, { gender: u.gender, lookingFor: u.looking_for }));
-  }
+  const pool = (me: UserRow) => discoverable(repo, me);
 
   r.get("/", (req: AuthedRequest, res) => {
     const parsed = peopleQuerySchema.safeParse(req.query);
@@ -144,13 +160,7 @@ export function connectionRoutes(repo: Repo, hub: RoomHub) {
   r.use(requireAuth, requireActive(repo));
   const rel = relations(repo, hub);
 
-  function openSpace(conn: ConnectionRow) {
-    const a = repo.userById(conn.requester_id)!;
-    const b = repo.userById(conn.addressee_id)!;
-    const room = repo.createRoom({ title: `${a.display_name} and ${b.display_name}`, topic: "", activity: "deeptalk", isPublic: false, hostId: a.id, guestId: b.id, kind: "connection" });
-    repo.acceptConnection(conn.id, room.code);
-    return room.code;
-  }
+  const openSpace = (conn: ConnectionRow) => openSharedSpace(repo, conn);
 
   function loadMine(req: AuthedRequest, res: Response) {
     const conn = repo.connectionById(Number(req.params.id));
@@ -173,6 +183,7 @@ export function connectionRoutes(repo: Repo, hub: RoomHub) {
         status: c.status,
         outgoing: c.requester_id === me.id,
         note: c.note,
+        superLike: Boolean(c.super),
         roomCode: c.room_code,
         since: c.accepted_at ?? c.created_at,
         person: rel.card(me, other),
